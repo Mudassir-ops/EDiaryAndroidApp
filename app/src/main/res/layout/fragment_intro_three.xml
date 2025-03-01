@@ -1,0 +1,95 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/app_screen"
+    tools:context="com.example.neweasydairy.fragments.introFragment.introFragmentThree.IntroFragmentThree">
+
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtSkipthree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Skip"
+        app:layout_constraintBottom_toTopOf="@id/imgIntroOne"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="@dimen/_10sdp"
+        android:textSize="@dimen/_12sdp"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imgIntroOne"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/viewBottom"
+        app:layout_constraintTop_toBottomOf="@id/txtSkipthree"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.5"
+        app:srcCompat="@drawable/intro_screen_three"/>
+
+
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.3"
+        android:background="@drawable/bottom_intro"
+        android:id="@+id/viewBottom"/>
+
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtTitleOne"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Personal &amp; Private"
+        android:textColor="@color/black"
+        android:fontFamily="@font/roboto_semibold"
+        android:layout_marginStart="@dimen/_10sdp"
+        app:layout_constraintTop_toTopOf="@id/viewBottom"
+        app:layout_constraintBottom_toTopOf="@id/txtDescriptionOne"
+        app:layout_constraintStart_toStartOf="@id/viewBottom"
+        app:layout_constraintEnd_toEndOf="@id/viewBottom"
+        android:textSize="@dimen/_20sdp"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtDescriptionOne"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Preserve your private moments and make them wonderful."
+        android:textColor="@color/text_gray_color"
+        android:textSize="@dimen/_12sdp"
+        android:fontFamily="@font/roboto_regular"
+        app:layout_constraintWidth_percent="0.8"
+        app:layout_constraintBottom_toTopOf="@id/btnNextIntroThree"
+        app:layout_constraintTop_toBottomOf="@id/txtTitleOne"
+        app:layout_constraintStart_toStartOf="@id/txtTitleOne"
+        />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnNextIntroThree"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/txtDescriptionOne"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="@dimen/_10sdp"
+        app:layout_constraintWidth_percent="0.8"
+        android:background="@drawable/bg_done_btn"
+        android:text="Next"
+        android:fontFamily="@font/roboto_regular"
+        android:layout_marginBottom="@dimen/_5sdp"
+        android:textAllCaps="false"
+        android:textColor="@color/white"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

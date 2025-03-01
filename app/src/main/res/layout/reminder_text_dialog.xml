@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <View
+        android:id="@+id/topView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.85" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtReminderText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_10sdp"
+        app:layout_constraintBottom_toTopOf="@id/txtReminderTitle"
+        android:layout_marginVertical="@dimen/_10sdp"
+        android:fontFamily="@font/roboto_semibold"
+        android:text="Reminder Text"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_16sdp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@id/topView"
+        app:layout_constraintStart_toStartOf="@id/topView"
+        app:layout_constraintTop_toTopOf="@id/topView" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtReminderTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_10sdp"
+        android:fontFamily="@font/roboto_semibold"
+        android:text="Title"
+        android:gravity="start"
+        app:layout_constraintBottom_toTopOf="@id/edReminderTitle"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_16sdp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@id/topView"
+        app:layout_constraintStart_toStartOf="@id/topView"
+        app:layout_constraintTop_toBottomOf="@id/txtReminderText"/>
+
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/edReminderTitle"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        app:layout_constraintTop_toBottomOf="@id/txtReminderTitle"
+        android:background="@drawable/bg_edit_text"
+        app:layout_constraintStart_toStartOf="@id/txtReminderTitle"
+        app:layout_constraintEnd_toEndOf="@id/topView"
+        android:hint="Title"
+        android:maxLength="20"
+        app:layout_constraintBottom_toTopOf="@id/txtReminderDescription"
+        android:singleLine="true"
+        android:inputType="textPersonName"
+        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        android:fontFamily="@font/roboto_regular"
+        android:layout_marginEnd="@dimen/_15sdp"
+        android:paddingHorizontal="@dimen/_10sdp"/>
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtReminderDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_10sdp"
+        android:fontFamily="@font/roboto_semibold"
+        android:text="Description"
+        app:layout_constraintBottom_toTopOf="@id/edReminderDescription"
+        android:gravity="start"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_16sdp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@id/topView"
+        app:layout_constraintStart_toStartOf="@id/topView"
+        app:layout_constraintTop_toBottomOf="@id/edReminderTitle"/>
+
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/edReminderDescription"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        app:layout_constraintTop_toBottomOf="@id/txtReminderDescription"
+        android:background="@drawable/bg_edit_text"
+        app:layout_constraintStart_toStartOf="@id/txtReminderDescription"
+        app:layout_constraintEnd_toEndOf="@id/topView"
+        android:hint="Description"
+        android:maxLength="20"
+        android:singleLine="true"
+        app:layout_constraintBottom_toTopOf="@id/btnSave"
+        android:inputType="textPersonName"
+        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        android:fontFamily="@font/roboto_regular"
+        android:layout_marginEnd="@dimen/_15sdp"
+        android:paddingHorizontal="@dimen/_10sdp"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnSave"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/edReminderDescription"
+        app:layout_constraintStart_toStartOf="@id/topView"
+        app:layout_constraintEnd_toEndOf="@id/topView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintWidth_percent="0.8"
+        android:background="@drawable/bg_done_btn"
+        android:layout_marginVertical="@dimen/_20sdp"
+        android:text="Save"
+        android:fontFamily="@font/roboto_regular"
+        android:textAllCaps="false"
+        android:textColor="@color/white"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

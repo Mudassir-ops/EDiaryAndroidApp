@@ -1,0 +1,137 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.neweasydairy.fragments.permissionFragment.PermissionFragment">
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtPermission"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:text="@string/permissions"
+        android:fontFamily="@font/roboto_semibold"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_18sdp"
+        app:layout_constraintBottom_toTopOf="@id/txtPermissionDescription"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtPermissionDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:gravity="start"
+        android:fontFamily="@font/roboto_regular"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:text="@string/we_need_your_permission_to_provide_the_best_experience"
+        android:textSize="@dimen/_12sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtPermission"
+        app:layout_constraintWidth_percent="0.8" />
+
+    <View
+        android:id="@+id/viewCameraAccess"
+        android:layout_width="0dp"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:layout_height="?actionBarSize"
+        android:background="@drawable/bg_permission"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtPermissionDescription"
+        app:layout_constraintWidth_percent="0.9" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icCamera"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="@dimen/_10sdp"
+        app:layout_constraintEnd_toStartOf="@id/txtAllowCameraAccess"
+        app:layout_constraintTop_toTopOf="@id/viewCameraAccess"
+        app:layout_constraintStart_toStartOf="@id/viewCameraAccess"
+        app:layout_constraintBottom_toBottomOf="@id/viewCameraAccess"
+        app:srcCompat="@drawable/ic_camera_png"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtAllowCameraAccess"
+        android:layout_width="0dp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_regular"
+        app:layout_constraintEnd_toStartOf="@id/icSwitchCamera"
+        app:layout_constraintTop_toTopOf="@id/viewCameraAccess"
+        app:layout_constraintBottom_toBottomOf="@id/viewCameraAccess"
+        app:layout_constraintStart_toEndOf="@id/icCamera"
+        android:text="Allow Camera Access" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icSwitchCamera"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        app:layout_constraintTop_toTopOf="@id/viewCameraAccess"
+        app:layout_constraintEnd_toEndOf="@id/viewCameraAccess"
+        app:layout_constraintBottom_toBottomOf="@id/viewCameraAccess"
+        app:srcCompat="@drawable/ic_switch_off"/>
+
+    <View android:id="@+id/viewGallery" android:layout_width="0dp" android:layout_marginTop="@dimen/_15sdp" android:layout_height="?actionBarSize" android:background="@drawable/bg_permission" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@id/viewCameraAccess" app:layout_constraintWidth_percent="0.9" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icGallery"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="@dimen/_10sdp"
+        app:layout_constraintEnd_toStartOf="@id/txtAllowGalleryAccess"
+        app:layout_constraintTop_toTopOf="@id/viewGallery"
+        app:layout_constraintStart_toStartOf="@id/viewGallery"
+        app:layout_constraintBottom_toBottomOf="@id/viewGallery"
+        app:srcCompat="@drawable/ic_camera_svg"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtAllowGalleryAccess"
+        android:layout_width="0dp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_regular"
+        app:layout_constraintEnd_toStartOf="@id/icSwitchGallery"
+        app:layout_constraintTop_toTopOf="@id/viewGallery"
+        app:layout_constraintBottom_toBottomOf="@id/viewGallery"
+        app:layout_constraintStart_toEndOf="@id/icGallery"
+        android:text="Allow Gallery Access" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icSwitchGallery"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        app:layout_constraintTop_toTopOf="@id/viewGallery"
+        app:layout_constraintEnd_toEndOf="@id/viewGallery"
+        app:layout_constraintBottom_toBottomOf="@id/viewGallery"
+        app:srcCompat="@drawable/ic_switch_off"/>
+
+
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnDone"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintWidth_percent="0.8"
+        android:background="@drawable/bg_done_btn"
+        android:text="Done"
+        android:fontFamily="@font/roboto_regular"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:textAllCaps="false"
+        android:textColor="@color/white"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

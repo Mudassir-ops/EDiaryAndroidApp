@@ -1,0 +1,96 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/app_screen"
+    tools:context="com.example.neweasydairy.fragments.profileFragment.ProfileFragment">
+
+    <View
+        android:id="@+id/viewTop"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        app:layout_constraintBottom_toTopOf="@id/viewTop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icBack"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:tint="@color/white"
+        app:layout_constraintBottom_toBottomOf="@id/viewTop"
+        app:layout_constraintEnd_toStartOf="@id/txtLater"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="@id/viewTop"
+        app:layout_constraintTop_toTopOf="@id/viewTop"
+        app:srcCompat="@drawable/ic_back" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtLater"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:gravity="center"
+        android:text="Profile Settings"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:fontFamily="@font/roboto_semibold"
+        android:textSize="@dimen/_18sdp"
+        app:layout_constraintBottom_toBottomOf="@id/viewTop"
+        app:layout_constraintEnd_toEndOf="@id/viewTop"
+        app:layout_constraintStart_toEndOf="@id/icBack"
+        app:layout_constraintTop_toTopOf="@id/viewTop" />
+
+    <View
+        android:id="@+id/whiteView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/viewTop" />
+
+    <View
+        android:id="@+id/profileView"
+        android:layout_width="0dp"
+        android:layout_height="?actionBarSize"
+        android:layout_margin="@dimen/_10sdp"
+        android:background="@drawable/bg_edit_text"
+        app:layout_constraintEnd_toEndOf="@id/whiteView"
+        app:layout_constraintStart_toStartOf="@id/whiteView"
+        app:layout_constraintTop_toTopOf="@id/whiteView" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtAccountSetting"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:gravity="center"
+        android:text="Profile Settings"
+        android:fontFamily="@font/roboto_regular"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_15sdp"
+        app:layout_constraintStart_toStartOf="@id/profileView"
+        app:layout_constraintTop_toBottomOf="@id/profileView" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/drawerRecyclerView"
+        android:layout_width="0dp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_height="0dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/drawer_item"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/profileView"
+        app:layout_constraintStart_toStartOf="@id/profileView"
+        app:layout_constraintTop_toBottomOf="@id/txtAccountSetting" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/topView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.85" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_10sdp"
+        android:layout_marginVertical="@dimen/_10sdp"
+        android:text="Text"
+        android:fontFamily="@font/roboto_semibold"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@id/icStartLine"
+        android:textSize="@dimen/_16sdp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@id/topView"
+        app:layout_constraintStart_toStartOf="@id/topView"
+        app:layout_constraintTop_toTopOf="@id/topView" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icStartLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/_10sdp"
+        app:layout_constraintBottom_toTopOf="@id/icBlueColor"
+        app:layout_constraintEnd_toStartOf="@id/icCenterLine"
+        app:layout_constraintStart_toStartOf="@id/topView"
+        app:layout_constraintTop_toBottomOf="@id/txtText"
+        app:srcCompat="@drawable/ic_left" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icCenterLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/icStartLine"
+        app:layout_constraintEnd_toStartOf="@id/icEndLine"
+        app:layout_constraintStart_toEndOf="@id/icStartLine"
+        app:layout_constraintTop_toTopOf="@id/icStartLine"
+        app:srcCompat="@drawable/ic_center" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icEndLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/icStartLine"
+        app:layout_constraintEnd_toStartOf="@id/verticalLine"
+        app:layout_constraintStart_toEndOf="@id/icCenterLine"
+        app:layout_constraintTop_toTopOf="@id/icStartLine"
+        app:srcCompat="@drawable/ic_right" />
+
+    <View
+        android:id="@+id/verticalLine"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_marginVertical="@dimen/_2sdp"
+        android:background="@color/black"
+        app:layout_constraintBottom_toBottomOf="@id/icStartLine"
+        app:layout_constraintEnd_toStartOf="@id/icHeadingOne"
+        app:layout_constraintStart_toEndOf="@id/icEndLine"
+        app:layout_constraintTop_toTopOf="@id/icStartLine" />
+
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icHeadingOne"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/icStartLine"
+        app:layout_constraintEnd_toStartOf="@id/icHeadingTwo"
+        app:layout_constraintStart_toEndOf="@id/verticalLine"
+        app:layout_constraintTop_toTopOf="@id/icStartLine"
+        app:srcCompat="@drawable/ic_h1" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icHeadingTwo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/icStartLine"
+        app:layout_constraintEnd_toStartOf="@id/icHeadingThree"
+        app:layout_constraintStart_toEndOf="@id/icHeadingOne"
+        app:layout_constraintTop_toTopOf="@id/icStartLine"
+        app:srcCompat="@drawable/ic_h2" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icHeadingThree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/icStartLine"
+        app:layout_constraintEnd_toEndOf="@id/topView"
+        app:layout_constraintStart_toEndOf="@id/icHeadingTwo"
+        app:layout_constraintTop_toTopOf="@id/icStartLine"
+        app:srcCompat="@drawable/ic_h3" />
+
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icBlueColor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/_10sdp"
+        app:layout_constraintBottom_toTopOf="@id/fontIntaliana"
+        app:layout_constraintEnd_toStartOf="@id/icBlackColor"
+        app:layout_constraintStart_toStartOf="@id/topView"
+        app:layout_constraintTop_toBottomOf="@id/icStartLine"
+        app:srcCompat="@drawable/ic_five" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icBlackColor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/icBlueColor"
+        app:layout_constraintEnd_toStartOf="@id/icDarkGrayColor"
+        app:layout_constraintBottom_toBottomOf="@id/icBlueColor"
+        app:layout_constraintStart_toEndOf="@id/icBlueColor"
+        app:srcCompat="@drawable/ic_one" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icDarkGrayColor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@id/icLightGrayColor"
+        app:layout_constraintBottom_toBottomOf="@id/icBlueColor"
+        app:layout_constraintStart_toEndOf="@id/icBlackColor"
+        app:layout_constraintTop_toTopOf="@id/icBlueColor"
+        app:srcCompat="@drawable/ic_two" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icLightGrayColor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@id/icPinkColor"
+        app:layout_constraintBottom_toBottomOf="@id/icBlueColor"
+        app:layout_constraintStart_toEndOf="@id/icDarkGrayColor"
+        app:layout_constraintTop_toTopOf="@id/icBlueColor"
+        app:srcCompat="@drawable/ic_three" />
+
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icPinkColor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@id/icGreenishColor"
+        app:layout_constraintBottom_toBottomOf="@id/icBlueColor"
+        app:layout_constraintStart_toEndOf="@id/icLightGrayColor"
+        app:layout_constraintTop_toTopOf="@id/icBlueColor"
+        app:srcCompat="@drawable/ic_four" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icGreenishColor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/icBlueColor"
+        app:layout_constraintStart_toEndOf="@id/icPinkColor"
+        app:layout_constraintEnd_toStartOf="@id/icPurpleColor"
+        app:layout_constraintTop_toTopOf="@id/icBlueColor"
+        app:srcCompat="@drawable/ic_six" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icPurpleColor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/icBlueColor"
+        app:layout_constraintStart_toEndOf="@id/icGreenishColor"
+        app:layout_constraintEnd_toEndOf="@id/topView"
+        app:layout_constraintTop_toTopOf="@id/icBlueColor"
+        app:srcCompat="@drawable/ic_seven" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/fontIntaliana"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/_12sdp"
+        android:gravity="center"
+        android:fontFamily="@font/italiana_regular"
+        app:layout_constraintBottom_toTopOf="@id/fontMargarine"
+        android:layout_marginEnd="@dimen/_10sdp"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        android:background="@drawable/bg_font_family_unselected"
+        app:layout_constraintEnd_toStartOf="@id/fontLeckerli"
+        app:layout_constraintTop_toBottomOf="@id/icBlueColor"
+        app:layout_constraintStart_toStartOf="@id/icBlueColor"
+        android:text="Italiana"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/fontLeckerli"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:fontFamily="@font/leckerlione_regular"
+        android:background="@drawable/bg_font_family_unselected"
+        app:layout_constraintEnd_toEndOf="@id/topView"
+        app:layout_constraintTop_toTopOf="@id/fontIntaliana"
+        app:layout_constraintBottom_toBottomOf="@id/fontIntaliana"
+        app:layout_constraintStart_toEndOf="@id/fontIntaliana"
+        android:text="Leckerili One"/>
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/fontMargarine"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/_12sdp"
+        android:gravity="center"
+        android:fontFamily="@font/margarine_regular"
+        android:layout_marginVertical="@dimen/_10sdp"
+        app:layout_constraintBottom_toTopOf="@id/fontPacifico"
+        android:layout_marginEnd="@dimen/_10sdp"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        android:background="@drawable/bg_font_family_unselected"
+        app:layout_constraintEnd_toStartOf="@id/fontRethink"
+        app:layout_constraintTop_toBottomOf="@id/fontIntaliana"
+        app:layout_constraintStart_toStartOf="@id/icBlueColor"
+        android:text="Margarine"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/fontRethink"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:fontFamily="@font/rethinksans_regular"
+        android:background="@drawable/bg_font_family_unselected"
+        app:layout_constraintEnd_toEndOf="@id/topView"
+        app:layout_constraintTop_toTopOf="@id/fontMargarine"
+        app:layout_constraintBottom_toBottomOf="@id/fontMargarine"
+        app:layout_constraintStart_toEndOf="@id/fontMargarine"
+        android:text="Rethink Sans"/>
+
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/fontPacifico"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/_12sdp"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:fontFamily="@font/pacifico"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        android:background="@drawable/bg_font_family_unselected"
+        app:layout_constraintBottom_toBottomOf="@id/topView"
+        app:layout_constraintEnd_toStartOf="@id/fontLobster"
+        app:layout_constraintTop_toBottomOf="@id/fontMargarine"
+        app:layout_constraintStart_toStartOf="@id/icBlueColor"
+        android:text="Pacifico"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/fontLobster"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:fontFamily="@font/lobster_regular"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:background="@drawable/bg_font_family_unselected"
+        app:layout_constraintEnd_toEndOf="@id/topView"
+        app:layout_constraintTop_toTopOf="@id/fontPacifico"
+        app:layout_constraintBottom_toBottomOf="@id/fontPacifico"
+        app:layout_constraintStart_toEndOf="@id/fontPacifico"
+        android:text="lobster"/>
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

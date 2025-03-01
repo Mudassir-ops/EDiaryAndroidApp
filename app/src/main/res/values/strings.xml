@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Easy Diary Journal With Lock</string>
+    <string name="choose_your_preferred_language_to_n_personalize_your_diary_experience">Choose your preferred language to personalize your diary experience.\n</string>
+    <string name="select_language">Select Language</string>
+    <string name="done">Done</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="permissions">Permissions</string>
+    <string name="we_need_your_permission_to_provide_the_best_experience">We need your permission to provide the best experience.</string>
+    <string name="later">Later</string>
+    <string name="home">Home</string>
+    <string name="library">Library</string>
+    <string name="calendar">Calendar</string>
+    <string name="good_rating">Your Good Rating Inspire us to Serve You Better Services</string>
+    <string name="very_bad">very Bad</string>
+    <string name="exit">Exit</string>
+    <string name="very_good">Very Good</string>
+    <string name="your_good_rating_make_a_difference">Your Good Rating make a Difference</string>
+    <string name="cancel">Cancel</string>
+    <string name="privacy_policy_link">https://sites.google.com/view/easy-diary-journal-with-lock/home</string>
+    <string name="no_launcher">no_launcher</string>
+    <string name="more_app_link">more_app_link</string>
+    <string name="one">One</string>
+
+
+</resources>

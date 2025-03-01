@@ -1,0 +1,75 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:background="@color/black"
+    tools:context="com.example.neweasydairy.fragments.cropFragment.CropFragment">
+
+
+    <com.canhub.cropper.CropImageView
+        android:id="@+id/cropImageView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:layout_marginVertical="@dimen/_15sdp"
+        custom:layout_constraintTop_toTopOf="parent"
+        custom:layout_constraintStart_toStartOf="parent"
+        custom:layout_constraintEnd_toEndOf="parent"
+        custom:layout_constraintBottom_toTopOf="@id/btnRotate" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/btnRotate"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:padding="@dimen/_5sdp"
+        custom:layout_constraintEnd_toStartOf="@id/emptyView"
+        custom:layout_constraintBottom_toBottomOf="parent"
+        custom:layout_constraintStart_toStartOf="parent"
+        custom:srcCompat="@drawable/ic_rotate" />
+
+    <View
+        android:id="@+id/emptyView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        custom:layout_constraintTop_toTopOf="@id/btnRotate"
+        custom:layout_constraintBottom_toBottomOf="@id/btnRotate"
+        custom:layout_constraintStart_toEndOf="@id/btnRotate"
+        custom:layout_constraintEnd_toStartOf="@id/btnCancel"/>
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="@string/cancel"
+        custom:layout_constraintStart_toEndOf="@id/emptyView"
+        android:textColor="@color/white"
+        android:fontFamily="@font/roboto_regular"
+        android:layout_marginHorizontal="@dimen/_16sdp"
+        android:background="@drawable/bg_outline"
+        custom:layout_constraintTop_toTopOf="@id/btnRotate"
+        custom:layout_constraintBottom_toBottomOf="@id/btnRotate"
+        custom:layout_constraintEnd_toStartOf="@id/btnDone"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnDone"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="Done"
+        android:textAllCaps="false"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:fontFamily="@font/roboto_regular"
+        custom:layout_constraintStart_toEndOf="@id/btnCancel"
+        android:textColor="@color/white"
+        android:background="@drawable/bg_btn_done"
+        custom:layout_constraintTop_toTopOf="@id/btnRotate"
+        custom:layout_constraintBottom_toBottomOf="@id/btnRotate"
+        custom:layout_constraintEnd_toEndOf="parent"/>
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

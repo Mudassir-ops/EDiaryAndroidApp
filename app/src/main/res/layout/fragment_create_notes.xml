@@ -1,0 +1,249 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/app_screen"
+    tools:context="com.example.neweasydairy.fragments.noteFragment.CreateNotesFragment">
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="?actionBarSize"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/topView"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icBack"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        app:srcCompat="@drawable/ic_back"
+        android:tint="@color/white"
+        android:padding="@dimen/_2sdp"
+        android:layout_marginStart="@dimen/_14sdp"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintEnd_toStartOf="@id/txtAddNote"
+        app:layout_constraintTop_toTopOf="@id/topView"
+        app:layout_constraintBottom_toBottomOf="@id/topView"
+        app:layout_constraintStart_toStartOf="@id/topView"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/icBack"
+        app:layout_constraintBottom_toBottomOf="@id/icBack"
+        app:layout_constraintStart_toEndOf="@id/icBack"
+        android:text="Add Note"
+        android:gravity="center"
+        android:fontFamily="@font/roboto_regular"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_14sdp"
+        app:layout_constraintEnd_toStartOf="@id/txtSave"
+        android:textStyle="bold"
+        android:id="@+id/txtAddNote"/>
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtSave"
+        android:layout_width="40dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="@id/icBack"
+        app:layout_constraintBottom_toBottomOf="@id/icBack"
+        app:layout_constraintEnd_toEndOf="@id/topView"
+        android:text="Save"
+        android:fontFamily="@font/roboto_regular"
+        android:textSize="@dimen/_14sdp"
+        android:gravity="center_vertical"
+        android:layout_marginEnd="@dimen/_14sdp"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toEndOf="@id/txtAddNote"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/backgroundImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/_10sdp"
+        app:layout_constraintTop_toBottomOf="@id/topView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@drawable/bg_add_note"
+        app:layout_constraintStart_toStartOf="parent"
+        android:scaleType="fitXY"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/backgroundImage"
+        app:layout_constraintStart_toStartOf="@id/backgroundImage"
+        app:layout_constraintEnd_toEndOf="@id/backgroundImage"
+        android:text="13 Wed, Aug 2024"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:textSize="@dimen/_14sdp"
+        android:textStyle="bold"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginVertical="@dimen/_15sdp"
+        app:layout_constraintBottom_toTopOf="@id/bottomViewNotes"
+        app:layout_constraintTop_toBottomOf="@id/txtDate">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_10sdp">
+
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/txtTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:hint="Header"
+                android:paddingEnd="@dimen/_10sdp"
+                android:textSize="@dimen/_14sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@null"
+                app:layout_constraintEnd_toStartOf="@id/icEmoji"
+                android:maxLength="30"/>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/icEmoji"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:padding="@dimen/_2sdp"
+                android:layout_marginEnd="@dimen/_14sdp"
+                android:contentDescription="@string/one"
+                app:layout_constraintStart_toEndOf="@id/txtTitle"
+                app:layout_constraintTop_toTopOf=" @id/txtTitle"
+                app:layout_constraintBottom_toBottomOf="@id/txtTitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:srcCompat="@drawable/ic_emoji_one"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/imageRecyclerView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/_10sdp"
+                app:layout_constraintBottom_toTopOf="@id/txtEdDescription"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txtTitle"
+                tools:listitem="@layout/image_item" />
+
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/txtEdDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/imageRecyclerView"
+                app:layout_constraintStart_toStartOf="parent"
+                android:hint="Write your thoughts here..."
+                app:layout_constraintEnd_toStartOf="@id/icEmoji"
+                android:textSize="@dimen/_12sdp"
+                android:paddingEnd="@dimen/_10sdp"
+                android:maxLength="500"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@null"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/tagListRecyclerView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                tools:listitem="@layout/item_create_tag_list"
+                app:layout_constraintTop_toBottomOf="@id/txtEdDescription"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/flexboxLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                app:flexDirection="row"
+                app:justifyContent="flex_start"
+                app:layout_constraintTop_toBottomOf="@id/txtEdDescription"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:alignItems="center"
+                app:flexWrap="wrap" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+
+
+    <View
+        android:id="@+id/bottomViewNotes"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginVertical="@dimen/_14sdp"
+        android:background="@drawable/bg_note_bottom_view"
+        android:layout_marginHorizontal="@dimen/_14sdp"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icGrid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_grid"
+        app:layout_constraintEnd_toStartOf="@id/icAudioNotes"
+        app:layout_constraintTop_toTopOf="@id/bottomViewNotes"
+        app:layout_constraintStart_toStartOf="@id/bottomViewNotes"
+        app:layout_constraintBottom_toBottomOf="@id/bottomViewNotes"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icAudioNotes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_audio_"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/icImageNote"
+        app:layout_constraintTop_toTopOf="@id/bottomViewNotes"
+        app:layout_constraintStart_toEndOf="@id/icGrid"
+        app:layout_constraintBottom_toBottomOf="@id/bottomViewNotes"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icImageNote"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_gallery"
+        app:layout_constraintEnd_toStartOf="@id/icHash"
+        app:layout_constraintTop_toTopOf="@id/bottomViewNotes"
+        app:layout_constraintStart_toEndOf="@id/icAudioNotes"
+        app:layout_constraintBottom_toBottomOf="@id/bottomViewNotes"/>
+
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icHash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_hash"
+        app:layout_constraintEnd_toStartOf="@id/icText"
+        app:layout_constraintTop_toTopOf="@id/bottomViewNotes"
+        app:layout_constraintStart_toEndOf="@id/icImageNote"
+        app:layout_constraintBottom_toBottomOf="@id/bottomViewNotes"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_text"
+        app:layout_constraintTop_toTopOf="@id/bottomViewNotes"
+        app:layout_constraintStart_toEndOf="@id/icHash"
+        app:layout_constraintEnd_toEndOf="@id/bottomViewNotes"
+        app:layout_constraintBottom_toBottomOf="@id/bottomViewNotes"/>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

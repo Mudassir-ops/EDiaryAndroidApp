@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <View
+        android:id="@+id/topView"
+        android:layout_width="0dp"
+        android:layout_height="?actionBarSize"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginVertical="@dimen/_5sdp"
+        android:background="@drawable/bg_tag"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtTagName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/topView"
+        app:layout_constraintEnd_toStartOf="@id/icEdit"
+        android:paddingHorizontal="@dimen/_15sdp"
+        android:fontFamily="@font/roboto_regular"
+        app:layout_constraintBottom_toBottomOf="@id/topView"
+        app:layout_constraintStart_toStartOf="@id/topView"
+        android:text="Personal"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/txtTagName"
+        app:layout_constraintBottom_toBottomOf="@id/txtTagName"
+        app:layout_constraintStart_toEndOf="@id/txtTagName"
+        app:srcCompat="@drawable/ic_edit"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        app:layout_constraintEnd_toStartOf="@id/icDelete"
+        android:id="@+id/icEdit"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_15sdp"
+        app:layout_constraintTop_toTopOf="@id/txtTagName"
+        app:layout_constraintBottom_toBottomOf="@id/txtTagName"
+        app:layout_constraintStart_toEndOf="@id/icEdit"
+        app:layout_constraintEnd_toEndOf="@id/topView"
+        app:srcCompat="@drawable/ic_delete"
+        android:id="@+id/icDelete"/>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

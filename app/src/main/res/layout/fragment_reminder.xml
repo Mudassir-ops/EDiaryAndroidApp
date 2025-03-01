@@ -1,0 +1,159 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/app_screen"
+    tools:context="com.example.neweasydairy.fragments.reminderFragment.ReminderFragment">
+
+    <View
+        android:id="@+id/topView"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_15sdp"
+        android:tint="@color/white"
+        app:layout_constraintBottom_toBottomOf="@id/topView"
+        app:layout_constraintStart_toStartOf="@id/topView"
+        app:layout_constraintTop_toTopOf="@id/topView"
+        app:srcCompat="@drawable/ic_back" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtReminderIntervals"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_semibold"
+        android:gravity="center"
+        android:text="Reminder Intervals"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_18sdp"
+        app:layout_constraintBottom_toBottomOf="@id/icBack"
+        app:layout_constraintEnd_toEndOf="@id/topView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/icBack" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_tags"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topView">
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtReminder"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_18sdp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:fontFamily="@font/roboto_semibold"
+            android:gravity="start"
+            android:text="Reminders"
+            android:textSize="@dimen/_15sdp"
+            app:layout_constraintEnd_toStartOf="@id/icSwitchReminder"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.8" />
+
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/icSwitchReminder"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginEnd="@dimen/_10sdp"
+            app:layout_constraintStart_toEndOf="@id/txtReminder"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/txtReminder"
+            app:layout_constraintBottom_toBottomOf="@id/txtReminder"
+            app:srcCompat="@drawable/ic_switch_off"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/reminderRecyclerView"
+            android:layout_width="0dp"
+            android:visibility="gone"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_reminder"
+            app:layout_constraintStart_toStartOf="@id/txtReminder"
+            app:layout_constraintEnd_toEndOf="@id/icSwitchReminder"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@id/txtAddNew"
+            app:layout_constraintTop_toBottomOf="@id/txtReminder"/>
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtAddNew"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_18sdp"
+            android:fontFamily="@font/roboto_regular"
+            android:gravity="center"
+            android:drawableStart="@drawable/ic_add_new"
+            android:text="Add New"
+            android:visibility="gone"
+            android:drawableTint="@color/app_color"
+            android:textColor="@color/app_color"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/reminderRecyclerView"/>
+
+
+        <View
+            android:id="@+id/viewReminderAutoText"
+            android:layout_width="0dp"
+            android:layout_marginTop="@dimen/_18sdp"
+            android:layout_height="?actionBarSize"
+            android:background="@drawable/bg_permission"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtAddNew"
+            app:layout_constraintWidth_percent="0.9" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/icCamera"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="@dimen/_10sdp"
+            app:layout_constraintEnd_toStartOf="@id/txtReminderAutoText"
+            app:layout_constraintTop_toTopOf="@id/viewReminderAutoText"
+            app:layout_constraintStart_toStartOf="@id/viewReminderAutoText"
+            app:layout_constraintBottom_toBottomOf="@id/viewReminderAutoText"
+            app:srcCompat="@drawable/ic_reminder"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtReminderAutoText"
+            android:layout_width="0dp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
+            android:textSize="@dimen/_15sdp"
+            app:layout_constraintEnd_toStartOf="@id/txtAuto"
+            app:layout_constraintTop_toTopOf="@id/viewReminderAutoText"
+            app:layout_constraintBottom_toBottomOf="@id/viewReminderAutoText"
+            app:layout_constraintStart_toEndOf="@id/icCamera"
+            android:text="Reminder Text" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtAuto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Auto"
+            android:maxLength="20"
+            app:layout_constraintStart_toEndOf="@id/txtReminderAutoText"
+            android:fontFamily="@font/roboto_regular"
+            android:layout_marginEnd="@dimen/_10sdp"
+            app:layout_constraintTop_toTopOf="@id/viewReminderAutoText"
+            app:layout_constraintEnd_toEndOf="@id/viewReminderAutoText"
+            app:layout_constraintBottom_toBottomOf="@id/viewReminderAutoText"
+            app:srcCompat="@drawable/ic_switch_off"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

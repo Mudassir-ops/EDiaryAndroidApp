@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <View
+        android:id="@+id/topView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.85" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtFeeling"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="How You Feeling Today?"
+        android:fontFamily="@font/roboto_regular"
+        app:layout_constraintTop_toTopOf="@id/topView"
+        app:layout_constraintStart_toStartOf="@id/topView"
+        app:layout_constraintEnd_toEndOf="@id/topView"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:layout_margin="@dimen/_10sdp"
+        android:textSize="@dimen/_14sdp"/>
+
+
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icEmojiOne"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_emoji_1"
+        android:layout_marginVertical="@dimen/_14sdp"
+        app:layout_constraintEnd_toStartOf="@id/icEmojiTwo"
+        app:layout_constraintTop_toBottomOf="@id/txtFeeling"
+        app:layout_constraintStart_toStartOf="@id/topView"
+        app:layout_constraintBottom_toTopOf="@id/icEmojiFive"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icEmojiTwo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_emoji_two"
+        app:layout_constraintEnd_toStartOf="@id/icEmojiThree"
+        app:layout_constraintTop_toTopOf="@id/icEmojiOne"
+        app:layout_constraintStart_toEndOf="@id/icEmojiOne"
+        app:layout_constraintBottom_toBottomOf="@id/icEmojiOne"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icEmojiThree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_emoji_three"
+        app:layout_constraintEnd_toStartOf="@id/icEmojiFour"
+        app:layout_constraintTop_toTopOf="@id/icEmojiOne"
+        app:layout_constraintStart_toEndOf="@id/icEmojiTwo"
+        app:layout_constraintBottom_toBottomOf="@id/icEmojiOne"/>
+
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icEmojiFour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_emoji_four"
+        app:layout_constraintEnd_toEndOf="@id/topView"
+        app:layout_constraintTop_toTopOf="@id/icEmojiOne"
+        app:layout_constraintStart_toEndOf="@id/icEmojiThree"
+        app:layout_constraintBottom_toBottomOf="@id/icEmojiOne"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icEmojiFive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_emoji_five_new"
+        android:layout_marginVertical="@dimen/_10sdp"
+        app:layout_constraintEnd_toEndOf="@id/icEmojiOne"
+        app:layout_constraintStart_toStartOf="@id/icEmojiOne"
+        app:layout_constraintBottom_toBottomOf="@id/topView"
+        app:layout_constraintTop_toBottomOf="@id/icEmojiOne"/>
+
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icEmojiSix"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_emoji_six_new"
+        app:layout_constraintEnd_toEndOf="@id/icEmojiTwo"
+        app:layout_constraintTop_toTopOf="@id/icEmojiFive"
+        app:layout_constraintBottom_toBottomOf="@id/icEmojiFive"
+        app:layout_constraintStart_toStartOf="@id/icEmojiTwo"
+        />
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

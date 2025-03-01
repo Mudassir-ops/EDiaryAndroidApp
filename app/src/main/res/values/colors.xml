@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="light_white">#E6FFFFFF</color>
+    <color name="white_gray_color">#E6D5CFCF</color>
+    <color name="blue_color">#42ABD0</color>
+    <color name="blue_color_50">#80D1D5F8</color>
+    <color name="app_color">#42ABD0</color>
+    <color name="ic_color">#475569</color>
+    <color name="gray_color">#D0D5DD</color>
+    <color name="text_gray_color">#475569</color>
+    <color name="edit_text_color">#F5F5F5</color>
+    <color name="stroke_color">#D0D5DD</color>
+    <color name="bg_pin">#F5F5F5</color>
+    <color name="color_selected">#42ABD0</color>
+    <color name="color_unselected">#FF000000</color>
+    <color name="nav_item_background">#DCD6D4</color>
+    <color name="bg_drawer">#FFFFFF</color>
+    <color name="bg_bottom_view_color">#EBF5FA</color>
+    <color name="red_color">#FF3B30</color>
+    <color name="emoji_color_one">#FF8D95</color>
+    <color name="emoji_color_two">#FFAC81</color>
+    <color name="emoji_color_three">#AADAF0</color>
+    <color name="emoji_color_four">#A29DFB</color>
+    <color name="emoji_color_five">#FFDE8B</color>
+    <color name="emoji_color_six">#5EE3A9</color>
+</resources>

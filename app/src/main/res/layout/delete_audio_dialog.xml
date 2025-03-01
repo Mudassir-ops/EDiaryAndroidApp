@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingVertical="@dimen/_20sdp"
+    android:layout_margin="@dimen/_5sdp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <View
+        android:id="@+id/topView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.85" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtDeleteAudio"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Delete Audio?"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:textStyle="bold"
+        android:fontFamily="@font/roboto_regular"
+        app:layout_constraintBottom_toTopOf="@id/txtDescription"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_12sdp"
+        app:layout_constraintTop_toTopOf="@id/topView"
+        app:layout_constraintStart_toStartOf="@id/topView"
+        app:layout_constraintEnd_toEndOf="@id/topView"/>
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Are you sure you want to permanently delete saved audio? This action cannot be undone and voice audio will be lost"
+        android:textSize="@dimen/_10sdp"
+        android:fontFamily="@font/roboto_regular"
+        android:layout_marginVertical="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        app:layout_constraintBottom_toTopOf="@id/txtCancel"
+        app:layout_constraintTop_toBottomOf="@id/txtDeleteAudio"
+        app:layout_constraintStart_toStartOf="@id/txtDeleteAudio"
+        app:layout_constraintEnd_toEndOf="@id/topView"/>
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:paddingVertical="@dimen/_12sdp"
+        android:layout_marginEnd="@dimen/_12sdp"
+        android:fontFamily="@font/roboto_regular"
+        android:textSize="@dimen/_12sdp"
+        app:layout_constraintBottom_toBottomOf="@id/topView"
+        app:layout_constraintEnd_toStartOf="@id/txtConfirm"
+        app:layout_constraintTop_toBottomOf="@id/txtDescription" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtConfirm"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="Confirm, Delete"
+        android:textSize="@dimen/_12sdp"
+        android:fontFamily="@font/roboto_regular"
+        android:gravity="center"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:textColor="@color/red_color"
+        app:layout_constraintBottom_toBottomOf="@id/txtCancel"
+        app:layout_constraintEnd_toEndOf="@id/topView"
+        app:layout_constraintTop_toTopOf="@id/txtCancel" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
