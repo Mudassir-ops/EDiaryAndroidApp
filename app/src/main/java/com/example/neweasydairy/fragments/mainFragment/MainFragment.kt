@@ -1,16 +1,12 @@
 package com.example.neweasydairy.fragments.mainFragment
 
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -32,23 +28,20 @@ import com.example.neweasydairy.fragments.profileFragment.ProfileAdapter
 import com.example.neweasydairy.fragments.profileFragment.ProfileViewModel
 import com.example.neweasydairy.utilis.feedBackWithEmail
 import com.example.neweasydairy.utilis.privacyPolicyUrl
-import com.example.neweasydairy.utilis.saveImageToSpecificFolder
 import com.example.neweasydairy.utilis.shareApp
-import com.example.neweasydairy.utilis.toast
 import dagger.hilt.android.AndroidEntryPoint
 import jakarta.inject.Inject
-import java.io.File
 
 @AndroidEntryPoint
 class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding
     var exitDialog: ExitDialog? = null
-    private var logoutDialog:LogoutDialog?=null
-    private var deleteAccountDialog:DeleteAccountDialog?=null
+    private var logoutDialog: LogoutDialog? = null
+    private var deleteAccountDialog: DeleteAccountDialog? = null
     private var adapter: ProfileAdapter? = null
     private val viewModel: ProfileViewModel by viewModels()
-    private val editNameViewModel:EditNameViewModel by activityViewModels()
+    private val editNameViewModel: EditNameViewModel by activityViewModels()
 
     @Inject
     lateinit var languageRepository: LanguageRepository
@@ -56,49 +49,58 @@ class MainFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        exitDialog = ExitDialog(activity?:return)
-        logoutDialog = LogoutDialog(activity?:return)
-        deleteAccountDialog = DeleteAccountDialog(activity?:return)
+        exitDialog = ExitDialog(activity ?: return)
+        logoutDialog = LogoutDialog(activity ?: return)
+        deleteAccountDialog = DeleteAccountDialog(activity ?: return)
         adapter = ProfileAdapter(
-            context= context?:return,
-            profileList =  viewModel.getProfileList(),
-            onItemSelected =  { itemSelected->
-                when(itemSelected){
-                    0->{
-                       binding?.mainDrawerLayout?.closeDrawer(GravityCompat.START)
-                        if (findNavController().currentDestination?.id == R.id.mainFragment){
+            context = context ?: return,
+            profileList = viewModel.getProfileList(),
+            onItemSelected = { itemSelected ->
+                when (itemSelected) {
+                    0 -> {
+                        binding?.mainDrawerLayout?.closeDrawer(GravityCompat.START)
+                        if (findNavController().currentDestination?.id == R.id.mainFragment) {
                             findNavController().navigate(R.id.action_mainFragment_to_tagsFragment)
                         }
                     }
-                    1->{
+
+                    1 -> {
                         binding?.mainDrawerLayout?.closeDrawer(GravityCompat.START)
-                        if (findNavController().currentDestination?.id == R.id.mainFragment){
+                        if (findNavController().currentDestination?.id == R.id.mainFragment) {
                             findNavController().navigate(R.id.action_mainFragment_to_reminderFragment)
                         }
                     }
-                    2->{
+
+                    2 -> {
                         binding?.mainDrawerLayout?.closeDrawer(GravityCompat.START)
-                        if (findNavController().currentDestination?.id == R.id.mainFragment){
+                        if (findNavController().currentDestination?.id == R.id.mainFragment) {
                             findNavController().navigate(R.id.action_mainFragment_to_changePinFragment)
                         }
                     }
-                    3->{
+
+                    3 -> {
                         this.activity?.shareApp()
                         binding?.mainDrawerLayout?.closeDrawer(GravityCompat.START)
                     }
-                    4->{
-                        context?.feedBackWithEmail(title = "Feedback", message = "Any Feedback", emailId = "saqibrehman503@gmail.com")
+
+                    4 -> {
+                        context?.feedBackWithEmail(
+                            title = "Feedback",
+                            message = "Any Feedback",
+                            emailId = "Cisco7865@gmail.com"
+                        )
                         binding?.mainDrawerLayout?.closeDrawer(GravityCompat.START)
 
                     }
-                    5->{
+
+                    5 -> {
                         activity?.privacyPolicyUrl()
                         binding?.mainDrawerLayout?.closeDrawer(GravityCompat.START)
 
                     }
 
-                    else->{
-                        Log.e("profile", "onCreate: else", )
+                    else -> {
+                        Log.e("profile", "onCreate: else")
                     }
                 }
 
@@ -123,7 +125,8 @@ class MainFragment : Fragment() {
                     if (mainDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                         mainDrawerLayout.closeDrawer(GravityCompat.START)
                     } else {
-                        val currentFragment = childFragmentManager.findFragmentById(R.id.framelayout)
+                        val currentFragment =
+                            childFragmentManager.findFragmentById(R.id.framelayout)
                         if (currentFragment !is HomeFragment) {
                             replaceFragment(HomeFragment())
                         } else {
@@ -159,7 +162,7 @@ class MainFragment : Fragment() {
         binding?.apply {
             setUpHeaderLayout()
             drawerLayout.txtEdit.setOnClickListener {
-                if (findNavController().currentDestination?.id == R.id.mainFragment){
+                if (findNavController().currentDestination?.id == R.id.mainFragment) {
                     findNavController().navigate(R.id.action_mainFragment_to_editNameFragment)
                 }
 
@@ -175,30 +178,34 @@ class MainFragment : Fragment() {
         binding?.apply {
             bottomNavigation.setOnItemSelectedListener { item ->
                 when (item.itemId) {
-                    R.id.home ->{
+                    R.id.home -> {
                         replaceFragment(HomeFragment())
                         binding?.txtHome?.text = "Home"
                     }
+
                     R.id.library -> {
                         replaceFragment(LibraryFragment())
                         binding?.txtHome?.text = "Library"
                     }
-                    R.id.calendar ->{
+
+                    R.id.calendar -> {
                         replaceFragment(CalendarFragment())
                         binding?.txtHome?.text = "Calendar"
                     }
+
                     else -> false
                 }
                 true
             }
 
             icNotification.setOnClickListener {
-                if (findNavController().currentDestination?.id == R.id.mainFragment){
+                if (findNavController().currentDestination?.id == R.id.mainFragment) {
                     findNavController().navigate(R.id.action_mainFragment_to_reminderFragment)
                 }
             }
         }
     }
+
     private fun observerViewModel() {
         viewModel.profileList.observe(viewLifecycleOwner) { profileList ->
             if (!profileList.isNullOrEmpty()) {
@@ -217,7 +224,6 @@ class MainFragment : Fragment() {
             .commit()
         return true
     }
-
 
 
     override fun onResume() {

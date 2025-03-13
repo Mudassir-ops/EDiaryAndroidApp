@@ -11,11 +11,7 @@ class ProfileAdapter(
     private val context: Context,
     private var profileList: List<ProfileDataModel>,
     private val onItemSelected: (Int) -> Unit
-
-
 ):RecyclerView.Adapter<ProfileAdapter.ViewHolder>() {
-    private var selectedPosition = 0
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = DrawerItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -29,13 +25,6 @@ class ProfileAdapter(
 
         holder.itemView.setOnClickListener {
             onItemSelected(position)
-//            if (selectedPosition != position) {
-//                val previousSelectedPosition = selectedPosition
-//                selectedPosition = position
-//                notifyItemChanged(previousSelectedPosition)
-//                notifyItemChanged(selectedPosition)
-//                onItemSelected(position)
-//            }
         }
     }
 

@@ -63,7 +63,6 @@ class EditNameFragment : Fragment() {
 
         pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             if (uri != null) {
-                Log.d("EditNameFragment", "Selected image URI: $uri")
                 val folderName = "ProfileImages"
                 val fileName = "profile_image_${System.currentTimeMillis()}.jpg"
                 val savedPath = requireContext().saveImageToSpecificFolder(uri, folderName, fileName)
@@ -114,7 +113,7 @@ class EditNameFragment : Fragment() {
             }
         }
         btnDone.setOnClickListener{
-            val newName = edTextName.text.toString().trim()
+            val newName = edTextName.text.toString()
             if (newName.isNotEmpty()) {
                 viewModel.setUserName(newName)
                 findNavController().navigateUp()
