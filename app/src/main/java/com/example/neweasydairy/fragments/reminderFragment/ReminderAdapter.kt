@@ -11,7 +11,7 @@ import com.example.neweasydairy.utilis.Objects.DELETE_ACTION_REMINDER
 class ReminderAdapter(
     private var list: List<ReminderEntity>,
     private val context: Context,
-    private val onItemClick : (Pair<ReminderEntity,Int>)-> Unit
+    private val onItemClick : (ReminderEntity)-> Unit
 ): RecyclerView.Adapter<ReminderAdapter.ViewHolder>() {
 
 
@@ -28,7 +28,7 @@ class ReminderAdapter(
         val dataModel = list[position]
         holder.binding.txtReminderTime.text = dataModel.reminderTime
         holder.binding.icCross.setOnClickListener {
-            onItemClick.invoke(Pair(dataModel, DELETE_ACTION_REMINDER))
+            onItemClick.invoke(dataModel)
         }
 
     }
@@ -37,6 +37,13 @@ class ReminderAdapter(
 
     fun updateReminderList(newReminderList: List<ReminderEntity>) {
         list = newReminderList
+        notifyDataSetChanged()
+    }
+
+    fun removeItem(reminder: ReminderEntity) {
+        val updatedList = list.toMutableList()
+        updatedList.remove(reminder)
+        list = updatedList
         notifyDataSetChanged()
     }
 

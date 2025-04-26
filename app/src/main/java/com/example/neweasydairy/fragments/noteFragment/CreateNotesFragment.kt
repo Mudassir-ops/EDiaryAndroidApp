@@ -63,7 +63,7 @@ class CreateNotesFragment : Fragment(),
     private var saveVoiceDialog: SaveVoiceDialog? = null
     var textDialog: TextDialog? = null
     lateinit var imageAdapter: ImageAdapter
-    private var argument = ""
+    var argument = ""
     var backgroundDialog: ChangeBackground? = null
     var photoDialog: PhotoDialog? = null
     private lateinit var requestCameraPermission: ActivityResultLauncher<String>
@@ -105,6 +105,8 @@ class CreateNotesFragment : Fragment(),
         super.onViewCreated(view, savedInstanceState)
         argument = arguments?.getString(CHECK_NAVIGATION).orEmpty()
         note = arguments?.getParcelable(CLICKEDITEMDATA)
+
+        Log.d("note", "onViewCreated: ${note?.id}")
         selectedImages = arguments?.getParcelableArrayList("selectedAllImages") ?: arrayListOf()
         tagName = arguments?.getString("tagName")
         handleNavigationArguments()
@@ -172,7 +174,11 @@ class CreateNotesFragment : Fragment(),
                 }
             }
 
-            FROM_HOME_FRAGMENT -> note?.let { setupNoteData(it) }
+            FROM_HOME_FRAGMENT ->{
+                Log.d("saqibRehman", "Current TagName: FROM_HOME_FRAGMENT")
+
+                note?.let { setupNoteData(it) }
+            }
 
             FROM_TAG_FRAGMENT -> binding?.apply {
                 txtTitle.setText(viewModel.title)

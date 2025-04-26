@@ -31,12 +31,13 @@ class HomeFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        homeAdapter = HomeAdapter(emptyList(), onItemClick = { note->
+        homeAdapter = HomeAdapter(emptyList(),
+            onItemClick = { note->
             val bundle = Bundle()
             bundle.putString(CHECK_NAVIGATION,FROM_HOME_FRAGMENT)
             bundle.putParcelable(CLICKEDITEMDATA,note)
             findNavController().navigate(R.id.createNotesFragment,bundle)
-            Log.e("CheckItem", "Clicked Item id ${note}")
+            Log.e("CheckItem", "Clicked Item id $note")
         },
             onItemLongClick = {note->
                 val builder = AlertDialog.Builder(requireContext())

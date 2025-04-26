@@ -61,13 +61,16 @@ class ReminderFragment : Fragment() {
 
         adapter =
             ReminderAdapter(list = emptyList(), context = context ?: return, onItemClick = { pair ->
-                val reminderId = pair.first
-                val action = pair.second
-                when (action) {
-                    DELETE_ACTION_REMINDER -> {
-                        reminderViewModel.deleteReminderById(tagId = reminderId.id)
-                    }
-                }
+
+                adapter?.removeItem(pair)
+                reminderViewModel.deleteReminderById(tagId = pair.id)
+             //   val reminderId = pair.first
+            //    val action = pair.second
+//                when (action) {
+//                    DELETE_ACTION_REMINDER -> {
+//                        reminderViewModel.deleteReminderById(tagId = reminderId.id)
+//                    }
+//                }
             })
     }
 

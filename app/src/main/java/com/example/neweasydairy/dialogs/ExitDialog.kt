@@ -38,7 +38,7 @@ class ExitDialog(
                 binding.ratingBar.rating = 0F
                 when (rating.toInt()) {
                     in 1..3 -> {
-                       context.feedBackWithEmail(title = "Feedback", message = "Any Feedback", emailId = "saqibrehman503@gmail.com")
+                       context.feedBackWithEmail(title = "Feedback", message = "Any Feedback", emailId = "Cisco7865@gmail.com")
                         dismiss()
                     }
                     4, 5 -> {

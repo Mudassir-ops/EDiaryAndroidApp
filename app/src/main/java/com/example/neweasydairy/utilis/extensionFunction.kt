@@ -60,7 +60,7 @@ fun Activity.shareApp(){
             Intent.EXTRA_SUBJECT,"ChargingAnimation")
         var shareMessage = "\n Let me recommend you this application\n\n"
         shareMessage = """
-             ${shareMessage}https://play.google.com/store/apps/details?id= ${this.packageName}
+             ${shareMessage}https://play.google.com/store/apps/details?id=${this.packageName}
         """.trimIndent()
         sendIntent.putExtra(Intent.EXTRA_TEXT,shareMessage)
         this.startActivity(Intent.createChooser(sendIntent, "Choose one"))

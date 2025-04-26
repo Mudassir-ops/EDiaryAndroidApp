@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.easydiaryandjournalwithlock.R
 import com.example.easydiaryandjournalwithlock.databinding.FragmentCreateNotesBinding
+import com.example.neweasydairy.utilis.Objects.FROM_HOME_FRAGMENT
 import com.example.neweasydairy.utilis.toast
 import java.util.Date
 
@@ -64,11 +65,24 @@ fun FragmentCreateNotesBinding?.clickListener(context: Context, fragment: Create
             fragment.textDialog?.show()
         }
         txtSave.setOnClickListener {
-                insertData(notesFragment = fragment)
-                fragment.requireActivity().toast("Data Save Successfully")
-                if (fragment.findNavController().currentDestination?.id == R.id.createNotesFragment) {
-                    fragment.findNavController().navigate(R.id.action_createNotesFragment_to_mainFragment)
-                }
+
+                when(fragment.argument){
+                    FROM_HOME_FRAGMENT->{
+                        Log.d("saqibRehman", "txtSave: FROM_HOME_FRAGMENT")
+                    }
+                    else->{
+                        Log.d("saqibRehman", "txtSave: else")
+
+                        insertData(notesFragment = fragment)
+                        fragment.requireActivity().toast("Data Save Successfully")
+                        if (fragment.findNavController().currentDestination?.id == R.id.createNotesFragment) {
+                            fragment.findNavController().navigate(R.id.action_createNotesFragment_to_mainFragment)
+                        }
+                    }
+
+            }
+
+
         }
 
     }
@@ -121,10 +135,7 @@ fun insertData(notesFragment: CreateNotesFragment){
     val currentTime = Date()
     val textSize = notesFragment.binding?.txtTitle?.textSize?.toInt() ?: 0
     val textColor = notesFragment.binding?.txtTitle?.currentTextColor ?: 0
-    Log.e("textSize", "insertData: textSize $textColor", )
-
     val emojiName = notesFragment.binding?.icEmoji?.contentDescription
-    Log.e("emojiName", "insertData: emojiName $emojiName", )
 
     var textAlignment = 0
     when (notesFragment.binding?.txtTitle?.gravity) {

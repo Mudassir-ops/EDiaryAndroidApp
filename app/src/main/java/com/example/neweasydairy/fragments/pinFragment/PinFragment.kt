@@ -20,7 +20,6 @@ class PinFragment : Fragment() {
 
     private var _binding: FragmentPinBinding? = null
     private val binding get() = _binding!!
-
     private var isConfirmingPin = false
     private var firstPinEntry: String? = null
     private var savedPin: String? = null
@@ -47,6 +46,8 @@ class PinFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         savedPin = getPinFromSharedPreferences()
+        binding.btnSetPin.text = if (savedPin.isNullOrEmpty()) "Setup PIN" else "Enter PIN"
+
         binding.edTextOne.requestFocus()
         showSoftKeyboard(binding.edTextOne)
 
@@ -59,9 +60,11 @@ class PinFragment : Fragment() {
             if (pin.length == 4) {
                 if (savedPin.isNullOrEmpty()) {
                     // First time PIN setup flow
+                    Log.e("checkPin", "first time pin")
                     handleFirstTimePinSetup(pin)
                 } else {
                     // Existing PIN validation flow
+                    Log.e("checkPin", "second time pin")
                     if (pin == savedPin) {
                         navigateToWelcomeScreen()
                     } else {
