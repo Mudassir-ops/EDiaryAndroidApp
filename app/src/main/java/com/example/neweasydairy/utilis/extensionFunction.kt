@@ -14,6 +14,7 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
@@ -21,6 +22,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.easydiaryandjournalwithlock.R
@@ -296,8 +298,10 @@ fun Fragment.showDatePickerWithTime(
     calendar: Calendar,
     onDateTimeSelected: (String, String) -> Unit
 ) {
+    val contextThemeWrapper = ContextThemeWrapper(requireContext(), R.style.TimePickerDialogTheme)
+
     DatePickerDialog(
-        requireContext(),
+       contextThemeWrapper,
         { _, year, monthOfYear, dayOfMonth ->
             calendar.set(year, monthOfYear, dayOfMonth)
             val formattedDate = calendar.time.toFormattedString("dd/MM/yyyy")
@@ -312,8 +316,10 @@ fun Fragment.showDatePickerWithTime(
 }
 
 fun Fragment.showTimePicker(calendar: Calendar, onTimeSelected: (String) -> Unit) {
+    val contextThemeWrapper = ContextThemeWrapper(requireContext(), R.style.TimePickerDialogTheme)
+
     TimePickerDialog(
-        requireContext(),
+        contextThemeWrapper,
         { _, hourOfDay, minute ->
             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
             calendar.set(Calendar.MINUTE, minute)

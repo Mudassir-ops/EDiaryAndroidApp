@@ -7,8 +7,10 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.easydiaryandjournalwithlock.R
+import com.example.neweasydairy.data.NotepadEntity
 
-class ImageListAdapter(private val images: List<String>) :
+class ImageListAdapter(private val images: List<String>,
+                       private val onImageClick: (String) -> Unit) :
     RecyclerView.Adapter<ImageListAdapter.ImageViewHolder>() {
 
     class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -26,6 +28,9 @@ class ImageListAdapter(private val images: List<String>) :
         Glide.with(holder.imageView.context)
             .load(imagePath)
             .into(holder.imageView)
+        holder.itemView.setOnClickListener {
+            onImageClick(imagePath)
+        }
     }
 
     override fun getItemCount(): Int = images.size

@@ -204,7 +204,11 @@
         android:id="@+id/libraryFragment"
         android:name="com.example.neweasydairy.fragments.libraryFragment.LibraryFragment"
         android:label="fragment_library"
-        tools:layout="@layout/fragment_library" />
+        tools:layout="@layout/fragment_library" >
+        <action
+            android:id="@+id/action_libraryFragment_to_imageViewFragment"
+            app:destination="@id/imageViewFragment" />
+    </fragment>
     <fragment
         android:id="@+id/cropFragment"
         android:name="com.example.neweasydairy.fragments.cropFragment.CropFragment"
@@ -243,4 +247,9 @@
         android:name="com.example.neweasydairy.fragments.reminderFragment.ReminderFragment"
         android:label="fragment_reminder"
         tools:layout="@layout/fragment_reminder" />
+    <fragment
+        android:id="@+id/imageViewFragment"
+        android:name="com.example.neweasydairy.fragments.imageViewFragment.ImageViewFragment"
+        android:label="fragment_image_view"
+        tools:layout="@layout/fragment_image_view" />
 </navigation>

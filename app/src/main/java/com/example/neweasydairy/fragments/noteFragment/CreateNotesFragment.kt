@@ -97,7 +97,9 @@ class CreateNotesFragment : Fragment(),
         imageAdapter = ImageAdapter(
             imageList = selectedImages,
             context ?: return,
-            onImageClick = {}
+            onImageClick = {(imageData, position) ->
+                Log.e("imageCLick", "onCreate: imageClick: $imageData, position: $position", )
+            }
         )
     }
 
@@ -201,6 +203,7 @@ class CreateNotesFragment : Fragment(),
 
     private fun setupNoteData(note: NotepadEntity) {
         binding?.apply {
+            viewModel.currentNoteId = note.id
             txtTitle.setText(note.noteTitle)
             txtEdDescription.setText(note.noteDescription)
             binding?.icEmoji?.setEmoji(note.icEmojiName, context)

@@ -15,4 +15,40 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">16dp</item>
     </style>
+
+    <style name="MyDatePickerDialogTheme" parent="Theme.MaterialComponents.Light.Dialog">
+        <item name="colorPrimary">@color/app_color</item>
+        <item name="colorPrimaryVariant">@color/app_color</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="android:textColorPrimary">@color/app_color</item>
+    </style>
+
+    <style name="CustomDatePickerDialogTheme" parent="Theme.MaterialComponents.Light.Dialog">
+        <!-- Header background color -->
+        <item name="colorPrimary">@color/app_color</item>
+
+        <!-- Header text color -->
+        <item name="colorOnPrimary">@color/black</item>
+
+        <!-- Date picker text colors -->
+        <item name="android:textColorPrimary">@color/app_color</item>
+
+        <!-- Optional: control buttons -->
+        <item name="buttonBarPositiveButtonStyle">@style/CustomPositiveButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/CustomNegativeButton</item>
+    </style>
+
+    <style name="CustomPositiveButton" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="CustomNegativeButton" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="TimePickerDialogTheme" parent="Theme.MaterialComponents.Light.Dialog">
+        <item name="colorPrimary">@color/app_color</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorAccent">@color/app_color</item> <!-- optional -->
+    </style>
 </resources>

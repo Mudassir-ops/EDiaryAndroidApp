@@ -65,26 +65,12 @@ fun FragmentCreateNotesBinding?.clickListener(context: Context, fragment: Create
             fragment.textDialog?.show()
         }
         txtSave.setOnClickListener {
-
-                when(fragment.argument){
-                    FROM_HOME_FRAGMENT->{
-                        Log.d("saqibRehman", "txtSave: FROM_HOME_FRAGMENT")
-                    }
-                    else->{
-                        Log.d("saqibRehman", "txtSave: else")
-
                         insertData(notesFragment = fragment)
                         fragment.requireActivity().toast("Data Save Successfully")
                         if (fragment.findNavController().currentDestination?.id == R.id.createNotesFragment) {
                             fragment.findNavController().navigate(R.id.action_createNotesFragment_to_mainFragment)
                         }
                     }
-
-            }
-
-
-        }
-
     }
 }
 
@@ -131,12 +117,10 @@ private fun redirectToSystemSettings(context: Context) {
 fun insertData(notesFragment: CreateNotesFragment){
     val description = notesFragment.binding?.txtEdDescription?.text.toString()
     val title = notesFragment.binding?.txtTitle?.text.toString()
-
     val currentTime = Date()
     val textSize = notesFragment.binding?.txtTitle?.textSize?.toInt() ?: 0
     val textColor = notesFragment.binding?.txtTitle?.currentTextColor ?: 0
     val emojiName = notesFragment.binding?.icEmoji?.contentDescription
-
     var textAlignment = 0
     when (notesFragment.binding?.txtTitle?.gravity) {
         8388661 -> {
@@ -149,11 +133,25 @@ fun insertData(notesFragment: CreateNotesFragment){
             textAlignment = 0
         }
     }
-
-
-
     notesFragment.binding?.apply {
-
+        val noteId = notesFragment.viewModel.currentNoteId
+        if (noteId != null) {
+            notesFragment.viewModel.updateNoteData(
+                id = noteId,
+                title = title,
+                description = description,
+                color = notesFragment.backgroundValue,
+                imageFiles = notesFragment.selectedImages,
+                timeStamp = currentTime.time,
+                fontFamily = notesFragment.selectedFontFamily,
+                icEmojiName = emojiName.toString(),
+                txtHeadingName = textSize,
+                txtTextAlign = textAlignment,
+                txtColorCode = textColor,
+                backgroundValue = notesFragment.backgroundValue,
+                tagsText = notesFragment.viewModel.tagList.toString()
+            )
+        }else{
             notesFragment.viewModel.insertNoteData(
                 title = title,
                 description = description,
@@ -168,7 +166,7 @@ fun insertData(notesFragment: CreateNotesFragment){
                 backgroundValue = notesFragment.backgroundValue,
                 tagsText = notesFragment.viewModel.tagList.toString()
             )
-
+        }
     }
 }
 

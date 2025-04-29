@@ -17,6 +17,7 @@ class CreateNoteViewModel @Inject constructor(
     private val application: Application,
     private val createNoteRepository: CreateNoteRepository,
 ) : ViewModel() {
+    var currentNoteId: Int? = null
     val tagList = mutableListOf<String>()
     var title: String? = null
     var description: String? = null
@@ -74,6 +75,41 @@ class CreateNoteViewModel @Inject constructor(
                 tagsText = tagsText)
 
             createNoteRepository.insertNoteData(noteEntity)
+        }
+    }
+
+    fun updateNoteData(
+        id: Int,
+        title: String,
+        description: String,
+        color: Int,
+        imageFiles: ArrayList<ImageDataModelGallery>,
+        timeStamp: Long,
+        fontFamily: String,
+        icEmojiName: String,
+        txtHeadingName: Int,
+        txtTextAlign: Int,
+        txtColorCode: Int,
+        backgroundValue: Int,
+        tagsText: String
+    ) {
+        viewModelScope.launch {
+            val updatedNote = NotepadEntity(
+                id = id,
+                noteTitle = title,
+                noteDescription = description,
+                color = color,
+                imageList = imageFiles,
+                timestamp = timeStamp,
+                fontFamilyName = fontFamily,
+                icEmojiName = icEmojiName,
+                txtHeadingName = txtHeadingName,
+                txtTextAlign = txtTextAlign,
+                textColorCode = txtColorCode,
+                backgroundValue = backgroundValue,
+                tagsText = tagsText
+            )
+            createNoteRepository.updateNoteData(updatedNote)
         }
     }
 

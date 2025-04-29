@@ -1,15 +1,20 @@
 package com.example.neweasydairy.fragments.libraryFragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.easydiaryandjournalwithlock.R
 import com.example.easydiaryandjournalwithlock.databinding.FragmentLibraryBinding
 import com.example.neweasydairy.fragments.homeFragment.HomeViewModel
+import com.example.neweasydairy.fragments.imageViewFragment.ImageViewFragment
+import com.example.neweasydairy.utilis.Objects.CHECK_NAVIGATION
+import com.example.neweasydairy.utilis.Objects.FROM_CROP_FRAGMENT
 
 class LibraryFragment : Fragment() {
     private var _binding: FragmentLibraryBinding? = null
@@ -31,7 +36,13 @@ class LibraryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         homeViewModel.allNotes.observe(viewLifecycleOwner) { notes ->
             binding?.libraryRecyclerView?.layoutManager = LinearLayoutManager(requireContext())
-            binding?.libraryRecyclerView?.adapter = LibraryAdapter(notes)
+            binding?.libraryRecyclerView?.adapter = LibraryAdapter(notes) { imagePath,date ->
+                val bundle = Bundle()
+                bundle.putString("image_path", imagePath)
+                bundle.putString("date", date)
+                findNavController().navigate(R.id.imageViewFragment,bundle)
+                Log.d("ImageViewFragment", "Image send: $imagePath, date:$date")
+            }
         }
     }
     override fun onDestroyView() {

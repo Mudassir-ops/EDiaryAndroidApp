@@ -8,8 +8,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.easydiaryandjournalwithlock.R
 import com.example.neweasydairy.data.NotepadEntity
+import com.example.neweasydairy.fragments.noteFragment.imageFunctionality.ImageDataModelGallery
 
-class LibraryAdapter(private val notes: List<NotepadEntity>) :
+class LibraryAdapter(
+    private val notes: List<NotepadEntity>,
+    private val onImageClick: (String,String) -> Unit) :
     RecyclerView.Adapter<LibraryAdapter.LibraryViewHolder>() {
 
     class LibraryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -35,9 +38,11 @@ class LibraryAdapter(private val notes: List<NotepadEntity>) :
             holder.tvDate.text = note.timestamp.toDateString()
         }
 
-       // holder.tvDate.text = note.timestamp.toDateString()
         holder.rvImages.layoutManager = LinearLayoutManager(holder.itemView.context, LinearLayoutManager.HORIZONTAL, false)
-        holder.rvImages.adapter = ImageListAdapter(images)
+        holder.rvImages.adapter = ImageListAdapter(images) { imagePath ->
+            val formattedDate = note.timestamp.toDateString()
+            onImageClick(imagePath, formattedDate)
+        }
     }
 
     override fun getItemCount(): Int = notes.size
