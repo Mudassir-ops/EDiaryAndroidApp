@@ -55,6 +55,7 @@ class ImageAdapter(
                                 "${context.packageName}.provider",
                                 file
                             )
+
                             Log.d("ImageAdapter", "URI: $uri")
 
                             val intent = Intent(Intent.ACTION_SEND)
