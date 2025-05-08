@@ -3,7 +3,6 @@ package com.example.neweasydairy.fragments.reminderFragment
 import android.Manifest
 import android.app.Activity
 import android.app.AlarmManager
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -15,10 +14,9 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.example.easydiaryandjournalwithlock.R
 import com.example.easydiaryandjournalwithlock.databinding.FragmentReminderBinding
-import com.example.neweasydairy.activity.MainActivity
+import com.example.neweasydairy.alarm.AlarmSchedulerImpl
 import com.example.neweasydairy.data.ReminderDao
 import com.example.neweasydairy.data.ReminderEntity
-import com.example.neweasydairy.receiver.ReminderReceiver
 import com.example.neweasydairy.utilis.gone
 import com.example.neweasydairy.utilis.showDatePickerWithTime
 import com.example.neweasydairy.utilis.toast
@@ -26,9 +24,13 @@ import com.example.neweasydairy.utilis.visible
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.Calendar
 
-fun FragmentReminderBinding?.clickListener(activity: Activity, reminderFragment: ReminderFragment,reminderDao: ReminderDao) {
+fun FragmentReminderBinding?.clickListener(
+    activity: Activity,
+    reminderFragment: ReminderFragment,
+    reminderDao: ReminderDao,
+    alarmSchedulerImpl: AlarmSchedulerImpl
+) {
     reminderFragment.binding?.apply {
         var isSwitchOn = false
         icSwitchReminder.setOnClickListener {
@@ -41,13 +43,23 @@ fun FragmentReminderBinding?.clickListener(activity: Activity, reminderFragment:
                 icSwitchReminder.setImageResource(R.drawable.ic_switch_off)
                 txtAddNew.gone()
                 reminderRecyclerView.gone()
-                cancelReminderAlarm(reminderFragment)
+
+                cancelReminderAlarm(alarmSchedulerImpl)
             }
         }
 
         txtAddNew.setOnClickListener {
-            if (ContextCompat.checkSelfPermission(activity, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-                setReminder(reminderFragment = reminderFragment, context = activity, reminderDao = reminderDao)
+            if (ContextCompat.checkSelfPermission(
+                    activity,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                setReminder(
+                    reminderFragment = reminderFragment,
+                    context = activity,
+                    reminderDao = reminderDao,
+                    alarmSchedulerImpl
+                )
             } else {
                 reminderFragment.requestNotificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
@@ -64,26 +76,38 @@ fun FragmentReminderBinding?.clickListener(activity: Activity, reminderFragment:
     }
 }
 
-fun setReminder(reminderFragment: ReminderFragment, context: Activity, reminderDao: ReminderDao) {
+fun setReminder(
+    reminderFragment: ReminderFragment,
+    context: Activity,
+    reminderDao: ReminderDao,
+    alarmSchedulerImpl: AlarmSchedulerImpl
+) {
     reminderFragment.showDatePickerWithTime(reminderFragment.calendar) { selectedDate, selectedTime ->
         val reminder = ReminderEntity(
             reminderDate = selectedDate,
             reminderTime = selectedTime,
-            description = "Custom reminder description"
+            description = "Custom reminder description",
+            scheduleAt = reminderFragment.calendar.timeInMillis
         )
         CoroutineScope(Dispatchers.IO).launch {
             reminderDao.insertReminder(reminder)
-            setReminderAlarm(reminderFragment, reminderFragment.calendar)
-
+            setReminderAlarm(
+                reminderFragment,
+                alarmSchedulerImpl,
+                reminder
+            )
         }
         context.toast("Reminder set for $selectedDate at $selectedTime")
     }
 }
 
-fun setReminderAlarm(reminderFragment: ReminderFragment, calendar: Calendar) {
+fun setReminderAlarm(
+    reminderFragment: ReminderFragment,
+    alarmSchedulerImpl: AlarmSchedulerImpl,
+    reminder: ReminderEntity
+) {
     val alarmManager =
         reminderFragment.requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
         val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
             data = Uri.fromParts("package", reminderFragment.requireContext().packageName, null)
@@ -91,36 +115,15 @@ fun setReminderAlarm(reminderFragment: ReminderFragment, calendar: Calendar) {
         reminderFragment.startActivity(intent)
         return
     }
-
-    val intent = Intent(reminderFragment.requireContext(), ReminderReceiver::class.java).apply {
-        putExtra("OPEN_FRAGMENT", "ReminderFragment")
-        putExtra("REMINDER_TITLE", reminderFragment.title)
-        putExtra("REMINDER_DESC", reminderFragment.description)
-
+    reminder.let {
+        alarmSchedulerImpl.schedule(it)
+        Log.d("Reminder", "Alarm set for: ${it.scheduleAt}")
     }
-
-    val pendingIntent = PendingIntent.getBroadcast(
-        reminderFragment.requireContext(),
-        0,
-        intent,
-        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-    )
-
-    alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
-    Log.d("Reminder", "Alarm set for: ${calendar.time}")
 }
 
-fun cancelReminderAlarm(reminderFragment: ReminderFragment) {
-    val alarmManager =
-        reminderFragment.requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
-    val intent = Intent(reminderFragment.requireContext(), MainActivity::class.java)
-    val pendingIntent = PendingIntent.getBroadcast(
-        reminderFragment.requireContext(),
-        0,
-        intent,
-        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-    )
-
-    alarmManager.cancel(pendingIntent)
+fun cancelReminderAlarm(
+    alarmSchedulerImpl: AlarmSchedulerImpl
+) {
+    //alarmSchedulerImpl.cancel()
     Log.d("Reminder", "Alarm canceled")
 }

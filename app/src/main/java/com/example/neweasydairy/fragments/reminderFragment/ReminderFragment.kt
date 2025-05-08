@@ -11,8 +11,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.easydiaryandjournalwithlock.databinding.FragmentReminderBinding
+import com.example.neweasydairy.alarm.AlarmSchedulerImpl
 import com.example.neweasydairy.data.ReminderDao
-import com.example.neweasydairy.utilis.Objects.DELETE_ACTION_REMINDER
 import com.example.neweasydairy.utilis.toast
 import dagger.hilt.android.AndroidEntryPoint
 import jakarta.inject.Inject
@@ -27,6 +27,8 @@ class ReminderFragment : Fragment() {
     lateinit var calendar: Calendar
     var reminderTextDialogBinding: ReminderDialog? = null
     private var adapter: ReminderAdapter? = null
+    private lateinit var alarmSchedulerImpl: AlarmSchedulerImpl
+
 
     var title = "Title"
     var description = "Description"
@@ -41,12 +43,17 @@ class ReminderFragment : Fragment() {
         requestNotificationPermission =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
                 if (isGranted) {
-                    setReminder(this, activity ?: return@registerForActivityResult, reminderDao)
+                    setReminder(
+                        this,
+                        activity ?: return@registerForActivityResult,
+                        reminderDao,
+                        alarmSchedulerImpl
+                    )
                 } else {
                     activity?.toast("Notification permission is required to set reminders.")
                 }
             }
-
+        alarmSchedulerImpl = AlarmSchedulerImpl(context?.applicationContext ?: return)
         reminderTextDialogBinding = ReminderDialog(
             activity = activity ?: return,
             lifecycleOwner = this,
@@ -64,8 +71,8 @@ class ReminderFragment : Fragment() {
 
                 adapter?.removeItem(pair)
                 reminderViewModel.deleteReminderById(tagId = pair.id)
-             //   val reminderId = pair.first
-            //    val action = pair.second
+                //   val reminderId = pair.first
+                //    val action = pair.second
 //                when (action) {
 //                    DELETE_ACTION_REMINDER -> {
 //                        reminderViewModel.deleteReminderById(tagId = reminderId.id)
@@ -89,7 +96,7 @@ class ReminderFragment : Fragment() {
             reminderViewModel.description.observe(viewLifecycleOwner) { description ->
                 txtAuto.text = description ?: "Auto"
             }
-            clickListener(activity ?: return, this@ReminderFragment, reminderDao)
+            clickListener(activity ?: return, this@ReminderFragment, reminderDao,alarmSchedulerImpl)
             observeViewModel()
         }
     }

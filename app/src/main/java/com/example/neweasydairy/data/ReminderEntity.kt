@@ -13,5 +13,6 @@ data class ReminderEntity(
     val id: Int = 0,
     val reminderDate: String,
     val reminderTime: String,
-    val description: String? = null
+    val description: String? = null,
+    val scheduleAt: Long
 ) : Parcelable

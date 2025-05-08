@@ -23,4 +23,7 @@
     <string name="one">One</string>
 
 
+    <string name="reminder">Reminders</string>
+    <string name="reminder_channel_desc">Description </string>
+
 </resources>
