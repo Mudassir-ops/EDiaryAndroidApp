@@ -14,6 +14,8 @@ import com.example.easydiaryandjournalwithlock.R
 import com.example.easydiaryandjournalwithlock.databinding.FragmentHomeBinding
 import com.example.easydiaryandjournalwithlock.databinding.FragmentPermissionBinding
 import com.example.neweasydairy.data.NotepadEntity
+import com.example.neweasydairy.dialogs.AudioDialog
+import com.example.neweasydairy.dialogs.RatingDialog
 import com.example.neweasydairy.utilis.Objects.CHECK_NAVIGATION
 import com.example.neweasydairy.utilis.Objects.CLICKEDITEMDATA
 import com.example.neweasydairy.utilis.Objects.FROM_HOME_FRAGMENT
@@ -28,9 +30,11 @@ class HomeFragment : Fragment() {
     lateinit var homeAdapter: HomeAdapter
     var isAscending = true
     var currentRotation = 0f
+    private var ratingDialog:RatingDialog?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ratingDialog = RatingDialog(activity?:return)
         homeAdapter = HomeAdapter(emptyList(),
             onItemClick = { note->
             val bundle = Bundle()
@@ -54,6 +58,7 @@ class HomeFragment : Fragment() {
                 builder.create().show()
             }
             )
+
     }
 
     override fun onCreateView(
@@ -84,6 +89,10 @@ class HomeFragment : Fragment() {
                     binding?.groupHome?.visibility=View.GONE
                     homeAdapter.updateList(notes)
                     binding?.homeRecyclerView?.adapter = homeAdapter
+                    if (notes.size == 1 && !homeViewModel.isRatingDialogShown()) {
+                        ratingDialog?.show()
+                        homeViewModel.setRatingDialogShown()
+                    }
                 } else {
                     binding?.groupHome?.visibility=View.VISIBLE
                 }

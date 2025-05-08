@@ -24,7 +24,9 @@ import android.widget.Toast
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import androidx.multidex.BuildConfig
 import com.example.easydiaryandjournalwithlock.R
 import java.io.File
 import java.io.FileOutputStream
@@ -241,7 +243,6 @@ fun Context?.formatDate(timestamp: Long): String {
 }
 
 fun Context?.monthlyFormatDate(timestamp: Long): String {
-    // Format the date to match "3 August, 2024"
     val sdf = SimpleDateFormat("d MMMM, yyyy", Locale.getDefault())
     return sdf.format(Date(timestamp))
 }
@@ -249,30 +250,6 @@ fun Context?.monthlyFormatDate(timestamp: Long): String {
 fun ImageView.loadImageFromResources(resourceId: Int) {
     this.setImageResource(resourceId)
 }
-
-
-
-
-fun TextView.checkTextViewGravity():Int {
-    val gravity = this.gravity
-
-    return when {
-        (gravity and Gravity.CENTER) == Gravity.CENTER -> {
-            1
-        }
-        (gravity and Gravity.START) == Gravity.START -> {
-            0
-        }
-        (gravity and Gravity.END) == Gravity.END -> {
-            2
-        }
-
-        else -> {
-            0
-        }
-    }
-}
-
 
 fun Context.saveImageToSpecificFolder(uri: Uri, folderName: String, fileName: String): String? {
     return try {
@@ -349,104 +326,20 @@ fun View.invisible() {
     visibility = View.INVISIBLE
 }
 
-fun RecyclerView.setDynamicSpanCount(minItemWidth: Int) {
-    val displayMetrics = context.resources.displayMetrics
-    val screenWidth = displayMetrics.widthPixels
-
-    val spanCount = (screenWidth / minItemWidth).coerceAtLeast(1)
-    this.layoutManager = GridLayoutManager(context, spanCount)
-}
-
-/*fun FlexboxLayout.addTags(
-    tagList: MutableList<String>, // MutableList for modifying the list
-    onTagClick: ((String) -> Unit)? = null
-) {
-    this.removeAllViews() // Clear all views from FlexboxLayout
-
-    for (tag in tagList) {
-        // Parent LinearLayout for each tag
-        val tagContainer = LinearLayout(this.context).apply {
-            orientation = LinearLayout.HORIZONTAL
-            setPadding(8, 8, 8, 8)
-            setBackgroundResource(R.drawable.bg_tag)
-            layoutParams = FlexboxLayout.LayoutParams(
-                FlexboxLayout.LayoutParams.WRAP_CONTENT,
-                FlexboxLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                marginEnd = 8
-                bottomMargin = 8
-            }
-            gravity = Gravity.CENTER_VERTICAL
-        }
-
-        val hashIcon = ImageView(this.context).apply {
-            setImageResource(R.drawable.ic_hash_small)
-            setPadding(8, 8, 4, 8)
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                gravity = Gravity.CENTER
-            }
-        }
-
-        val tagText = TextView(this.context).apply {
-            text = tag
-            setPadding(0, 8, 8, 8)
-            setTextColor(ContextCompat.getColor(context, R.color.black))
-            textSize = 14f
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                weight = 1f
-                gravity = Gravity.CENTER_VERTICAL
-            }
-            setOnClickListener {
-                onTagClick?.invoke(tag) ?: Toast.makeText(this.context, "Clicked on: $tag", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        val closeIcon = ImageView(this.context).apply {
-            setImageResource(R.drawable.ic_close)
-            setPadding(8, 12, 12, 8)
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                gravity = Gravity.CENTER
-            }
-            setOnClickListener {
-                this@addTags.removeView(tagContainer)
-                tagList.remove(tag)
-            }
-        }
-
-        tagContainer.addView(hashIcon)
-        tagContainer.addView(tagText)
-        tagContainer.addView(closeIcon)
-
-        this.addView(tagContainer)
-    }
-}*/
-
 fun FlexboxLayout.addTags(
-    tagList: MutableList<String>, // MutableList for modifying the list
+    tagList: MutableList<String>,
     onTagClick: ((String) -> Unit)? = null
 ) {
-    // Check if tagList is empty
     if (tagList.isEmpty()) {
-        this.visibility = View.GONE // Hide the container if no tags
+        this.visibility = View.GONE
         return
     } else {
-        this.visibility = View.VISIBLE // Show the container if tags exist
+        this.visibility = View.VISIBLE
     }
 
-    // Clear all existing views
     this.removeAllViews()
 
     for (tag in tagList) {
-        // Parent LinearLayout for each tag
         val tagContainer = LinearLayout(this.context).apply {
             orientation = LinearLayout.HORIZONTAL
             setPadding(8, 8, 8, 8)
@@ -482,8 +375,6 @@ fun FlexboxLayout.addTags(
             setOnClickListener {
                 this@addTags.removeView(tagContainer)
                 tagList.remove(tag)
-
-                // Check again if tagList is empty after removing a tag
                 if (tagList.isEmpty()) {
                     this@addTags.visibility = View.GONE
                 }
@@ -497,6 +388,8 @@ fun FlexboxLayout.addTags(
         this.addView(tagContainer)
     }
 }
+
+
 
 
 

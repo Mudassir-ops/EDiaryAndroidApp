@@ -2,8 +2,10 @@ package com.example.neweasydairy.fragments.noteFragment
 
 import android.Manifest
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
@@ -13,6 +15,7 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -47,6 +50,7 @@ import com.example.neweasydairy.utilis.monthlyFormatDate
 import com.example.neweasydairy.utilis.saveToExternalStorage
 import com.example.neweasydairy.utilis.toast
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -79,6 +83,7 @@ class CreateNotesFragment : Fragment(),
     var note: NotepadEntity? = null
     private var tagName: String? = null
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -97,8 +102,10 @@ class CreateNotesFragment : Fragment(),
         imageAdapter = ImageAdapter(
             imageList = selectedImages,
             context ?: return,
-            onImageClick = {(imageData, position) ->
-                Log.e("imageCLick", "onCreate: imageClick: $imageData, position: $position", )
+            onShareClick = {imagePath ->
+              //  imagePath.shareImage(requireContext())
+                Log.e("imageUriSaqib", "onShareClick:, imagePath: $imagePath", )
+
             }
         )
     }
@@ -406,10 +413,10 @@ class CreateNotesFragment : Fragment(),
         pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             uri?.let {
                 tagName?.let { it1 -> viewModel.setTagName(it1) }
+                Log.e("imageUriSaqib", "setupImagePickers: uri:$it", )
                 navigateToCropFragment(it.toString())
             }
         }
-
         takePicturePreviewLauncher =
             registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
                 tagName?.let { it1 -> viewModel.setTagName(it1) }
@@ -417,6 +424,9 @@ class CreateNotesFragment : Fragment(),
                     processCapturedImage(it) }
             }
     }
+
+
+
 
     private fun navigateToCropFragment(imageUri: String) {
         if (findNavController().currentDestination?.id == R.id.createNotesFragment) {
@@ -441,4 +451,6 @@ class CreateNotesFragment : Fragment(),
             activity?.toast("Failed to save Image")
         }
     }
+
+
 }

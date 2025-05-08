@@ -33,4 +33,12 @@ class HomeViewModel @Inject constructor(
             homeRepository.deleteNoteById(note.id)
         }
     }
+
+    fun isRatingDialogShown(): Boolean {
+        return homeRepository.isRatingDialogShown()
+    }
+
+    fun setRatingDialogShown() {
+        homeRepository.setRatingDialogShown()
+    }
 }
