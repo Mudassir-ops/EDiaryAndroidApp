@@ -7,6 +7,7 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.ContentValues
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
@@ -39,6 +40,7 @@ import java.util.concurrent.TimeUnit
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.FlexboxLayout
+import androidx.core.content.edit
 
 private var toast: Toast? = null
 fun Activity.toast(message: String) {
@@ -58,6 +60,11 @@ fun Activity.toast(message: String) {
 
 fun Activity.shareApp(){
     try {
+
+        getSharedPreferences("AppPrefs", MODE_PRIVATE).edit() {
+            putBoolean("skipPinOnce", true)
+        }
+
         val sendIntent = Intent(Intent.ACTION_SEND)
         sendIntent.type = "text/plain"
         sendIntent.putExtra(
@@ -213,9 +220,6 @@ fun Bitmap.saveToExternalStorage(context: Context, fileName: String): Uri? {
 
     return uri
 }
-
-
-
 fun String.deleteImageFile(tag: String): Boolean {
     val file = File(this)
     return if (file.exists()) {
@@ -336,9 +340,7 @@ fun FlexboxLayout.addTags(
     } else {
         this.visibility = View.VISIBLE
     }
-
     this.removeAllViews()
-
     for (tag in tagList) {
         val tagContainer = LinearLayout(this.context).apply {
             orientation = LinearLayout.HORIZONTAL
@@ -388,10 +390,3 @@ fun FlexboxLayout.addTags(
         this.addView(tagContainer)
     }
 }
-
-
-
-
-
-
-

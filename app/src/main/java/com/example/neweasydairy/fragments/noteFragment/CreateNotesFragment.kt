@@ -1,6 +1,7 @@
 package com.example.neweasydairy.fragments.noteFragment
 
 import android.Manifest
+import android.content.Context.MODE_PRIVATE
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
@@ -16,6 +17,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.content.edit
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -66,8 +68,8 @@ class CreateNotesFragment : Fragment(),
     private var audioPlayingDialogBinding: AudioPlayingDialog? = null
     private var saveVoiceDialog: SaveVoiceDialog? = null
     var textDialog: TextDialog? = null
-    lateinit var imageAdapter: ImageAdapter
-    var argument = ""
+    private lateinit var imageAdapter: ImageAdapter
+    private var argument = ""
     var backgroundDialog: ChangeBackground? = null
     var photoDialog: PhotoDialog? = null
     private lateinit var requestCameraPermission: ActivityResultLauncher<String>
@@ -330,11 +332,9 @@ class CreateNotesFragment : Fragment(),
         binding?.apply {
             val formattedDate = requireContext().monthlyFormatDate(System.currentTimeMillis())
             txtDate.text = formattedDate
-
             imageRecyclerView.adapter = imageAdapter
             imageAdapter.updateImageList(selectedImages)
             selectedImages.reverse()
-
             clickListener(requireContext(), this@CreateNotesFragment)
         }
     }
@@ -372,6 +372,9 @@ class CreateNotesFragment : Fragment(),
 
     private fun handleCameraPermissionResult(isGranted: Boolean) {
         if (isGranted) {
+            context?.getSharedPreferences("AppPrefs", MODE_PRIVATE)?.edit() {
+                putBoolean("isComingFromCamera", true)
+            }
             takePicturePreviewLauncher.launch(null)
             cameraPermissionDeniedCount = 0
         } else {
@@ -399,6 +402,7 @@ class CreateNotesFragment : Fragment(),
         photoDialog = PhotoDialog(
             activity ?: return,
             cameraCallBack = { requestCameraPermission.launch(Manifest.permission.CAMERA) },
+
             galleryCallBack = {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     requestGalleryPermission.launch(Manifest.permission.READ_MEDIA_IMAGES)
@@ -413,7 +417,6 @@ class CreateNotesFragment : Fragment(),
         pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             uri?.let {
                 tagName?.let { it1 -> viewModel.setTagName(it1) }
-                Log.e("imageUriSaqib", "setupImagePickers: uri:$it", )
                 navigateToCropFragment(it.toString())
             }
         }
@@ -424,9 +427,6 @@ class CreateNotesFragment : Fragment(),
                     processCapturedImage(it) }
             }
     }
-
-
-
 
     private fun navigateToCropFragment(imageUri: String) {
         if (findNavController().currentDestination?.id == R.id.createNotesFragment) {

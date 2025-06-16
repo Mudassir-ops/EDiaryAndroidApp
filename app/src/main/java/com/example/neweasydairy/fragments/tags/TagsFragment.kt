@@ -42,7 +42,7 @@ class TagsFragment : Fragment() {
         }
         adapter = TagsAdapter(
             list = emptyList(),
-            context = requireContext(),
+            context = context?:return,
             onItemClick = { pair ->
                 val tag = pair.first
                 val action = pair.second

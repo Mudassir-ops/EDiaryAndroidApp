@@ -16,6 +16,7 @@ object BooleanObjects {
     const val userName = "userName"
     const val reminderDescription = "reminderDescription"
     const val profileImageUri = "profileImageUri"
+    const val reminderToggle = "reminderToggle"
 
      const val REMINDER_TITLE = "reminder_title"
      const val REMINDER_DESCRIPTION = "reminder_description"

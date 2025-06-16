@@ -26,7 +26,6 @@ import java.util.Date
 fun FragmentCreateNotesBinding?.clickListener(context: Context, fragment: CreateNotesFragment) {
     this?.apply {
         val icons = listOf(icGrid, icText, icImageNote, icHash)
-
         icHash.setOnClickListener {
             Log.d("selectedImages", "Before navigating: ${fragment.selectedImages}")
             fragment.viewModel.setSelectedImages(fragment.selectedImages)
@@ -39,7 +38,6 @@ fun FragmentCreateNotesBinding?.clickListener(context: Context, fragment: Create
             resetIconColors(context, icons)
             icHash.setColorFilter(ContextCompat.getColor(context, R.color.app_color))
         }
-
         icBack.setOnClickListener {
             fragment.findNavController().navigateUp()
         }

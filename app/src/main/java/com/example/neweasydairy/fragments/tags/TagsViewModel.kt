@@ -17,9 +17,7 @@ class TagsViewModel @Inject constructor(
 
     val allTags = tagsRepository.getAllTags().asLiveData()
 
-    fun insertCustomTagData(
-        customTagName: String,
-        ) {
+    fun insertCustomTagData(customTagName: String, ) {
         viewModelScope.launch {
             val customTagEntity = CustomTagEntity(tagName = customTagName)
             tagsRepository.insertCustomTagData(customTagEntity)

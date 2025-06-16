@@ -99,19 +99,6 @@ class HomeFragment : Fragment() {
             }
     }
 
-    private fun showDeleteConfirmationDialog(note: NotepadEntity) {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setMessage("Are you sure you want to delete this note?")
-            .setPositiveButton("Yes") { dialog, id ->
-                homeViewModel.deleteNote(note)
-                dialog.dismiss()
-            }
-            .setNegativeButton("No") { dialog, id ->
-                dialog.dismiss()
-            }
-        builder.create().show()
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
