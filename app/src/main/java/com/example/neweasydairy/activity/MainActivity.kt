@@ -20,6 +20,9 @@ import com.example.easydiaryandjournalwithlock.databinding.ActivityMainBinding
 import com.example.neweasydairy.data.UpdateState
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import androidx.core.content.edit
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -36,6 +39,12 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("BatteryLife")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowInsetsControllerCompat(window, window.decorView).apply {
+            isAppearanceLightStatusBars = true
+            isAppearanceLightNavigationBars = true
+        }
+        setContentView(R.layout.activity_main)
         enableEdgeToEdge()
         setContentView(binding.root)
         if (isBatteryOptimizationEnabled(this)) {
@@ -73,10 +82,18 @@ class MainActivity : AppCompatActivity() {
         updateViewModel.checkDownloadedOnResume()
         Log.e("CurrentFragment", "onResume: ")
         logCurrentFragment()
-//        val currentFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
-//        if (currentFragment !is PinFragment) {
-//            loadPinFragment()
-//        }
+        val prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE)
+        val skipPin = prefs.getBoolean("skipPinOnce", false)
+        val isComingFromCamera = prefs.getBoolean("isComingFromCamera",false)
+
+        if (skipPin) {
+            prefs.edit() { putBoolean("skipPinOnce", false) }
+            return
+        }
+        if (isComingFromCamera) {
+            prefs.edit() { putBoolean("isComingFromCamera", false) }
+            return
+        }
 
         val navController = findNavController(R.id.nav_host_fragment)
         if (navController.currentDestination?.id == R.id.mainFragment
@@ -87,8 +104,6 @@ class MainActivity : AppCompatActivity() {
         ) {
             navController.navigate(R.id.pinFragment)
         }
-
-
     }
 
     override fun onPause() {
@@ -100,14 +115,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun logCurrentFragment() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
-
         if (navHostFragment != null && navHostFragment is androidx.navigation.fragment.NavHostFragment) {
             val currentFragment = navHostFragment.childFragmentManager.primaryNavigationFragment
             if (currentFragment != null) {
-                Log.e(
-                    "CurrentFragment",
-                    "ID: ${currentFragment.id}, Name: ${currentFragment::class.java.simpleName}"
-                )
+                Log.e("CurrentFragment",
+                    "ID: ${currentFragment.id}, Name: ${currentFragment::class.java.simpleName}")
             } else {
                 Log.e("CurrentFragment", "No fragment found in NavHostFragment!")
             }

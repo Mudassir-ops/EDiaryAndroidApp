@@ -3,6 +3,8 @@
     <style name="Base.Theme.NewEasyDairy" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 
     <style name="Theme.NewEasyDairy" parent="Base.Theme.NewEasyDairy" />
@@ -24,16 +26,9 @@
     </style>
 
     <style name="CustomDatePickerDialogTheme" parent="Theme.MaterialComponents.Light.Dialog">
-        <!-- Header background color -->
         <item name="colorPrimary">@color/app_color</item>
-
-        <!-- Header text color -->
         <item name="colorOnPrimary">@color/black</item>
-
-        <!-- Date picker text colors -->
         <item name="android:textColorPrimary">@color/app_color</item>
-
-        <!-- Optional: control buttons -->
         <item name="buttonBarPositiveButtonStyle">@style/CustomPositiveButton</item>
         <item name="buttonBarNegativeButtonStyle">@style/CustomNegativeButton</item>
     </style>
@@ -49,6 +44,6 @@
     <style name="TimePickerDialogTheme" parent="Theme.MaterialComponents.Light.Dialog">
         <item name="colorPrimary">@color/app_color</item>
         <item name="colorOnPrimary">@color/black</item>
-        <item name="colorAccent">@color/app_color</item> <!-- optional -->
+        <item name="colorAccent">@color/app_color</item>
     </style>
 </resources>

@@ -70,6 +70,9 @@ class ChangePinFragment : Fragment() {
                 Toast.makeText(requireContext(), "Old PIN is incorrect.", Toast.LENGTH_SHORT).show()
             }
         }
+        binding.icBack.setOnClickListener {
+            findNavController().navigateUp()
+        }
     }
 
     private fun getPinFromEditTexts(vararg editTexts: androidx.appcompat.widget.AppCompatEditText): String {

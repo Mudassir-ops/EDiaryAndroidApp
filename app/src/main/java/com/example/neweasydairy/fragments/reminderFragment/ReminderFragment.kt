@@ -15,10 +15,13 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.example.easydiaryandjournalwithlock.R
 import com.example.easydiaryandjournalwithlock.databinding.FragmentReminderBinding
 import com.example.neweasydairy.alarm.AlarmSchedulerImpl
 import com.example.neweasydairy.data.ReminderDao
+import com.example.neweasydairy.utilis.gone
 import com.example.neweasydairy.utilis.toast
+import com.example.neweasydairy.utilis.visible
 import dagger.hilt.android.AndroidEntryPoint
 import jakarta.inject.Inject
 import java.util.Calendar
@@ -28,7 +31,7 @@ class ReminderFragment : Fragment() {
     private var _binding: FragmentReminderBinding? = null
     val binding get() = _binding
     lateinit var requestNotificationPermission: ActivityResultLauncher<String>
-    private val reminderViewModel: ReminderViewModel by activityViewModels()
+    val reminderViewModel: ReminderViewModel by activityViewModels()
     lateinit var calendar: Calendar
     var reminderTextDialogBinding: ReminderDialog? = null
     private var adapter: ReminderAdapter? = null
@@ -117,6 +120,21 @@ class ReminderFragment : Fragment() {
             binding?.apply {
                 if (reminders.isNotEmpty()) {
                     adapter?.updateReminderList(reminders)
+                }
+            }
+        }
+
+        reminderViewModel.isToggleClick.observe(viewLifecycleOwner) { isSwitchOn ->
+            binding?.apply {
+                if (isSwitchOn) {
+                    txtAddNew.visible()
+                    reminderRecyclerView.visible()
+                    icSwitchReminder.setImageResource(R.drawable.ic_switch_on)
+                } else {
+                    txtAddNew.gone()
+                    reminderRecyclerView.gone()
+                    icSwitchReminder.setImageResource(R.drawable.ic_switch_off)
+                    cancelReminderAlarm(alarmSchedulerImpl)
                 }
             }
         }

@@ -32,20 +32,10 @@ fun FragmentReminderBinding?.clickListener(
     alarmSchedulerImpl: AlarmSchedulerImpl
 ) {
     reminderFragment.binding?.apply {
-        var isSwitchOn = false
         icSwitchReminder.setOnClickListener {
-            isSwitchOn = !isSwitchOn
-            if (isSwitchOn) {
-                txtAddNew.visible()
-                reminderRecyclerView.visible()
-                icSwitchReminder.setImageResource(R.drawable.ic_switch_on)
-            } else {
-                icSwitchReminder.setImageResource(R.drawable.ic_switch_off)
-                txtAddNew.gone()
-                reminderRecyclerView.gone()
-
-                cancelReminderAlarm(alarmSchedulerImpl)
-            }
+            val currentState = reminderFragment.reminderViewModel.isToggleClick.value ?: true
+            val newState = !currentState
+            reminderFragment.reminderViewModel.setReminderToggle(newState)
         }
 
         txtAddNew.setOnClickListener {

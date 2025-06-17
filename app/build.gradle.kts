@@ -3,8 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.dagger.hilt.plugins)
     id("kotlin-kapt")
-    id("kotlin-parcelize")
-    alias(libs.plugins.google.gms.google.services)
+    id ("kotlin-parcelize")
+     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.google.firebase.crashlytics)
 
 }
@@ -59,8 +59,8 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation(libs.firebase.crashlytics)
-    implementation(libs.firebase.analytics)
+     implementation(libs.firebase.crashlytics)
+     implementation(libs.firebase.analytics)
     //lifecycle
     implementation(libs.lifecycle)
     implementation(libs.lifecycle.viewmodel)
