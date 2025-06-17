@@ -44,7 +44,6 @@ class MainActivity : AppCompatActivity() {
             isAppearanceLightStatusBars = true
             isAppearanceLightNavigationBars = true
         }
-        setContentView(R.layout.activity_main)
         enableEdgeToEdge()
         setContentView(binding.root)
         if (isBatteryOptimizationEnabled(this)) {
@@ -84,7 +83,7 @@ class MainActivity : AppCompatActivity() {
         logCurrentFragment()
         val prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE)
         val skipPin = prefs.getBoolean("skipPinOnce", false)
-        val isComingFromCamera = prefs.getBoolean("isComingFromCamera",false)
+        val isComingFromCamera = prefs.getBoolean("isComingFromCamera", false)
 
         if (skipPin) {
             prefs.edit() { putBoolean("skipPinOnce", false) }
@@ -118,8 +117,10 @@ class MainActivity : AppCompatActivity() {
         if (navHostFragment != null && navHostFragment is androidx.navigation.fragment.NavHostFragment) {
             val currentFragment = navHostFragment.childFragmentManager.primaryNavigationFragment
             if (currentFragment != null) {
-                Log.e("CurrentFragment",
-                    "ID: ${currentFragment.id}, Name: ${currentFragment::class.java.simpleName}")
+                Log.e(
+                    "CurrentFragment",
+                    "ID: ${currentFragment.id}, Name: ${currentFragment::class.java.simpleName}"
+                )
             } else {
                 Log.e("CurrentFragment", "No fragment found in NavHostFragment!")
             }
