@@ -1,16 +1,13 @@
-package com.example.neweasydairy.utilis
+package com.example.neweasydairy.data
 
 import android.app.Activity
 import android.content.Context
 import android.content.IntentSender
 import android.util.Log
-import androidx.activity.ComponentActivity
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.example.neweasydairy.data.UpdateState
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.appupdate.AppUpdateOptions
