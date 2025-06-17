@@ -46,16 +46,18 @@ class MainActivity : AppCompatActivity() {
         }
         enableEdgeToEdge()
         setContentView(binding.root)
-        if (isBatteryOptimizationEnabled(this)) {
-            Log.d("BatteryCheck", "Battery optimization is ENABLED for this app.")
-        } else {
-            val intent =
-                Intent(ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
-                    data = Uri.parse("package:${packageName}")
-                }
-            startActivity(intent)
-            Log.d("BatteryCheck", "Battery optimization is DISABLED for this app.")
-        }
+
+        ////Ad this is Setting No Need To ask In Main Screen
+//        if (isBatteryOptimizationEnabled(this)) {
+//            Log.d("BatteryCheck", "Battery optimization is ENABLED for this app.")
+//        } else {
+//            val intent =
+//                Intent(ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+//                    data = Uri.parse("package:${packageName}")
+//                }
+//            startActivity(intent)
+//            Log.d("BatteryCheck", "Battery optimization is DISABLED for this app.")
+//        }
         /**
          * In App Update Check For Each Time on Start
          **/
