@@ -64,13 +64,13 @@ class AlarmReceiver : BroadcastReceiver() {
 
         val builder = context?.let {
             NotificationCompat.Builder(it, ALARM_CHANNEL_NAME)
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setSmallIcon(R.drawable.app_icon)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setContentIntent(pendingIntent)
                 .addAction(
-                    R.drawable.ic_launcher_foreground, "STOP",
+                    R.drawable.app_icon, "STOP",
                     stopPendingIntent
                 )
         }

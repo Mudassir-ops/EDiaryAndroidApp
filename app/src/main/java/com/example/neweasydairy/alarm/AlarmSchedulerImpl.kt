@@ -31,11 +31,8 @@ class AlarmSchedulerImpl(private val context: Context) : AlarmScheduler {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                alarm.scheduleAt,
-                pendingIntent
-            )
+            val alarmClockInfo = AlarmManager.AlarmClockInfo(alarm.scheduleAt, pendingIntent)
+            alarmManager.setAlarmClock(alarmClockInfo, pendingIntent)
         } else {
             alarmManager.setExact(
                 AlarmManager.RTC_WAKEUP,

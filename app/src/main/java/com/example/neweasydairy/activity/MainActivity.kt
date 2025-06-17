@@ -1,26 +1,76 @@
 package com.example.neweasydairy.activity
 
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.os.PowerManager
+import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.example.easydiaryandjournalwithlock.R
-import com.example.neweasydairy.fragments.pinFragment.PinFragment
+import com.example.easydiaryandjournalwithlock.databinding.ActivityMainBinding
+import com.example.neweasydairy.data.UpdateState
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private var isPasswordFragmentLoaded = false
+    private val binding by lazy {
+        ActivityMainBinding.inflate(layoutInflater)
+    }
+    private val updateViewModel: UpdateViewModel by viewModels()
+    private fun isBatteryOptimizationEnabled(context: Context): Boolean {
+        val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+        return !powerManager.isIgnoringBatteryOptimizations(context.packageName)
+    }
 
+    @SuppressLint("BatteryLife")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
+        setContentView(binding.root)
+        if (isBatteryOptimizationEnabled(this)) {
+            Log.d("BatteryCheck", "Battery optimization is ENABLED for this app.")
+        } else {
+            val intent =
+                Intent(ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                    data = Uri.parse("package:${packageName}")
+                }
+            startActivity(intent)
+            Log.d("BatteryCheck", "Battery optimization is DISABLED for this app.")
+        }
+        /**
+         * In App Update Check For Each Time on Start
+         **/
+
+        updateViewModel.init(this)
+        updateViewModel.checkForUpdates()
+
+        lifecycleScope.launch {
+            updateViewModel.updateState.collect {
+                when (it) {
+                    is UpdateState.Downloaded -> {
+                        showRestartSnackbar()
+                    }
+
+                    else -> {}
+                }
+            }
+        }
     }
 
     override fun onResume() {
         super.onResume()
+        updateViewModel.checkDownloadedOnResume()
         Log.e("CurrentFragment", "onResume: ")
         logCurrentFragment()
 //        val currentFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
@@ -66,10 +116,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadPinFragment() {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.nav_host_fragment, PinFragment())
-            .commit()
+    private fun showRestartSnackbar() {
+        Snackbar.make(
+            findViewById(android.R.id.content),
+            "Update ready",
+            Snackbar.LENGTH_INDEFINITE
+        )
+            .setAction("Restart") {
+                updateViewModel.completeUpdate()
+            }.show()
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        updateViewModel.unregisterListener()
+    }
+
 
 }

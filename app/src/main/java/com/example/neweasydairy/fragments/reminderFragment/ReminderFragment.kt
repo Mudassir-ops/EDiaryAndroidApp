@@ -1,7 +1,12 @@
 package com.example.neweasydairy.fragments.reminderFragment
 
 import ReminderDialog
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
+import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -96,7 +101,12 @@ class ReminderFragment : Fragment() {
             reminderViewModel.description.observe(viewLifecycleOwner) { description ->
                 txtAuto.text = description ?: "Auto"
             }
-            clickListener(activity ?: return, this@ReminderFragment, reminderDao,alarmSchedulerImpl)
+            clickListener(
+                activity ?: return,
+                this@ReminderFragment,
+                reminderDao,
+                alarmSchedulerImpl
+            )
             observeViewModel()
         }
     }

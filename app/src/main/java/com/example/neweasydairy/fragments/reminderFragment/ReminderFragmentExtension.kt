@@ -108,6 +108,7 @@ fun setReminderAlarm(
 ) {
     val alarmManager =
         reminderFragment.requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
         val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
             data = Uri.fromParts("package", reminderFragment.requireContext().packageName, null)
@@ -117,7 +118,7 @@ fun setReminderAlarm(
     }
     reminder.let {
         alarmSchedulerImpl.schedule(it)
-        Log.d("Reminder", "Alarm set for: ${it.scheduleAt}")
+        Log.d("Reminder", "Alarm set for: ${it.scheduleAt}--${alarmManager.canScheduleExactAlarms()}")
     }
 }
 
