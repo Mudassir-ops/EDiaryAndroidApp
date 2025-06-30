@@ -117,6 +117,8 @@
             android:fontFamily="@font/roboto_regular"
             android:text="Done"
             android:textAllCaps="false"
+            android:textSize="@dimen/_14sdp"
+            android:textStyle="bold"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

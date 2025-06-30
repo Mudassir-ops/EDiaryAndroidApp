@@ -15,7 +15,7 @@
     <color name="bg_pin">#F5F5F5</color>
     <color name="color_selected">#42ABD0</color>
     <color name="color_unselected">#FF000000</color>
-    <color name="nav_item_background">#DCD6D4</color>
+    <color name="nav_item_background">#EFEBEA</color>
     <color name="bg_drawer">#FFFFFF</color>
     <color name="bg_bottom_view_color">#EBF5FA</color>
     <color name="red_color">#FF3B30</color>

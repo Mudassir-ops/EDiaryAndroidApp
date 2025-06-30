@@ -94,6 +94,8 @@
         android:background="@drawable/bg_done_btn"
         android:layout_marginTop="@dimen/_10sdp"
         android:text="Next"
+        android:textSize="@dimen/_14sdp"
+        android:textStyle="bold"
         android:fontFamily="@font/roboto_regular"
         android:layout_marginBottom="@dimen/_10sdp"
         android:textAllCaps="false"

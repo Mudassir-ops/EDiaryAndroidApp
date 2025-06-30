@@ -46,22 +46,6 @@ class MainActivity : AppCompatActivity() {
         }
         enableEdgeToEdge()
         setContentView(binding.root)
-
-        ////Ad this is Setting No Need To ask In Main Screen
-//        if (isBatteryOptimizationEnabled(this)) {
-//            Log.d("BatteryCheck", "Battery optimization is ENABLED for this app.")
-//        } else {
-//            val intent =
-//                Intent(ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
-//                    data = Uri.parse("package:${packageName}")
-//                }
-//            startActivity(intent)
-//            Log.d("BatteryCheck", "Battery optimization is DISABLED for this app.")
-//        }
-        /**
-         * In App Update Check For Each Time on Start
-         **/
-
         updateViewModel.init(this)
         updateViewModel.checkForUpdates()
 
@@ -86,13 +70,23 @@ class MainActivity : AppCompatActivity() {
         val prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE)
         val skipPin = prefs.getBoolean("skipPinOnce", false)
         val isComingFromCamera = prefs.getBoolean("isComingFromCamera", false)
+        val isComingFromGallery = prefs.getBoolean("isComingFromGallery", false)
 
-        if (skipPin) {
-            prefs.edit() { putBoolean("skipPinOnce", false) }
-            return
-        }
-        if (isComingFromCamera) {
-            prefs.edit() { putBoolean("isComingFromCamera", false) }
+
+//        if (skipPin) {
+//            prefs.edit() { putBoolean("skipPinOnce", false) }
+//            return
+//        }
+//        if (isComingFromCamera) {
+//            prefs.edit() { putBoolean("isComingFromCamera", false) }
+//            return
+//        }
+        if (skipPin || isComingFromCamera|| isComingFromGallery) {
+            prefs.edit {
+                putBoolean("skipPinOnce", false)
+                putBoolean("isComingFromCamera", false)
+                putBoolean("isComingFromGallery", false)
+            }
             return
         }
 

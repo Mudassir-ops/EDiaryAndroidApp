@@ -170,6 +170,8 @@
         app:layout_constraintWidth_percent="0.8"
         android:background="@drawable/bg_done_btn"
         android:text="Setup PIN"
+        android:textSize="@dimen/_14sdp"
+        android:textStyle="bold"
         android:fontFamily="@font/roboto_regular"
         android:layout_marginBottom="@dimen/_10sdp"
         android:textAllCaps="false"

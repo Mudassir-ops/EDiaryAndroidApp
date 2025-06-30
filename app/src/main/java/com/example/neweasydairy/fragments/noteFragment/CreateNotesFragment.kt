@@ -1,6 +1,7 @@
 package com.example.neweasydairy.fragments.noteFragment
 
 import android.Manifest
+import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.graphics.Bitmap
 import android.net.Uri
@@ -13,6 +14,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -85,6 +87,14 @@ class CreateNotesFragment : Fragment(),
     var note: NotepadEntity? = null
     private var tagName: String? = null
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        val callback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                findNavController().navigate(R.id.action_createNotesFragment_to_mainFragment)             }
+        }
+        activity?.onBackPressedDispatcher?.addCallback(this, callback)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -375,6 +385,7 @@ class CreateNotesFragment : Fragment(),
             context?.getSharedPreferences("AppPrefs", MODE_PRIVATE)?.edit() {
                 putBoolean("isComingFromCamera", true)
             }
+
             takePicturePreviewLauncher.launch(null)
             cameraPermissionDeniedCount = 0
         } else {
@@ -388,6 +399,9 @@ class CreateNotesFragment : Fragment(),
 
     private fun handleGalleryPermissionResult(isGranted: Boolean) {
         if (isGranted) {
+            context?.getSharedPreferences("AppPrefs", MODE_PRIVATE)?.edit {
+                putBoolean("isComingFromGallery", true)
+            }
             galleryPermissionDeniedCount = 0
             pickImageLauncher.launch("image/*")
         } else {
@@ -401,7 +415,9 @@ class CreateNotesFragment : Fragment(),
     private fun setupPhotoDialog() {
         photoDialog = PhotoDialog(
             activity ?: return,
-            cameraCallBack = { requestCameraPermission.launch(Manifest.permission.CAMERA) },
+            cameraCallBack = {
+                requestCameraPermission.launch(Manifest.permission.CAMERA)
+                             },
 
             galleryCallBack = {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
