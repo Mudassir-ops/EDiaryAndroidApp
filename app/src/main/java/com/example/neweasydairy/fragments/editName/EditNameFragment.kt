@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.bumptech.glide.signature.ObjectKey
 import com.example.easydiaryandjournalwithlock.R
 import com.example.easydiaryandjournalwithlock.databinding.FragmentEditNameBinding
 import com.example.neweasydairy.fragments.languageFragment.LanguageRepository
@@ -64,15 +65,20 @@ class EditNameFragment : Fragment() {
         pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             if (uri != null) {
                 val folderName = "ProfileImages"
-                val fileName = "profile_image_${System.currentTimeMillis()}.jpg"
+                val fileName = "profile_image.jpg"
                 val savedPath = requireContext().saveImageToSpecificFolder(uri, folderName, fileName)
 
                 if (savedPath != null) {
-                    editNameViewModel.imagePath.value = savedPath
+                    editNameViewModel.saveProfileImage(savedPath)
+                //    editNameViewModel.imagePath.value = savedPath
+                    Log.e("imagePath", "onCreate: imagePath EditName ${editNameViewModel.imagePath.value}", )
                     Glide.with(this)
                         .load(savedPath)
+                        .signature(ObjectKey(System.currentTimeMillis()))
+                        .skipMemoryCache(true)
                         .into(binding?.profileImage ?: return@registerForActivityResult)
-                }else{
+                }
+                else{
                     Glide.with(this)
                         .load(R.drawable.ic_profile_new)
                         .into(binding?.profileImage ?: return@registerForActivityResult)

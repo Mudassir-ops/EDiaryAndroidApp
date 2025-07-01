@@ -14,6 +14,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.bumptech.glide.signature.ObjectKey
 import com.example.easydiaryandjournalwithlock.R
 import com.example.easydiaryandjournalwithlock.databinding.FragmentMainBinding
 import com.example.neweasydairy.dialogs.DeleteAccountDialog
@@ -146,11 +147,16 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        editNameViewModel.loadProfileImage()
 
         editNameViewModel.imagePath.observe(viewLifecycleOwner) { imagePath ->
+            Log.e("imagePath", "onCreate: imagePath MainFragment $imagePath", )
+
             imagePath?.let {
                 Glide.with(this)
                     .load(it)
+                    .signature(ObjectKey(System.currentTimeMillis()))
+                    .skipMemoryCache(true)
                     .into(binding?.drawerLayout?.icProfile ?: return@observe)
             }
         }
