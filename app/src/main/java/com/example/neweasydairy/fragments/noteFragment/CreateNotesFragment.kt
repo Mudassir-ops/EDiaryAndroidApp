@@ -63,6 +63,7 @@ import java.util.Locale
 class CreateNotesFragment : Fragment(),
     OnTextAlignListener, OnTextHeadingListener, OnFontSelectionListener, OnChangeBackgroundListener,
     OnTextColorSelectionListener, OnEmojiChangeListener {
+
     var _binding: FragmentCreateNotesBinding? = null
     val binding get() = _binding
     var feelingDialogBinding: FeelingDialog? = null

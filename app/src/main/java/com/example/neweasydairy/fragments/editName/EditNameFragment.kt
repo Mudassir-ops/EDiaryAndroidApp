@@ -32,8 +32,9 @@ class EditNameFragment : Fragment() {
     private lateinit var requestGalleryPermission: ActivityResultLauncher<String>
     private var galleryPermissionDeniedCount = 0
     private lateinit var pickImageLauncher: ActivityResultLauncher<String>
-    private val editNameViewModel:EditNameViewModel by activityViewModels()
-    private val viewModel:LanguageViewModel by activityViewModels()
+    private val editNameViewModel: EditNameViewModel by activityViewModels()
+    private val viewModel: LanguageViewModel by activityViewModels()
+
     @Inject
     lateinit var languageRepository: LanguageRepository
 
@@ -66,19 +67,22 @@ class EditNameFragment : Fragment() {
             if (uri != null) {
                 val folderName = "ProfileImages"
                 val fileName = "profile_image.jpg"
-                val savedPath = requireContext().saveImageToSpecificFolder(uri, folderName, fileName)
+                val savedPath =
+                    requireContext().saveImageToSpecificFolder(uri, folderName, fileName)
 
                 if (savedPath != null) {
                     editNameViewModel.saveProfileImage(savedPath)
-                //    editNameViewModel.imagePath.value = savedPath
-                    Log.e("imagePath", "onCreate: imagePath EditName ${editNameViewModel.imagePath.value}", )
+                    //    editNameViewModel.imagePath.value = savedPath
+                    Log.e(
+                        "imagePath",
+                        "onCreate: imagePath EditName ${editNameViewModel.imagePath.value}",
+                    )
                     Glide.with(this)
                         .load(savedPath)
                         .signature(ObjectKey(System.currentTimeMillis()))
                         .skipMemoryCache(true)
                         .into(binding?.profileImage ?: return@registerForActivityResult)
-                }
-                else{
+                } else {
                     Glide.with(this)
                         .load(R.drawable.ic_profile_new)
                         .into(binding?.profileImage ?: return@registerForActivityResult)
@@ -118,7 +122,7 @@ class EditNameFragment : Fragment() {
                 requestGalleryPermission.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
             }
         }
-        btnDone.setOnClickListener{
+        btnDone.setOnClickListener {
             val newName = edTextName.text.toString()
             if (newName.isNotEmpty()) {
                 viewModel.setUserName(newName)

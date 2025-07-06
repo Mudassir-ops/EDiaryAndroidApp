@@ -127,7 +127,7 @@ class MainFragment : Fragment() {
                         mainDrawerLayout.closeDrawer(GravityCompat.START)
                     } else {
                         val currentFragment =
-                            childFragmentManager.findFragmentById(R.id.framelayout)
+                            childFragmentManager.findFragmentById(R.id.frameLayout)
                         if (currentFragment !is HomeFragment) {
                             replaceFragment(HomeFragment())
                         } else {
@@ -225,7 +225,7 @@ class MainFragment : Fragment() {
 
     private fun replaceFragment(fragment: Fragment): Boolean {
         childFragmentManager.beginTransaction()
-            .replace(R.id.framelayout, fragment)
+            .replace(R.id.frameLayout, fragment)
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
             .commit()
         return true

@@ -1,87 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="wrap_content">
 
     <View
         android:id="@+id/topView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/app_color"
         android:layout_marginVertical="@dimen/_5sdp"
-        app:layout_constraintWidth_percent="0.9"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/bg_item_three"
+        android:elevation="@dimen/_1sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintHorizontal_bias="0.487"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.461"
+        app:layout_constraintWidth_percent="0.9" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/txtTimeAndDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/_10sdp"
-        android:textSize="@dimen/_14sdp"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:fontFamily="@font/roboto_semibold"
-        android:textStyle="bold"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:layout_marginVertical="@dimen/_10sdp"
+        android:elevation="@dimen/_1sdp"
+        android:fontFamily="@font/roboto_medium"
+        android:text="Today 9:13 PM"
+        android:textColor="#475569"
+        android:textSize="@dimen/_13sdp"
         app:layout_constraintEnd_toEndOf="@id/topView"
-        app:layout_constraintTop_toTopOf="@id/topView"
         app:layout_constraintStart_toStartOf="@id/topView"
-        android:text="Today 9:13 PM"/>
-
-
+        app:layout_constraintTop_toTopOf="@id/topView" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/txtTag1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/txtTimeAndDate"
-        android:drawableStart="@drawable/ic_profile_small"
-        app:layout_constraintStart_toStartOf="@id/txtTimeAndDate"
-        android:text="Personal"
-        android:fontFamily="@font/roboto_regular"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginVertical="@dimen/_10sdp"
-        android:paddingVertical="@dimen/_4sdp"
-        app:layout_constraintEnd_toStartOf="@id/txtTag2"
-        android:paddingHorizontal="@dimen/_5sdp"
         android:background="@drawable/bg_tag"
-        app:layout_constraintBottom_toBottomOf="@id/topView"
+        android:drawableStart="@drawable/ic_profile_small"
         android:drawablePadding="@dimen/_5sdp"
+        android:elevation="@dimen/_1sdp"
+        android:fontFamily="@font/roboto_regular"
         android:gravity="center_vertical"
+        android:paddingHorizontal="@dimen/_5sdp"
+        android:paddingVertical="@dimen/_4sdp"
+        android:text="@string/personal"
+        android:textColor="#334155"
         android:textSize="@dimen/_10sdp"
-        android:textStyle="normal"/>
+        app:layout_constraintBottom_toBottomOf="@id/topView"
+        app:layout_constraintEnd_toStartOf="@id/txtTag2"
+        app:layout_constraintHeight_percent="0.3"
+        app:layout_constraintStart_toStartOf="@id/txtTimeAndDate"
+        app:layout_constraintTop_toBottomOf="@id/txtTimeAndDate"
+        app:layout_constraintWidth_percent="0.25" />
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/mode_startDrawable"
+        android:layout_width="@dimen/_10sdp"
+        android:layout_height="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:elevation="@dimen/_6sdp"
+        app:layout_constraintBottom_toBottomOf="@+id/txtTag2"
+        app:layout_constraintStart_toStartOf="@+id/txtTag2"
+        app:layout_constraintTop_toTopOf="@+id/txtTag2"
+        app:srcCompat="@drawable/happy" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/txtTag2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="@id/emptyView"
-        android:drawableStart="@drawable/ic_profile_small"
-        app:layout_constraintStart_toEndOf="@id/txtTag1"
-        app:layout_constraintBottom_toBottomOf="@id/txtTag1"
-        app:layout_constraintTop_toTopOf="@id/txtTag1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="@dimen/_10sdp"
-        android:text="Happy"
-        android:fontFamily="@font/roboto_regular"
-        android:paddingVertical="@dimen/_2sdp"
-        android:paddingHorizontal="@dimen/_5sdp"
         android:background="@drawable/bg_tag"
         android:drawablePadding="@dimen/_5sdp"
+        android:elevation="@dimen/_1sdp"
+        android:fontFamily="@font/roboto_regular"
         android:gravity="center_vertical"
+        android:paddingVertical="@dimen/_2sdp"
+        android:paddingStart="@dimen/_20sdp"
+        android:paddingEnd="@dimen/_1sdp"
+        android:text="@string/happy"
+        android:textColor="#334155"
         android:textSize="@dimen/_10sdp"
-        android:textStyle="normal"/>
+        android:textStyle="normal"
+        app:layout_constraintBottom_toBottomOf="@id/txtTag1"
+        app:layout_constraintEnd_toStartOf="@id/emptyView"
+        app:layout_constraintHeight_percent="0.3"
+        app:layout_constraintStart_toEndOf="@id/txtTag1"
+        app:layout_constraintTop_toTopOf="@id/txtTag1"
+        app:layout_constraintWidth_percent="0.2" />
 
     <View
         android:id="@+id/emptyView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="@id/txtTag1"
+        android:elevation="@dimen/_1sdp"
         app:layout_constraintBottom_toBottomOf="@id/txtTag1"
+        app:layout_constraintEnd_toStartOf="@id/icAudio"
         app:layout_constraintStart_toEndOf="@id/txtTag2"
-        app:layout_constraintEnd_toStartOf="@id/icAudio"/>
+        app:layout_constraintTop_toTopOf="@id/txtTag1" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/icAudio"
@@ -89,23 +108,24 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/_10sdp"
         android:visibility="invisible"
-        app:layout_constraintStart_toEndOf="@id/emptyView"
-        app:layout_constraintTop_toTopOf="@id/txtTag1"
         app:layout_constraintBottom_toBottomOf="@id/txtTag1"
         app:layout_constraintEnd_toStartOf="@id/icImage"
-        app:srcCompat="@drawable/ic_mic"/>
+        app:layout_constraintStart_toEndOf="@id/emptyView"
+        app:layout_constraintTop_toTopOf="@id/txtTag1"
+        app:srcCompat="@drawable/ic_mic" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/icImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/icAudio"
         android:layout_marginEnd="@dimen/_10sdp"
         android:layout_marginBottom="@dimen/_7sdp"
-        app:layout_constraintTop_toBottomOf="@id/txtTimeAndDate"
+        android:elevation="@dimen/_1sdp"
         app:layout_constraintBottom_toBottomOf="@id/topView"
         app:layout_constraintEnd_toEndOf="@id/topView"
-        app:srcCompat="@drawable/ic_image"/>
+        app:layout_constraintStart_toEndOf="@id/icAudio"
+        app:layout_constraintTop_toBottomOf="@id/txtTimeAndDate"
+        app:srcCompat="@drawable/ic_image" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

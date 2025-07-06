@@ -3,5 +3,9 @@
 
     <stroke android:color= "@color/stroke_color" android:width="0.5dp"/>
     <solid android:color="@color/emoji_color_three"/>
-    <corners android:radius="@dimen/_5sdp"/>
+
+    <corners android:radius="@dimen/_6sdp" />
+    <stroke
+        android:width="@dimen/_1sdp"
+        android:color="#61A3C0" />
 </shape>

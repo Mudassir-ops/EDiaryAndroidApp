@@ -7,19 +7,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.easydiaryandjournalwithlock.R
 import com.example.easydiaryandjournalwithlock.databinding.FragmentHomeBinding
-import com.example.easydiaryandjournalwithlock.databinding.FragmentPermissionBinding
-import com.example.neweasydairy.data.NotepadEntity
-import com.example.neweasydairy.dialogs.AudioDialog
 import com.example.neweasydairy.dialogs.RatingDialog
 import com.example.neweasydairy.utilis.Objects.CHECK_NAVIGATION
 import com.example.neweasydairy.utilis.Objects.CLICKEDITEMDATA
 import com.example.neweasydairy.utilis.Objects.FROM_HOME_FRAGMENT
-import com.example.neweasydairy.utilis.formatDate
 import com.example.neweasydairy.utilis.monthlyFormatDate
 
 

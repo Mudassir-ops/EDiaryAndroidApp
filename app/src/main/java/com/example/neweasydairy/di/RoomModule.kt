@@ -21,22 +21,18 @@ object RoomModule {
     @Provides
     @Singleton
     fun provideNotepadDatabase(@ApplicationContext context: Context): NotepadDatabase {
-        val MIGRATION_1_2 = object : Migration(1, 2) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL("ALTER TABLE NotePad ADD COLUMN newField TEXT")
-            }
-        }
-
         return Room.databaseBuilder(
             context.applicationContext,
             NotepadDatabase::class.java,
             "note_pad_database"
-        ).addMigrations(MIGRATION_1_2).build()
+        ).fallbackToDestructiveMigration().build()
     }
+
     @Provides
     fun provideNoteDao(database: NotepadDatabase): NotePadDao {
         return database.notepadDao()
     }
+
     @Provides
     fun provideReminderDao(database: NotepadDatabase): ReminderDao {
         return database.reminderDao()
