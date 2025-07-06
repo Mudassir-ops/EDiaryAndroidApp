@@ -88,7 +88,7 @@ class HomeAdapter(
                         ContextCompat.getDrawable(holder.itemView.context, R.drawable.bg_item_three)
                     txtTag2.text = txtTag2.context.getString(R.string.calm)
                     txtTag2.adjustModDrawableShape(color = "#61A3C0")
-                    modeStartDrawable.setModDrawAble(res = R.drawable.happy)
+                    modeStartDrawable.setModDrawAble(res = R.drawable.excited)
                 }
 
                 "Four" -> {
@@ -102,9 +102,9 @@ class HomeAdapter(
                 "Five" -> {
                     topView.background =
                         ContextCompat.getDrawable(holder.itemView.context, R.drawable.bg_item_five)
-                    txtTag2.text = txtTag2.context.getString(R.string.excited)
+                    txtTag2.text = txtTag2.context.getString(R.string.sad)
                     txtTag2.adjustModDrawableShape(color = "#AC9158")
-                    modeStartDrawable.setModDrawAble(res = R.drawable.happy)
+                    modeStartDrawable.setModDrawAble(res = R.drawable.sad)
                 }
 
                 "Six" -> {
