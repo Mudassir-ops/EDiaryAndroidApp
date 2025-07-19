@@ -54,7 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_14sdp"
         android:elevation="@dimen/_2sdp"
-        android:fontFamily="@font/roboto_bold"
+        android:fontFamily="@font/roboto_medium"
         android:text="@string/start_writing_diary"
         android:textColor="#0F172A"
         android:textSize="@dimen/_15ssp"

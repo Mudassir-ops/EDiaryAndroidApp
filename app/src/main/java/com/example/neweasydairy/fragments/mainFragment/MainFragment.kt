@@ -150,7 +150,7 @@ class MainFragment : Fragment() {
         editNameViewModel.loadProfileImage()
 
         editNameViewModel.imagePath.observe(viewLifecycleOwner) { imagePath ->
-            Log.e("imagePath", "onCreate: imagePath MainFragment $imagePath", )
+            Log.e("imagePath", "onCreate: imagePath MainFragment $imagePath")
 
             imagePath?.let {
                 Glide.with(this)
@@ -163,7 +163,10 @@ class MainFragment : Fragment() {
         val userName = languageRepository.getUserName()
 
         if (userName != null) {
-            binding?.drawerLayout?.txtName?.text = userName
+            val name = "saqib niazi"
+            binding?.drawerLayout?.txtName?.text = name.split(" ").joinToString(" ") {
+                it.replaceFirstChar { char -> char.uppercaseChar() }
+            }
         }
         binding?.apply {
             setUpHeaderLayout()

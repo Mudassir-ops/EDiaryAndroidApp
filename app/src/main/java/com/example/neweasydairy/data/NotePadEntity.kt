@@ -15,16 +15,23 @@ data class NotepadEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val noteTitle: String = "",
-    var noteDescription: String = "",
-    var color: Int = 0,
-    var timestamp: Long = System.currentTimeMillis(),
+    val noteDescription: String = "",
+    val color: Int = 0,
+    val timestamp: Long = System.currentTimeMillis(),
+
     @TypeConverters(ImageConverter::class)
-    var imageList: List<ImageDataModelGallery> = emptyList(),
-    var fontFamilyName:String = "normal",
-    var icEmojiName:String = "happy",
-    var txtHeadingName:Int = 0,
-    var txtTextAlign:Int = 0,
-    var textColorCode:Int = 0,
-    var backgroundValue:Int = 0,
-    var tagsText:String = ""
-):Parcelable
+    val imageList: List<ImageDataModelGallery> = emptyList(),
+
+    val fontFamilyName: String = "normal",
+    val icEmojiName: String = "happy",
+    val txtHeadingName: Int? = null,
+    val txtTextAlign: Int? = null,
+    val textColorCode: Int? = null,
+    val backgroundValue: Int? = null,
+    val tagsText: String = "",
+    val emojiRes: Int? = null,
+    val bgImgRes: Int? = null,
+    val emojiCardBgColor: String? = "",
+    val emojiName: String? = ""
+
+) : Parcelable

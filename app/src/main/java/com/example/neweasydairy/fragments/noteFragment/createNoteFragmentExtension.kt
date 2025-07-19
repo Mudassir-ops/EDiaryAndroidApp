@@ -4,11 +4,12 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
@@ -18,26 +19,41 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.easydiaryandjournalwithlock.R
 import com.example.easydiaryandjournalwithlock.databinding.FragmentCreateNotesBinding
-import com.example.neweasydairy.utilis.Objects.FROM_HOME_FRAGMENT
+import com.example.neweasydairy.utilis.Objects.FROM_ICON_ADD_NOTE
 import com.example.neweasydairy.utilis.toast
 import java.util.Date
 
 
 fun FragmentCreateNotesBinding?.clickListener(context: Context, fragment: CreateNotesFragment) {
     this?.apply {
-        val icons = listOf(icGrid, icText, icImageNote, icHash)
-        icHash.setOnClickListener {
-            Log.d("selectedImages", "Before navigating: ${fragment.selectedImages}")
-            fragment.viewModel.setSelectedImages(fragment.selectedImages)
-            fragment.viewModel.title = fragment.binding?.txtTitle?.text.toString()
-            fragment.viewModel.description = fragment.binding?.txtEdDescription?.text.toString()
-            fragment.viewModel.icEmojiName = fragment.binding?.icEmoji?.contentDescription.toString()
-            if (fragment.findNavController().currentDestination?.id == R.id.createNotesFragment) {
-                fragment.findNavController().navigate(R.id.action_createNotesFragment_to_tagsFragment)
+        val icons = listOf(icGrid, icText, icImageNote)
+        icHash.setOnCheckedChangeListener { view, b ->
+            if (b) {
+                viewTag.visibility = View.VISIBLE
+                txtTag.setSelection(txtTag.text?.length ?: 0)
+                txtTag.requestFocus()
+                val imm =
+                    context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                imm?.showSoftInput(txtTag, InputMethodManager.SHOW_IMPLICIT)
+
+            } else {
+                viewTag.visibility = View.GONE
             }
-            resetIconColors(context, icons)
-            icHash.setColorFilter(ContextCompat.getColor(context, R.color.app_color))
+            Log.d("selectedImages", "Before navigating: ${fragment.selectedImages}")
         }
+        /*  icHash.setOnClickListener {
+              Log.d("selectedImages", "Before navigating: ${fragment.selectedImages}")
+              viewTag.visibility = View.VISIBLE
+  //            fragment.viewModel.setSelectedImages(fragment.selectedImages)
+  //            fragment.viewModel.title = fragment.binding?.txtTitle?.text.toString()
+  //            fragment.viewModel.description = fragment.binding?.txtEdDescription?.text.toString()
+  //            fragment.viewModel.icEmojiName = fragment.binding?.icEmoji?.contentDescription.toString()
+  //            if (fragment.findNavController().currentDestination?.id == R.id.createNotesFragment) {
+  //                fragment.findNavController().navigate(R.id.action_createNotesFragment_to_tagsFragment)
+  //            }
+  //            resetIconColors(context, icons)
+  //            icHash.setColorFilter(ContextCompat.getColor(context, R.color.app_color))
+          }*/
         icBack.setOnClickListener {
             fragment.findNavController().navigateUp()
         }
@@ -52,7 +68,8 @@ fun FragmentCreateNotesBinding?.clickListener(context: Context, fragment: Create
         icImageNote.setOnClickListener {
             fragment.viewModel.title = fragment.binding?.txtTitle?.text.toString()
             fragment.viewModel.description = fragment.binding?.txtEdDescription?.text.toString()
-            fragment.viewModel.icEmojiName = fragment.binding?.icEmoji?.contentDescription.toString()
+            fragment.viewModel.icEmojiName =
+                fragment.binding?.icEmoji?.contentDescription.toString()
             resetIconColors(context, icons)
             icImageNote.setColorFilter(ContextCompat.getColor(context, R.color.app_color))
             fragment.photoDialog?.show()
@@ -63,12 +80,13 @@ fun FragmentCreateNotesBinding?.clickListener(context: Context, fragment: Create
             fragment.textDialog?.show()
         }
         txtSave.setOnClickListener {
-                        insertData(notesFragment = fragment)
-                        fragment.requireActivity().toast("Data Save Successfully")
-                        if (fragment.findNavController().currentDestination?.id == R.id.createNotesFragment) {
-                            fragment.findNavController().navigate(R.id.action_createNotesFragment_to_mainFragment)
-                        }
-                    }
+            insertData(notesFragment = fragment)
+            fragment.requireActivity().toast("Data Save Successfully")
+            if (fragment.findNavController().currentDestination?.id == R.id.createNotesFragment) {
+                fragment.findNavController()
+                    .navigate(R.id.action_createNotesFragment_to_mainFragment)
+            }
+        }
     }
 }
 
@@ -112,23 +130,24 @@ private fun redirectToSystemSettings(context: Context) {
     context.startActivity(intent)
 }
 
-fun insertData(notesFragment: CreateNotesFragment){
+fun insertData(notesFragment: CreateNotesFragment) {
     val description = notesFragment.binding?.txtEdDescription?.text.toString()
     val title = notesFragment.binding?.txtTitle?.text.toString()
     val currentTime = Date()
     val textSize = notesFragment.binding?.txtTitle?.textSize?.toInt() ?: 0
     val textColor = notesFragment.binding?.txtTitle?.currentTextColor ?: 0
     val emojiName = notesFragment.binding?.icEmoji?.contentDescription
-    var textAlignment = 0
-    when (notesFragment.binding?.txtTitle?.gravity) {
+    val textAlignment: Int = when (notesFragment.binding?.txtTitle?.gravity) {
         8388661 -> {
-            textAlignment = 2
+            2
         }
+
         17 -> {
-            textAlignment = 1
+            1
         }
+
         else -> {
-            textAlignment = 0
+            0
         }
     }
     notesFragment.binding?.apply {
@@ -149,7 +168,7 @@ fun insertData(notesFragment: CreateNotesFragment){
                 backgroundValue = notesFragment.backgroundValue,
                 tagsText = notesFragment.viewModel.tagList.toString()
             )
-        }else{
+        } else {
             notesFragment.viewModel.insertNoteData(
                 title = title,
                 description = description,
@@ -162,14 +181,18 @@ fun insertData(notesFragment: CreateNotesFragment){
                 txtTextAlign = textAlignment,
                 txtColorCode = textColor,
                 backgroundValue = notesFragment.backgroundValue,
-                tagsText = notesFragment.viewModel.tagList.toString()
+                tagsText = notesFragment.binding?.txtTag?.text.toString(),
+                emojiRes = getEmoji(emojiName.toString()),
+                bgImgRes = emojiName.toString().getEmojiColorForCardBg(),
+                cardBgColor = getEmojiColor(emojiName.toString()),
+                emojiName = emojiName.toString().getEmojiName()
             )
         }
     }
 }
 
 fun ImageView.setEmoji(emojiName: String, context: Context?) {
-    val drawableRes = when(emojiName) {
+    val drawableRes = when (emojiName) {
         "One" -> R.drawable.ic_emoji_one
         "Two" -> R.drawable.ic_emoji_two
         "Three" -> R.drawable.ic_emoji_three
@@ -183,14 +206,64 @@ fun ImageView.setEmoji(emojiName: String, context: Context?) {
     this.contentDescription = emojiName
 }
 
+
+fun getEmojiColor(emojiName: String): String {
+    return when (emojiName) {
+        "One" -> "#FF8D95"
+        "Two" -> "#FFAC81"
+        "Three" -> "#AADAF0"
+        "Four" -> "#A29DFB"
+        "Five" -> "#FFDE8B"
+        "Six" -> "#5EE3A9"
+        else -> "#FF8D95"
+    }
+}
+
+fun getEmoji(emojiName: String): Int {
+    return when (emojiName) {
+        "One" -> R.drawable.ic_emoji_one
+        "Two" -> R.drawable.ic_emoji_two
+        "Three" -> R.drawable.ic_emoji_three
+        "Four" -> R.drawable.ic_emoji_four
+        "Five" -> R.drawable.ic_emoji_five_new
+        "Six" -> R.drawable.ic_emoji_six_new
+        else -> R.drawable.ic_emoji_one
+    }
+}
+
+fun String.getEmojiColorForCardBg(): Int {
+    return when (this) {
+        "One" -> R.drawable.bg_item_one
+        "Two" -> R.drawable.bg_item_two
+        "Three" -> R.drawable.bg_item_three
+        "Four" -> R.drawable.bg_item_four
+        "Five" -> R.drawable.bg_item_five
+        "Six" -> R.drawable.bg_item_six
+        else -> R.drawable.bg_item_one
+    }
+}
+
+fun String.getEmojiName(): String {
+    return when (this) {
+        "One" -> "Happy"
+        "Two" -> "Angry"
+        "Three" -> "Calm"
+        "Four" -> "Cheeky"
+        "Five" -> "Sad"
+        "Six" -> "Meh"
+        else -> "Happy"
+    }
+}
+
+
 fun TextView.setFont(fontName: String, context: Context?) {
     val typeface = when (fontName) {
-        "Intaliana" -> ResourcesCompat.getFont(context?:return, R.font.italiana_regular)
-        "Leckerli" -> ResourcesCompat.getFont(context?:return, R.font.leckerlione_regular)
-        "Margarine" -> ResourcesCompat.getFont(context?:return, R.font.margarine_regular)
-        "Rethink" -> ResourcesCompat.getFont(context?:return, R.font.rethinksans_regular)
-        "Pacifico" -> ResourcesCompat.getFont(context?:return, R.font.pacifico)
-        "Lobster" -> ResourcesCompat.getFont(context?:return, R.font.lobster_regular)
+        "Intaliana" -> ResourcesCompat.getFont(context ?: return, R.font.italiana_regular)
+        "Leckerli" -> ResourcesCompat.getFont(context ?: return, R.font.leckerlione_regular)
+        "Margarine" -> ResourcesCompat.getFont(context ?: return, R.font.margarine_regular)
+        "Rethink" -> ResourcesCompat.getFont(context ?: return, R.font.rethinksans_regular)
+        "Pacifico" -> ResourcesCompat.getFont(context ?: return, R.font.pacifico)
+        "Lobster" -> ResourcesCompat.getFont(context ?: return, R.font.lobster_regular)
         else -> null
     }
 
@@ -214,6 +287,7 @@ fun ImageView.setBackgroundByIndex(context: Context?, index: Int) {
         Log.e("changeBackground", "onChangeBackground: $index")
     }
 }
+
 fun TextView.setTextAlignmentByIndex(index: Int) {
     gravity = when (index) {
         0 -> Gravity.START

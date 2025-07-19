@@ -19,9 +19,10 @@ import jakarta.inject.Inject
 
 @AndroidEntryPoint
 class WelcomeFragment : Fragment() {
-    private var _binding : FragmentWelcomeBinding?=null
+    private var _binding: FragmentWelcomeBinding? = null
     private val binding get() = _binding
-    private val languageViewModel:LanguageViewModel by activityViewModels()
+    private val languageViewModel: LanguageViewModel by activityViewModels()
+
     @Inject
     lateinit var languageRepository: LanguageRepository
 
@@ -42,7 +43,7 @@ class WelcomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentWelcomeBinding.inflate(inflater,container,false)
+        _binding = FragmentWelcomeBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
@@ -51,14 +52,15 @@ class WelcomeFragment : Fragment() {
 
         val userName = languageRepository.getUserName()
         if (userName != null) {
-           binding?.txtWelcomeName?.text = "Welcome Back, $userName"
+            val formattedName = userName.replaceFirstChar { it.uppercaseChar() }
+            binding?.txtWelcomeName?.text = getString(R.string.welcome_back, formattedName)
         }
         binding?.apply {
 
 
             btnContinue.setOnClickListener {
                 languageViewModel.setWelcomeButtonWelcomeScreen(true)
-                if (findNavController().currentDestination?.id == R.id.welcomeFragment){
+                if (findNavController().currentDestination?.id == R.id.welcomeFragment) {
                     findNavController().navigate(R.id.action_welcomeFragment_to_mainFragment)
                 }
             }

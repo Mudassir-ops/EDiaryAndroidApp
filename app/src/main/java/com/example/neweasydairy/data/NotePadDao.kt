@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface NotePadDao {
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNoteData(notepadEntity: NotepadEntity)
 

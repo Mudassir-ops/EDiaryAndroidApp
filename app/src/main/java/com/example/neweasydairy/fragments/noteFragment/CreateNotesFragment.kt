@@ -8,12 +8,15 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -23,6 +26,9 @@ import androidx.core.content.edit
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.easydiaryandjournalwithlock.R
 import com.example.easydiaryandjournalwithlock.databinding.FragmentCreateNotesBinding
@@ -36,6 +42,7 @@ import com.example.neweasydairy.dialogs.SaveVoiceDialog
 import com.example.neweasydairy.dialogs.TextDialog
 import com.example.neweasydairy.fragments.noteFragment.imageFunctionality.ImageAdapter
 import com.example.neweasydairy.fragments.noteFragment.imageFunctionality.ImageDataModelGallery
+import com.example.neweasydairy.fragments.tags.TagsViewModel
 import com.example.neweasydairy.interfaces.OnChangeBackgroundListener
 import com.example.neweasydairy.interfaces.OnEmojiChangeListener
 import com.example.neweasydairy.interfaces.OnFontSelectionListener
@@ -54,6 +61,7 @@ import com.example.neweasydairy.utilis.monthlyFormatDate
 import com.example.neweasydairy.utilis.saveToExternalStorage
 import com.example.neweasydairy.utilis.toast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -84,7 +92,7 @@ class CreateNotesFragment : Fragment(),
     var backgroundValue: Int = 7
     private var cameraPermissionDeniedCount = 0
     private var galleryPermissionDeniedCount = 0
-    var selectedFontFamily: String = "Intaliana"
+    var selectedFontFamily: String = "Rethink"
     var note: NotepadEntity? = null
     private var tagName: String? = null
 
@@ -92,7 +100,8 @@ class CreateNotesFragment : Fragment(),
         super.onAttach(context)
         val callback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                findNavController().navigate(R.id.action_createNotesFragment_to_mainFragment)             }
+                findNavController().navigate(R.id.action_createNotesFragment_to_mainFragment)
+            }
         }
         activity?.onBackPressedDispatcher?.addCallback(this, callback)
     }
@@ -111,14 +120,12 @@ class CreateNotesFragment : Fragment(),
         setupDialogs()
         setupPermissions()
         setupImagePickers()
-
         imageAdapter = ImageAdapter(
             imageList = selectedImages,
             context ?: return,
-            onShareClick = {imagePath ->
-              //  imagePath.shareImage(requireContext())
-                Log.e("imageUriSaqib", "onShareClick:, imagePath: $imagePath", )
-
+            onShareClick = { imagePath ->
+                //  imagePath.shareImage(requireContext())
+                Log.e("imageUriSaqib", "onShareClick:, imagePath: $imagePath")
             }
         )
     }
@@ -127,19 +134,18 @@ class CreateNotesFragment : Fragment(),
         super.onViewCreated(view, savedInstanceState)
         argument = arguments?.getString(CHECK_NAVIGATION).orEmpty()
         note = arguments?.getParcelable(CLICKEDITEMDATA)
-
         Log.d("note", "onViewCreated: ${note?.id}")
         selectedImages = arguments?.getParcelableArrayList("selectedAllImages") ?: arrayListOf()
         tagName = arguments?.getString("tagName")
         handleNavigationArguments()
         observeBackgroundState()
         setupUI()
-
-
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        viewModel.resetState()
+
         _binding = null
     }
 
@@ -196,9 +202,8 @@ class CreateNotesFragment : Fragment(),
                 }
             }
 
-            FROM_HOME_FRAGMENT ->{
+            FROM_HOME_FRAGMENT -> {
                 Log.d("saqibRehman", "Current TagName: FROM_HOME_FRAGMENT")
-
                 note?.let { setupNoteData(it) }
             }
 
@@ -253,6 +258,7 @@ class CreateNotesFragment : Fragment(),
                 viewModel.tagList.clear()
             }
         }
+
     }
 
     private fun setupTextAlignment(alignment: Int?) {
@@ -269,6 +275,7 @@ class CreateNotesFragment : Fragment(),
     }
 
     private fun setupBackground(backgroundValue: Int?) {
+        Log.e("setupBackground", "setupBackground:$backgroundValue ")
         val drawableRes = when (backgroundValue) {
             0 -> R.drawable.color_theme_one
             1 -> R.drawable.background_1
@@ -277,13 +284,19 @@ class CreateNotesFragment : Fragment(),
             4 -> R.drawable.background_4
             5 -> R.drawable.background_5
             else -> R.drawable.bg_add_note
+
         }
+
+
+
         binding?.backgroundImage?.setImageDrawable(
             ContextCompat.getDrawable(
-                requireContext(),
+                context ?: return,
                 drawableRes
             )
         )
+
+
     }
 
     private fun setupFont(fontName: String?) {
@@ -297,7 +310,9 @@ class CreateNotesFragment : Fragment(),
             else -> null
         }
         fontRes?.let { binding?.txtTitle?.typeface = ResourcesCompat.getFont(requireContext(), it) }
-        fontRes?.let { binding?.txtEdDescription?.typeface = ResourcesCompat.getFont(requireContext(), it) }
+        fontRes?.let {
+            binding?.txtEdDescription?.typeface = ResourcesCompat.getFont(requireContext(), it)
+        }
     }
 
     private fun setupTextSize(size: Int?) {
@@ -334,8 +349,13 @@ class CreateNotesFragment : Fragment(),
     }
 
     private fun observeBackgroundState() {
-        viewModel.backgroundState.observe(viewLifecycleOwner) { backgroundValue ->
-            setupBackground(backgroundValue)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.backgroundState.flowWithLifecycle(lifecycle).collect { backgroundVal ->
+                backgroundValue = backgroundVal
+                if (backgroundVal != 7) {
+                    setupBackground(backgroundValue)
+                }
+            }
         }
     }
 
@@ -347,6 +367,15 @@ class CreateNotesFragment : Fragment(),
             imageAdapter.updateImageList(selectedImages)
             selectedImages.reverse()
             clickListener(requireContext(), this@CreateNotesFragment)
+            viewModel.currentNoteId?.let {
+
+            } ?: run {
+                txtTitle.setSelection(txtTitle.text?.length ?: 0)
+                txtTitle.requestFocus()
+                val imm =
+                    context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                imm?.showSoftInput(txtTitle, InputMethodManager.SHOW_IMPLICIT)
+            }
         }
     }
 
@@ -418,7 +447,7 @@ class CreateNotesFragment : Fragment(),
             activity ?: return,
             cameraCallBack = {
                 requestCameraPermission.launch(Manifest.permission.CAMERA)
-                             },
+            },
 
             galleryCallBack = {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -441,7 +470,8 @@ class CreateNotesFragment : Fragment(),
             registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
                 tagName?.let { it1 -> viewModel.setTagName(it1) }
                 bitmap?.let {
-                    processCapturedImage(it) }
+                    processCapturedImage(it)
+                }
             }
     }
 

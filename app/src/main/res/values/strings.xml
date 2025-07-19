@@ -35,5 +35,11 @@
     <string name="meh">Meh</string>
     <string name="calm">Calm</string>
     <string name="personal">Personal</string>
+    <string name="welcome_back">Welcome Back, %1$s</string>
+    <string name="hash">#</string>
+    <string name="_13_wed_aug_2024">13 Wed, Aug 2024</string>
+    <string name="title">Title</string>
+    <string name="today_9_13_pm">Today 9:13 PM</string>
+    <string name="add_note">Add Note</string>
 
 </resources>

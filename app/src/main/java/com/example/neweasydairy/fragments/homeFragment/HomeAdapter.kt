@@ -1,7 +1,7 @@
 package com.example.neweasydairy.fragments.homeFragment
 
 import android.annotation.SuppressLint
-import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.util.Log
@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.easydiaryandjournalwithlock.R
 import com.example.easydiaryandjournalwithlock.databinding.HomeItemNewBinding
 import com.example.neweasydairy.data.NotepadEntity
-import com.example.neweasydairy.utilis.formatDate
+import com.example.neweasydairy.fragments.noteFragment.setFont
 import com.example.neweasydairy.utilis.formatTimestampForDisplay
 
 class HomeAdapter(
@@ -52,80 +52,47 @@ class HomeAdapter(
 
 
         holder.binding.apply {
-            txtTimeAndDate.text = dataModel.timestamp.formatTimestampForDisplay()
-            Log.e("tagsHere-->", "onBindViewHolder: $tags")
-            if (tags.isNotEmpty() && tags[0].isNotBlank()) {
-                txtTag1.text = tags[0]
-                txtTag1.visibility = View.VISIBLE
-            } else {
-                txtTag1.text = txtTag1.context.getString(R.string.personal)
-                txtTag1.visibility = View.VISIBLE
+            try {
+                txtTimeAndDate.text = dataModel.timestamp.formatTimestampForDisplay()
+                Log.e("tagsHere-->", "onBindViewHolder: $tags")
+                if (tags.isNotEmpty() && tags[0].isNotBlank()) {
+                    txtTag1.text = tags[0]
+                    txtTag1.visibility = View.VISIBLE
+                } else {
+                    txtTag1.text = txtTag1.context.getString(R.string.personal)
+                    txtTag1.visibility = View.VISIBLE
+                }
+                if (dataModel.imageList.isEmpty()) {
+                    icImage.visibility = View.INVISIBLE
+                } else {
+                    icImage.visibility = View.VISIBLE
+                }
+                txtTitle.text = dataModel.noteTitle
+                txtDesc.text = dataModel.noteDescription
+                txtTitle.setFont(dataModel.fontFamilyName, txtTitle.context ?: return)
+                txtDesc.setFont(dataModel.fontFamilyName, txtDesc.context ?: return)
+                endDrawableView.backgroundTintList =
+                    ColorStateList.valueOf(Color.parseColor(dataModel.emojiCardBgColor))
+                dataModel.emojiRes?.let { modeEndDrawable.setModDrawAble(res = it) }
+                topView.background =
+                    dataModel.bgImgRes?.let {
+                        ContextCompat.getDrawable(
+                            holder.itemView.context,
+                            it
+                        )
+                    } ?: run {
+                        ContextCompat.getDrawable(
+                            holder.itemView.context,
+                            R.drawable.bg_item_one
+                        )
+                    }
+                txtTag2.text = dataModel.emojiName
+                dataModel.emojiCardBgColor?.let { txtTag2.adjustModDrawableShape(color = it) }
+                dataModel.emojiRes?.let { modeStartDrawable.setModDrawAble(res = it) }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-            if (dataModel.imageList.isEmpty()) {
-                icImage.visibility = View.INVISIBLE
-            } else {
-                icImage.visibility = View.VISIBLE
-            }
-            when (dataModel.icEmojiName) {
-                "One" -> {
-                    topView.background =
-                        ContextCompat.getDrawable(holder.itemView.context, R.drawable.bg_item_one)
-                    txtTag2.text = txtTag2.context.getString(R.string.happy)
-                    txtTag2.adjustModDrawableShape(color = "#D07B80")
-                    modeStartDrawable.setModDrawAble(res = R.drawable.happy)
-                }
-
-                "Two" -> {
-                    topView.background =
-                        ContextCompat.getDrawable(holder.itemView.context, R.drawable.bg_item_two)
-                    txtTag2.text = txtTag2.context.getString(R.string.angry)
-                    txtTag2.adjustModDrawableShape(color = "#C97B52")
-                    modeStartDrawable.setModDrawAble(res = R.drawable.angry)
-                }
-
-                "Three" -> {
-                    topView.background =
-                        ContextCompat.getDrawable(holder.itemView.context, R.drawable.bg_item_three)
-                    txtTag2.text = txtTag2.context.getString(R.string.calm)
-                    txtTag2.adjustModDrawableShape(color = "#61A3C0")
-                    modeStartDrawable.setModDrawAble(res = R.drawable.excited)
-                }
-
-                "Four" -> {
-                    topView.background =
-                        ContextCompat.getDrawable(holder.itemView.context, R.drawable.bg_item_four)
-                    txtTag2.text = txtTag2.context.getString(R.string.cheeky)
-                    txtTag2.adjustModDrawableShape(color = "#635FBF")
-                    modeStartDrawable.setModDrawAble(res = R.drawable.happy)
-                }
-
-                "Five" -> {
-                    topView.background =
-                        ContextCompat.getDrawable(holder.itemView.context, R.drawable.bg_item_five)
-                    txtTag2.text = txtTag2.context.getString(R.string.sad)
-                    txtTag2.adjustModDrawableShape(color = "#AC9158")
-                    modeStartDrawable.setModDrawAble(res = R.drawable.sad)
-                }
-
-                "Six" -> {
-                    topView.background =
-                        ContextCompat.getDrawable(holder.itemView.context, R.drawable.bg_item_six)
-                    txtTag2.text = txtTag2.context.getString(R.string.meh)
-                    txtTag2.adjustModDrawableShape(color = "#59C39A")
-                    modeStartDrawable.setModDrawAble(res = R.drawable.happy)
-                }
-
-                else -> {
-                    topView.background =
-                        ContextCompat.getDrawable(holder.itemView.context, R.drawable.bg_item_one)
-                    txtTag2.text = txtTag2.context.getString(R.string.happy)
-                    txtTag2.adjustModDrawableShape(color = "#D07B80")
-                    modeStartDrawable.setModDrawAble(res = R.drawable.happy)
-                }
-            }
-
         }
-
     }
 
     @SuppressLint("NotifyDataSetChanged")

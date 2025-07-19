@@ -8,13 +8,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.neweasydairy.data.NotepadEntity
+import com.example.neweasydairy.data.SettingsDao
+import com.example.neweasydairy.data.SettingsEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val homeRepository: HomeRepository
+    private val homeRepository: HomeRepository,
+    private val settingsDao: SettingsDao
 ) : ViewModel() {
 
     val allNotes = homeRepository.getAllNotes().asLiveData()
@@ -41,4 +44,15 @@ class HomeViewModel @Inject constructor(
     fun setRatingDialogShown() {
         homeRepository.setRatingDialogShown()
     }
+
+    fun insertSortingOrder(settingsEntity: SettingsEntity) {
+        viewModelScope.launch {
+            settingsDao.insertSortingOrderData(notepadEntity = settingsEntity)
+        }
+    }
+
+    suspend fun getSortingOrder(): SettingsEntity? {
+        return settingsDao.getSettings()
+    }
+
 }
