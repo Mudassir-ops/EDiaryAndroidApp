@@ -105,7 +105,8 @@ class CreateNoteViewModel @Inject constructor(
         txtTextAlign: Int,
         txtColorCode: Int,
         backgroundValue: Int,
-        tagsText: String
+        tagsText: String,
+        emojiName: String
     ) {
         viewModelScope.launch {
             val updatedNote = NotepadEntity(
@@ -121,7 +122,8 @@ class CreateNoteViewModel @Inject constructor(
                 txtTextAlign = txtTextAlign,
                 textColorCode = txtColorCode,
                 backgroundValue = backgroundValue,
-                tagsText = tagsText
+                tagsText = tagsText,
+                emojiName = emojiName
             )
             createNoteRepository.updateNoteData(updatedNote)
         }

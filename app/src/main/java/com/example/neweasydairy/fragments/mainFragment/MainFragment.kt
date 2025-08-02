@@ -161,10 +161,8 @@ class MainFragment : Fragment() {
             }
         }
         val userName = languageRepository.getUserName()
-
         if (userName != null) {
-            val name = "saqib niazi"
-            binding?.drawerLayout?.txtName?.text = name.split(" ").joinToString(" ") {
+            binding?.drawerLayout?.txtName?.text = userName.split(" ").joinToString(" ") {
                 it.replaceFirstChar { char -> char.uppercaseChar() }
             }
         }

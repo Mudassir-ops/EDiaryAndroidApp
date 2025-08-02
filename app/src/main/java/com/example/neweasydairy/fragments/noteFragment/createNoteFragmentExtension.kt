@@ -164,6 +164,7 @@ fun insertData(notesFragment: CreateNotesFragment) {
                 icEmojiName = emojiName.toString(),
                 txtHeadingName = textSize,
                 txtTextAlign = textAlignment,
+                emojiName = emojiName.toString().getEmojiName(),
                 txtColorCode = textColor,
                 backgroundValue = notesFragment.backgroundValue,
                 tagsText = notesFragment.viewModel.tagList.toString()
@@ -251,7 +252,7 @@ fun String.getEmojiName(): String {
         "Four" -> "Cheeky"
         "Five" -> "Sad"
         "Six" -> "Meh"
-        else -> "Happy"
+        else -> ""
     }
 }
 

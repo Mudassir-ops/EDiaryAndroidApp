@@ -116,6 +116,7 @@
                 android:id="@+id/icEmoji"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
+                android:tag="one"
                 android:layout_marginEnd="@dimen/_14sdp"
                 android:contentDescription="@string/one"
                 android:padding="@dimen/_2sdp"

@@ -36,28 +36,24 @@ class SplashFragment : Fragment() {
     }
 
     private fun checkNavigation() {
-        CoroutineScope(Dispatchers.Main).launch {
-            delay(1000)
-
-            val destination = when {
-             //   !viewModel.getIsDoneValue() -> R.id.action_splashFragment_to_languageFragment
-                !viewModel.getNextButtonIntroOne() -> R.id.action_splashFragment_to_introFragment
-                !viewModel.getNextButtonIntroTwo() -> R.id.action_splashFragment_to_introFragmentTwo
-                !viewModel.getNextButtonIntroThree() -> R.id.action_splashFragment_to_introFragmentThree
-                !viewModel.getDoneButtonPermission() -> R.id.action_splashFragment_to_permissionFragment
-                !viewModel.getNextButtonNameScreen() -> R.id.action_splashFragment_to_nameFragment
-             //   !viewModel.getNextButtonNameScreen() -> R.id.action_splashFragment_to_chooseThemeFragment
-                !viewModel.getPinButtonPinScreen() -> R.id.action_splashFragment_to_pinFragment
-                !viewModel.getPinButtonPinScreen() -> R.id.action_splashFragment_to_welcomeFragment
-                else -> R.id.action_splashFragment_to_mainFragment
-            }
-
-            navigateTo(destination)
+        val navController = findNavController()
+        val currentDestinationId = navController.currentDestination?.id
+        if (currentDestinationId != R.id.splashFragment) return
+        val destination = when {
+            !viewModel.getNextButtonIntroOne() -> R.id.action_splashFragment_to_introFragment
+            !viewModel.getNextButtonIntroTwo() -> R.id.action_splashFragment_to_introFragmentTwo
+            !viewModel.getNextButtonIntroThree() -> R.id.action_splashFragment_to_introFragmentThree
+            !viewModel.getDoneButtonPermission() -> R.id.action_splashFragment_to_permissionFragment
+            !viewModel.getNextButtonNameScreen() -> R.id.action_splashFragment_to_nameFragment
+            !viewModel.getPinButtonPinScreen() -> R.id.action_splashFragment_to_pinFragment
+            viewModel.getPinButtonPinScreen() -> R.id.action_splashFragment_to_welcomeFragment
+            else -> R.id.action_splashFragment_to_mainFragment
         }
-    }
-
-    private fun navigateTo(destination: Int) {
-        findNavController().navigate(destination)
+        if (currentDestinationId == R.id.splashFragment) {
+            if (view != null && isAdded) {
+                navController.navigate(destination)
+            }
+        }
     }
 
     override fun onDestroyView() {

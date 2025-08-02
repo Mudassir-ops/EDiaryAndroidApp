@@ -50,7 +50,6 @@ class HomeAdapter(
 
         val tags = cleanedTagsText.split(",").map { it.trim() }
 
-
         holder.binding.apply {
             try {
                 txtTimeAndDate.text = dataModel.timestamp.formatTimestampForDisplay()
