@@ -24,23 +24,16 @@ import com.example.neweasydairy.utilis.Objects.FROM_ICON_ADD_NOTE
 import com.example.neweasydairy.utilis.toast
 import java.util.Date
 
-fun FragmentCreateNotesBinding?.openAddTagPopUp(context: Context) {
-    this?.apply {
-        viewTag.visibility = View.VISIBLE
-        txtTag.setSelection(txtTag.text?.length ?: 0)
-        txtTag.requestFocus()
-        val imm =
-            context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-        imm?.showSoftInput(txtTag, InputMethodManager.SHOW_IMPLICIT)
-    }
-}
-
 fun FragmentCreateNotesBinding?.clickListener(context: Context, fragment: CreateNotesFragment) {
     this?.apply {
         val icons = listOf(icGrid, icText, icImageNote, icHash)
         icHash.setOnClickListener {
             icHash.setColorFilter(ContextCompat.getColor(context, R.color.app_color))
-            if (fragment.viewModel.currentNoteId == null) {
+            val isNewNote = fragment.viewModel.currentNoteId == null
+            val hasNoTags = fragment.note?.tagsList.isNullOrEmpty()
+            val hasUnknownTag =
+                fragment.note?.tagsList?.map { it.tagName }?.contains("Unknown") == true
+            if (isNewNote || hasNoTags || hasUnknownTag) {
                 fragment.editTagDialog?.show()
             } else {
                 if (fragment.findNavController().currentDestination?.id == R.id.createNotesFragment) {
@@ -48,7 +41,6 @@ fun FragmentCreateNotesBinding?.clickListener(context: Context, fragment: Create
                         .navigate(R.id.action_createNotesFragment_to_tagsFragment)
                 }
             }
-
             viewTag.visibility = View.GONE
             Log.d("selectedImages", "Before navigating: ${fragment.selectedImages}")
         }

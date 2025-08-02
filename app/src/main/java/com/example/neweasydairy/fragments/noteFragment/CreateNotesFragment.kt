@@ -249,28 +249,38 @@ class CreateNotesFragment : Fragment(),
 
     private fun setupTags() {
         Log.e("setupTags-->", "setupTags: ${viewModel.currentNoteId}")
-        if (viewModel.currentNoteId != null) {
+        if (viewModel.currentNoteId != null && note?.tagsList?.isNotEmpty() == true) {
+            Log.e("setupTags-->", "setupTags: ${viewModel.currentNoteId}--${note?.tagsList}")
             tagsViewModel.addAllTagsForCreatedNote(allTags = note?.tagsList?.toDomain() ?: listOf())
-            return
+        } else {
+            tagsViewModel.addAllTagsForCreatedNote(allTags = arrayListOf("Unknown"))
         }
         viewLifecycleOwner.lifecycleScope.launch {
             tagsViewModel.tagsStateFlow.flowWithLifecycle(lifecycle).collect {
-                val tagNames = it.map { tags -> tags }.toMutableList()
+                val rawTags = it.map { tag -> tag }
+                val tagNames = if (rawTags.size > 1 && rawTags.contains("Unknown")) {
+                    rawTags.filter { tag -> tag != "Unknown" }.toMutableList()
+                } else {
+                    rawTags.toMutableList()
+                }
                 listOfAllTags.clear()
                 listOfAllTags.addAll(tagNames)
                 binding?.flexboxLayout?.apply {
                     removeAllViews()
                     if (tagNames.isNotEmpty()) {
                         visibility = View.VISIBLE
-                        addTags(tagNames) {
+                        addTags(tagNames, onTagClick = {
                             editTagDialog?.show()
-                        }
+                        }, onRemoveTagClick = { tag ->
+                            tagsViewModel.removeTag(tag)
+                        })
                     } else {
                         visibility = View.GONE
                         viewModel.tagList.clear()
                     }
                 }
             }
+
         }
     }
 
@@ -347,8 +357,10 @@ class CreateNotesFragment : Fragment(),
                     R.drawable.bg_add_note
                 )
             )
-            binding?.flexboxLayout?.addTags(arrayListOf("Unknown")) {
+            binding?.flexboxLayout?.addTags(arrayListOf("Unknown"), onTagClick = {
                 editTagDialog?.show()
+            }) {
+                tagsViewModel.removeTag(it)
             }
         }
     }

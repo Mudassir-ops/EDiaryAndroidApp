@@ -34,6 +34,12 @@ class TagsViewModel @Inject constructor(
         }
     }
 
+    fun removeTag(tag: String) {
+        viewModelScope.launch {
+            tagsRepository.removeTag(tag)
+        }
+    }
+
     fun clearLocalTags() {
         viewModelScope.launch {
             tagsRepository.clearLocalTags()

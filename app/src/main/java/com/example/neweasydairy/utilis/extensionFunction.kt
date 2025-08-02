@@ -331,7 +331,8 @@ fun View.invisible() {
 
 fun FlexboxLayout.addTags(
     tagList: MutableList<String>,
-    onTagClick: ((String) -> Unit)? = null
+    onTagClick: ((String) -> Unit)? = null,
+    onRemoveTagClick: ((String) -> Unit)? = null,
 ) {
     if (tagList.isEmpty()) {
         this.visibility = View.GONE
@@ -381,6 +382,7 @@ fun FlexboxLayout.addTags(
                 }
                 this@addTags.removeView(tagContainer)
                 tagList.remove(tag)
+                onRemoveTagClick?.invoke(tag)
                 if (tagList.isEmpty()) {
                     this@addTags.visibility = View.GONE
                 }

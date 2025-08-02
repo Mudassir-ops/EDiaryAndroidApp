@@ -27,6 +27,11 @@ class TagsRepository @Inject constructor(private val customTagDao: CustomTagDao)
         _localTagsFlow.emit(_localTags.toList())
     }
 
+    suspend fun removeTag(tag: String) {
+        _localTags.remove(tag)
+        _localTagsFlow.emit(_localTags.toList())
+    }
+
     suspend fun clearLocalTags() {
         _localTags.clear()
         _localTagsFlow.emit(_localTags)
@@ -53,9 +58,6 @@ class TagsRepository @Inject constructor(private val customTagDao: CustomTagDao)
         // _tagsStateFlow.emit(customTagEntity)
     }
 
-    fun getAllTags(): Flow<List<CustomTagEntity>> {
-        return customTagDao.getAllTags()
-    }
 
     suspend fun deleteTagById(tagId: Int) {
         customTagDao.deleteTagById(tagId)

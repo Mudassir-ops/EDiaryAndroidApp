@@ -135,7 +135,6 @@ class TagsFragment : Fragment() {
         }
     }
 
-
     private fun observeViewModel() {
         viewModel.allTags.observe(viewLifecycleOwner) { tags ->
             binding?.apply {
@@ -152,7 +151,6 @@ class TagsFragment : Fragment() {
             }
         }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
