@@ -1,9 +1,12 @@
+package com.example.neweasydairy.dialogs
+
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.WindowManager
 import android.widget.Toast
@@ -11,7 +14,12 @@ import com.example.easydiaryandjournalwithlock.databinding.EditTagDialogBinding
 import com.example.neweasydairy.data.CustomTagEntity
 
 class EditTagDialog(
-    private val activity: Activity
+    activity: Activity,
+    private val label1: String,
+    private val label2: String,
+    private val label3: String,
+    var onUpdateTag: ((CustomTagEntity) -> Unit)? = null,
+    var onCancelTag: (() -> Unit)? = null,
 ) : Dialog(activity) {
     private val inflater = activity.getSystemService(
         Context.LAYOUT_INFLATER_SERVICE
@@ -19,7 +27,7 @@ class EditTagDialog(
     private val binding = EditTagDialogBinding.inflate(inflater)
 
     private var currentTag: CustomTagEntity? = null
-    var onUpdateTag: ((CustomTagEntity) -> Unit)? = null // Callback for updating tag
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,11 +40,22 @@ class EditTagDialog(
         setCanceledOnTouchOutside(true)
 
         binding.apply {
-            txtCancel.setOnClickListener { dismiss() }
+            txtUploadAudio.text = label1
+            editTags.hint = label2
+            txtEdit.text = label3
+
+            txtCancel.setOnClickListener {
+                onCancelTag?.invoke()
+                dismiss()
+            }
 
             txtEdit.setOnClickListener {
                 val updatedText = editTags.text.toString().trim()
-
+                if (label3 == "Add") {
+                    Log.e("updatedText", "onCreate: $updatedText")
+                    onUpdateTag?.invoke(CustomTagEntity(id = 0, tagName = updatedText))
+                    return@setOnClickListener
+                }
                 if (updatedText.isNotEmpty() && currentTag != null) {
                     val updatedTag = currentTag!!.copy(tagName = updatedText)
                     onUpdateTag?.invoke(updatedTag)

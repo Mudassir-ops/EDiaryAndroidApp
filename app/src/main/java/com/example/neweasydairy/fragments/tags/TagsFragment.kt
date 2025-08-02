@@ -1,6 +1,6 @@
 package com.example.neweasydairy.fragments.tags
 
-import EditTagDialog
+import com.example.neweasydairy.dialogs.EditTagDialog
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -14,10 +14,10 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.easydiaryandjournalwithlock.R
 import com.example.easydiaryandjournalwithlock.databinding.FragmentTagsBinding
+import com.example.neweasydairy.data.CustomTagEntity
 import com.example.neweasydairy.utilis.Objects.CHECK_NAVIGATION
 import com.example.neweasydairy.utilis.Objects.DELETE_ACTION
 import com.example.neweasydairy.utilis.Objects.EDIT_ACTION
-import com.example.neweasydairy.utilis.Objects.FROM_HOME_FRAGMENT
 import com.example.neweasydairy.utilis.Objects.FROM_TAG_FRAGMENT
 import com.example.neweasydairy.utilis.Objects.ITEM_CLICK
 import com.example.neweasydairy.utilis.toast
@@ -30,19 +30,24 @@ class TagsFragment : Fragment() {
 
     private var adapter: TagsAdapter? = null
     private val viewModel: TagsViewModel by viewModels()
-    var editTagDialog:EditTagDialog?=null
+    private var editTagDialog: EditTagDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        editTagDialog = EditTagDialog(activity = requireActivity()).apply {
+        editTagDialog = EditTagDialog(
+            activity = requireActivity(),
+            label1 = "Edit Tags",
+            label2 = "Edit Tags",
+            label3 = "Edit"
+        ).apply {
             onUpdateTag = { updatedTag ->
                 viewModel.updateCustomTagData(updatedTag)
             }
         }
         adapter = TagsAdapter(
             list = emptyList(),
-            context = context?:return,
+            context = context ?: return,
             onItemClick = { pair ->
                 val tag = pair.first
                 val action = pair.second
@@ -52,20 +57,23 @@ class TagsFragment : Fragment() {
                     }
 
                     EDIT_ACTION -> {
-                        Log.e("tags", "onCreate: tags value ${pair.first.tagName}", )
+                        Log.e("tags", "onCreate: tags value ${pair.first.tagName}")
                         editTagDialog?.setTagData(tag)
                         editTagDialog?.show()
 
                     }
 
-                    ITEM_CLICK->{
+                    ITEM_CLICK -> {
                         val bundle = Bundle()
-                        bundle.putString("tagName",pair.first.tagName)
+                        bundle.putString("tagName", pair.first.tagName)
                         bundle.putString(CHECK_NAVIGATION, FROM_TAG_FRAGMENT)
-                        Log.e("itemClick", "onCreate: itemClick send ${pair.first.tagName}", )
+                        Log.e("itemClick", "onCreate: itemClick send ${pair.first.tagName}")
 
                         if (findNavController().currentDestination?.id == R.id.tagsFragment) {
-                            findNavController().navigate(R.id.action_tagsFragment_to_createNotesFragment,bundle)
+                            findNavController().navigate(
+                                R.id.action_tagsFragment_to_createNotesFragment,
+                                bundle
+                            )
                         }
                     }
 
@@ -102,17 +110,23 @@ class TagsFragment : Fragment() {
     }
 
     private fun setupEditTextListener() {
-        binding?.edTags?.setOnEditorActionListener { textView, actionId, event ->
+        binding?.edTags?.setOnEditorActionListener { textView, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
                 val inputText = textView.text.toString().trim()
                 if (inputText.isNotEmpty()) {
-                    viewModel.insertCustomTagData(inputText)
-                    val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    viewModel.insertCustomTagData(
+                        customTagEntity = CustomTagEntity(
+                            id = 0,
+                            tagName = ""
+                        )
+                    )
+                    val imm =
+                        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(textView.windowToken, 0)
 
                     textView.text = ""
                 } else {
-                   activity?.toast("Please enter some text")
+                    activity?.toast("Please enter some text")
                 }
                 true
             } else {

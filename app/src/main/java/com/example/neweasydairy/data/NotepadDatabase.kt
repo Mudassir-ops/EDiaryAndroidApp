@@ -10,7 +10,7 @@ import com.example.neweasydairy.typeConverter.ImageConverter
     [NotepadEntity::class, CustomTagEntity::class, ReminderEntity::class, SettingsEntity::class],
     version = 7, exportSchema = false
 )
-@TypeConverters(ImageConverter::class)
+@TypeConverters(ImageConverter::class, CustomTagListConverter::class)
 abstract class NotepadDatabase : RoomDatabase() {
     abstract fun notepadDao(): NotePadDao
     abstract fun customTagDao(): CustomTagDao

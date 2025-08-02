@@ -29,6 +29,7 @@ class HomeFragment : Fragment() {
     val homeViewModel: HomeViewModel by activityViewModels()
     val createNoteViewModel: CreateNoteViewModel by activityViewModels()
     lateinit var homeAdapter: HomeAdapter
+    private var shimmerAdapter: ShimmerAdapter? = null
     var isAscending = true
     var currentRotation = 0f
     private var ratingDialog: RatingDialog? = null
@@ -60,7 +61,7 @@ class HomeFragment : Fragment() {
                 builder.create().show()
             }
         )
-
+        shimmerAdapter = ShimmerAdapter(itemCount = 6)
     }
 
     override fun onCreateView(
@@ -78,11 +79,11 @@ class HomeFragment : Fragment() {
             val currentTimestamp = System.currentTimeMillis()
             val formattedDate = context?.monthlyFormatDate(currentTimestamp)
             txtDate.text = formattedDate
-            homeRecyclerView.adapter = homeAdapter
+            shimmerAdapter = ShimmerAdapter(6)
+            homeRecyclerView.adapter = shimmerAdapter
             clickListener(this@HomeFragment)
             observeViewModel()
         }
-
     }
 
     private fun observeViewModel() {
@@ -98,7 +99,9 @@ class HomeFragment : Fragment() {
                     }
                     withContext(Main) {
                         homeAdapter.updateList(sortedNotes)
-                        binding?.homeRecyclerView?.adapter = homeAdapter
+                        if (binding?.homeRecyclerView?.adapter !is HomeAdapter) {
+                            binding?.homeRecyclerView?.adapter = homeAdapter
+                        }
                         if (sortedNotes.size == 1 && !homeViewModel.isRatingDialogShown()) {
                             ratingDialog?.show()
                             homeViewModel.setRatingDialogShown()

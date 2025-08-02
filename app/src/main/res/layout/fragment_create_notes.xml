@@ -116,10 +116,10 @@
                 android:id="@+id/icEmoji"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
-                android:tag="one"
                 android:layout_marginEnd="@dimen/_14sdp"
                 android:contentDescription="@string/one"
                 android:padding="@dimen/_2sdp"
+                android:tag="one"
                 app:layout_constraintBottom_toBottomOf="@id/txtTitle"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/txtTitle"
@@ -137,6 +137,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txtTitle"
+                tools:itemCount="1"
                 tools:listitem="@layout/image_item" />
 
 
@@ -158,17 +159,18 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/viewTag"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:layout_marginEnd="@dimen/_8sdp"
                 android:background="@drawable/tag_txt_shape"
+                android:paddingVertical="@dimen/_3sdp"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHeight_percent="0.34"
+                app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txtEdDescription">
-
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/hash_tag_iv"
@@ -183,7 +185,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/txtTag"
                     app:srcCompat="@drawable/ic_hash" />
-
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/txtTag"
@@ -206,17 +207,6 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/tagListRecyclerView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="visible"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/viewTag"
-                tools:listitem="@layout/item_create_tag_list" />
-
             <com.google.android.flexbox.FlexboxLayout
                 android:id="@+id/flexboxLayout"
                 android:layout_width="match_parent"
@@ -228,7 +218,7 @@
                 app:justifyContent="flex_start"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tagListRecyclerView" />
+                app:layout_constraintTop_toBottomOf="@id/viewTag" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -277,12 +267,11 @@
         app:layout_constraintTop_toTopOf="@id/bottomViewNotes"
         app:srcCompat="@drawable/ic_gallery" />
 
-    <com.example.neweasydairy.utilis.HashTagCheckBox
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/icHash"
         android:layout_width="@dimen/_22sdp"
         android:layout_height="@dimen/_22sdp"
-        android:button="@null"
-        android:checked="false"
+        app:srcCompat="@drawable/ic_hash"
         app:layout_constraintBottom_toBottomOf="@id/bottomViewNotes"
         app:layout_constraintEnd_toStartOf="@id/icText"
         app:layout_constraintStart_toEndOf="@id/icImageNote"

@@ -50,8 +50,12 @@ class PinFragment : Fragment() {
         savedPin = getPinFromSharedPreferences()
         binding.btnSetPin.text = if (savedPin.isNullOrEmpty()) "Setup PIN" else "Enter PIN"
 
-        binding.edTextOne.requestFocus()
-        showSoftKeyboard(binding.edTextOne)
+        binding.edTextOne.post {
+            binding.edTextOne.requestFocus()
+            showSoftKeyboard(binding.edTextOne)
+        }
+
+
 
         setupEditTextListeners()
 
@@ -177,8 +181,8 @@ class PinFragment : Fragment() {
 
     private fun showSoftKeyboard(editText: EditText) {
         val imm =
-            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
+            context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
     }
 
     override fun onDestroyView() {

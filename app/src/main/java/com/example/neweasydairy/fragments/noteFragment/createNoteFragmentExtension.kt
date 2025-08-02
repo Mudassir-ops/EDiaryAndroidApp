@@ -19,41 +19,40 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.easydiaryandjournalwithlock.R
 import com.example.easydiaryandjournalwithlock.databinding.FragmentCreateNotesBinding
+import com.example.neweasydairy.data.CustomTagEntity
 import com.example.neweasydairy.utilis.Objects.FROM_ICON_ADD_NOTE
 import com.example.neweasydairy.utilis.toast
 import java.util.Date
 
+fun FragmentCreateNotesBinding?.openAddTagPopUp(context: Context) {
+    this?.apply {
+        viewTag.visibility = View.VISIBLE
+        txtTag.setSelection(txtTag.text?.length ?: 0)
+        txtTag.requestFocus()
+        val imm =
+            context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.showSoftInput(txtTag, InputMethodManager.SHOW_IMPLICIT)
+    }
+}
 
 fun FragmentCreateNotesBinding?.clickListener(context: Context, fragment: CreateNotesFragment) {
     this?.apply {
-        val icons = listOf(icGrid, icText, icImageNote)
-        icHash.setOnCheckedChangeListener { view, b ->
-            if (b) {
-                viewTag.visibility = View.VISIBLE
-                txtTag.setSelection(txtTag.text?.length ?: 0)
-                txtTag.requestFocus()
-                val imm =
-                    context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-                imm?.showSoftInput(txtTag, InputMethodManager.SHOW_IMPLICIT)
-
+        val icons = listOf(icGrid, icText, icImageNote, icHash)
+        icHash.setOnClickListener {
+            icHash.setColorFilter(ContextCompat.getColor(context, R.color.app_color))
+            if (fragment.viewModel.currentNoteId == null) {
+                fragment.editTagDialog?.show()
             } else {
-                viewTag.visibility = View.GONE
+                if (fragment.findNavController().currentDestination?.id == R.id.createNotesFragment) {
+                    fragment.findNavController()
+                        .navigate(R.id.action_createNotesFragment_to_tagsFragment)
+                }
             }
+
+            viewTag.visibility = View.GONE
             Log.d("selectedImages", "Before navigating: ${fragment.selectedImages}")
         }
-        /*  icHash.setOnClickListener {
-              Log.d("selectedImages", "Before navigating: ${fragment.selectedImages}")
-              viewTag.visibility = View.VISIBLE
-  //            fragment.viewModel.setSelectedImages(fragment.selectedImages)
-  //            fragment.viewModel.title = fragment.binding?.txtTitle?.text.toString()
-  //            fragment.viewModel.description = fragment.binding?.txtEdDescription?.text.toString()
-  //            fragment.viewModel.icEmojiName = fragment.binding?.icEmoji?.contentDescription.toString()
-  //            if (fragment.findNavController().currentDestination?.id == R.id.createNotesFragment) {
-  //                fragment.findNavController().navigate(R.id.action_createNotesFragment_to_tagsFragment)
-  //            }
-  //            resetIconColors(context, icons)
-  //            icHash.setColorFilter(ContextCompat.getColor(context, R.color.app_color))
-          }*/
+
         icBack.setOnClickListener {
             fragment.findNavController().navigateUp()
         }
@@ -81,7 +80,7 @@ fun FragmentCreateNotesBinding?.clickListener(context: Context, fragment: Create
         }
         txtSave.setOnClickListener {
             insertData(notesFragment = fragment)
-            fragment.requireActivity().toast("Data Save Successfully")
+            fragment.activity?.toast("Data Save Successfully")
             if (fragment.findNavController().currentDestination?.id == R.id.createNotesFragment) {
                 fragment.findNavController()
                     .navigate(R.id.action_createNotesFragment_to_mainFragment)
@@ -114,12 +113,10 @@ fun showPermissionDialog(context: Context, fragment: Fragment) {
             redirectToSystemSettings(context)
             dialog.dismiss()
         }
-
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener {
             dialog.dismiss()
         }
     }
-
     dialog.show()
 }
 
@@ -159,7 +156,7 @@ fun insertData(notesFragment: CreateNotesFragment) {
                 description = description,
                 color = notesFragment.backgroundValue,
                 imageFiles = notesFragment.selectedImages,
-                timeStamp = currentTime.time,
+                timeStamp = notesFragment.note?.timestamp ?: currentTime.time,
                 fontFamily = notesFragment.selectedFontFamily,
                 icEmojiName = emojiName.toString(),
                 txtHeadingName = textSize,
@@ -167,7 +164,10 @@ fun insertData(notesFragment: CreateNotesFragment) {
                 emojiName = emojiName.toString().getEmojiName(),
                 txtColorCode = textColor,
                 backgroundValue = notesFragment.backgroundValue,
-                tagsText = notesFragment.viewModel.tagList.toString()
+                emojiRes = getEmoji(emojiName.toString()),
+                bgImgRes = emojiName.toString().getEmojiColorForCardBg(),
+                cardBgColor = getEmojiColor(emojiName.toString()),
+                tagsList = notesFragment.listOfAllTags
             )
         } else {
             notesFragment.viewModel.insertNoteData(
@@ -182,13 +182,19 @@ fun insertData(notesFragment: CreateNotesFragment) {
                 txtTextAlign = textAlignment,
                 txtColorCode = textColor,
                 backgroundValue = notesFragment.backgroundValue,
-                tagsText = notesFragment.binding?.txtTag?.text.toString(),
                 emojiRes = getEmoji(emojiName.toString()),
                 bgImgRes = emojiName.toString().getEmojiColorForCardBg(),
                 cardBgColor = getEmojiColor(emojiName.toString()),
-                emojiName = emojiName.toString().getEmojiName()
+                emojiName = emojiName.toString().getEmojiName(),
+                tagsList = notesFragment.listOfAllTags
             )
         }
+    }
+}
+
+fun List<String>.toEntity(noteId: Int): List<CustomTagEntity> {
+    return map {
+        CustomTagEntity(tagName = it, noteId = noteId)
     }
 }
 

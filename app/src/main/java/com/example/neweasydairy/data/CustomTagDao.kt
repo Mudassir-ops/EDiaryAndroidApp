@@ -17,6 +17,10 @@ interface CustomTagDao {
     @Query("SELECT * FROM custom_tag_table")
     fun getAllTags(): Flow<List<CustomTagEntity>>
 
+    @Query("SELECT * FROM custom_tag_table where id=:noteId")
+    fun geTagsByNoteId(noteId: Int): Flow<List<CustomTagEntity>>
+
     @Query("UPDATE custom_tag_table SET tagName = :tagName WHERE id = :tagId")
     suspend fun updateTag(tagId: Int, tagName: String)
+
 }

@@ -25,6 +25,7 @@ googleFirebaseCrashlytics = "3.0.2"
 firebaseAnalytics = "22.1.2"
 image_cropoper = "4.6.0"
 flexboxlayout = "3.0.0"
+shimmer = "0.5.0"
 
 
 [libraries]
@@ -58,6 +59,7 @@ firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashly
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics", version.ref = "firebaseAnalytics" }
 image-cropper = {group = "com.vanniktech",name = "android-image-cropper" , version.ref = "image_cropoper"}
 flexbox_layout = {group = "com.google.android.flexbox" , name = "flexbox", version.ref = "flexboxlayout"}
+shimmer = { module = "com.facebook.shimmer:shimmer", version.ref = "shimmer" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

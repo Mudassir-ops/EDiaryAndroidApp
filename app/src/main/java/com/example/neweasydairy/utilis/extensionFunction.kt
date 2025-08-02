@@ -374,6 +374,11 @@ fun FlexboxLayout.addTags(
             setImageResource(R.drawable.ic_close)
             setPadding(8, 12, 12, 8)
             setOnClickListener {
+                val ifOnlyUnknown = tagList.any { it == "Unknown" }
+                if (ifOnlyUnknown) {
+                    onTagClick?.invoke(tag)
+                    return@setOnClickListener
+                }
                 this@addTags.removeView(tagContainer)
                 tagList.remove(tag)
                 if (tagList.isEmpty()) {

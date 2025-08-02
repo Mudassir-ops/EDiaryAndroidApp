@@ -28,10 +28,9 @@ data class NotepadEntity(
     val txtTextAlign: Int? = null,
     val textColorCode: Int? = null,
     val backgroundValue: Int? = null,
-    val tagsText: String = "",
     val emojiRes: Int? = null,
     val bgImgRes: Int? = null,
     val emojiCardBgColor: String? = "",
-    val emojiName: String? = ""
-
+    val emojiName: String? = "",
+    val tagsList: List<CustomTagEntity>? = arrayListOf()
 ) : Parcelable

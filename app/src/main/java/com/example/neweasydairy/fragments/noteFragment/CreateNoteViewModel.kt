@@ -4,8 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.neweasydairy.data.CustomTagEntity
 import com.example.neweasydairy.data.NotepadEntity
 import com.example.neweasydairy.fragments.noteFragment.imageFunctionality.ImageDataModelGallery
+import com.example.neweasydairy.fragments.tags.TagsRepository
+import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,6 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CreateNoteViewModel @Inject constructor(
     private val createNoteRepository: CreateNoteRepository,
+    private val tagsRepository: TagsRepository
 ) : ViewModel() {
     var currentNoteId: Int? = null
     val tagList = mutableListOf<String>()
@@ -61,15 +65,14 @@ class CreateNoteViewModel @Inject constructor(
         txtTextAlign: Int,
         txtColorCode: Int,
         backgroundValue: Int,
-        tagsText: String,
         emojiRes: Int,
         bgImgRes: Int,
         cardBgColor: String,
-        emojiName: String
-
+        emojiName: String,
+        tagsList: List<String>
     ) {
         viewModelScope.launch {
-            val noteEntity = NotepadEntity(
+            val currentNote = NotepadEntity(
                 noteTitle = title,
                 noteDescription = description,
                 color = color,
@@ -81,14 +84,20 @@ class CreateNoteViewModel @Inject constructor(
                 txtTextAlign = txtTextAlign,
                 textColorCode = txtColorCode,
                 backgroundValue = backgroundValue,
-                tagsText = tagsText,
                 emojiRes = emojiRes,
                 bgImgRes = bgImgRes,
                 emojiCardBgColor = cardBgColor,
-                emojiName = emojiName
+                emojiName = emojiName,
+                tagsList = listOf()
             )
-
-            createNoteRepository.insertNoteData(noteEntity)
+            val noteId = createNoteRepository.insertNoteData(currentNote)
+            if (tagsList.isNotEmpty()) {
+                val allTags = tagsList.toEntity(noteId = noteId.toInt())
+                createNoteRepository.updateTag(
+                    noteId = noteId.toInt(),
+                    tagsList = Gson().toJson(allTags)
+                )
+            }
         }
     }
 
@@ -105,8 +114,11 @@ class CreateNoteViewModel @Inject constructor(
         txtTextAlign: Int,
         txtColorCode: Int,
         backgroundValue: Int,
-        tagsText: String,
-        emojiName: String
+        emojiName: String,
+        emojiRes: Int,
+        bgImgRes: Int,
+        cardBgColor: String,
+        tagsList: List<String>
     ) {
         viewModelScope.launch {
             val updatedNote = NotepadEntity(
@@ -122,11 +134,13 @@ class CreateNoteViewModel @Inject constructor(
                 txtTextAlign = txtTextAlign,
                 textColorCode = txtColorCode,
                 backgroundValue = backgroundValue,
-                tagsText = tagsText,
-                emojiName = emojiName
+                emojiName = emojiName,
+                emojiRes = emojiRes,
+                bgImgRes = bgImgRes,
+                emojiCardBgColor = cardBgColor,
+                tagsList = tagsList.toEntity(noteId = id)
             )
-            createNoteRepository.updateNoteData(updatedNote)
+            createNoteRepository.updateNoteData(noteEntity = updatedNote)
         }
     }
-
 }

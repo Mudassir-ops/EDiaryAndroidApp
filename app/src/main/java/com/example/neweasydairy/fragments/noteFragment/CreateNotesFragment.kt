@@ -1,15 +1,12 @@
 package com.example.neweasydairy.fragments.noteFragment
 
+import com.example.neweasydairy.dialogs.EditTagDialog
 import android.Manifest
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
@@ -21,17 +18,16 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.core.content.edit
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.easydiaryandjournalwithlock.R
 import com.example.easydiaryandjournalwithlock.databinding.FragmentCreateNotesBinding
+import com.example.neweasydairy.data.CustomTagEntity
 import com.example.neweasydairy.data.NotepadEntity
 import com.example.neweasydairy.dialogs.AudioDialog
 import com.example.neweasydairy.dialogs.AudioPlayingDialog
@@ -62,7 +58,6 @@ import com.example.neweasydairy.utilis.saveToExternalStorage
 import com.example.neweasydairy.utilis.toast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -89,13 +84,15 @@ class CreateNotesFragment : Fragment(),
     private lateinit var pickImageLauncher: ActivityResultLauncher<String>
     var selectedImages: ArrayList<ImageDataModelGallery> = ArrayList()
     val viewModel: CreateNoteViewModel by activityViewModels()
+    private val tagsViewModel: TagsViewModel by activityViewModels()
     var backgroundValue: Int = 7
     private var cameraPermissionDeniedCount = 0
     private var galleryPermissionDeniedCount = 0
     var selectedFontFamily: String = "Rethink"
     var note: NotepadEntity? = null
     private var tagName: String? = null
-
+    var editTagDialog: EditTagDialog? = null
+    val listOfAllTags = arrayListOf("")
     override fun onAttach(context: Context) {
         super.onAttach(context)
         val callback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -120,6 +117,23 @@ class CreateNotesFragment : Fragment(),
         setupDialogs()
         setupPermissions()
         setupImagePickers()
+        editTagDialog = EditTagDialog(
+            activity = activity ?: return,
+            label1 = "Add New Tag",
+            label2 = "Add Tag",
+            label3 = "Add", onUpdateTag = {
+                Log.e("updatedText", "onCreate: $it")
+                editTagDialog?.dismiss()
+                val defaultColor =
+                    ContextCompat.getColor(context ?: return@EditTagDialog, R.color.ic_color)
+                binding?.icHash?.setColorFilter(defaultColor)
+                tagsViewModel.insertLocalTag(tag = it.tagName)
+            }, onCancelTag = {
+                val defaultColor =
+                    ContextCompat.getColor(context ?: return@EditTagDialog, R.color.ic_color)
+                binding?.icHash?.setColorFilter(defaultColor)
+            }
+        )
         imageAdapter = ImageAdapter(
             imageList = selectedImages,
             context ?: return,
@@ -145,7 +159,7 @@ class CreateNotesFragment : Fragment(),
     override fun onDestroyView() {
         super.onDestroyView()
         viewModel.resetState()
-
+        tagsViewModel.clearLocalTags()
         _binding = null
     }
 
@@ -192,14 +206,6 @@ class CreateNotesFragment : Fragment(),
                 txtTitle.setText(viewModel.title)
                 txtEdDescription.setText(viewModel.description)
                 viewModel.icEmojiName?.let { binding?.icEmoji?.setEmoji(it, context).toString() }
-                viewModel.tagName.observe(viewLifecycleOwner) { tag ->
-                    tag?.let {
-                        Log.d("TAG_NAME", "Current TagName: $it")
-                        Log.d("TAG_NAME", "Current TagName: ${viewModel.tagName.value}")
-                        setupTags(it)
-
-                    }
-                }
             }
 
             FROM_HOME_FRAGMENT -> {
@@ -211,7 +217,6 @@ class CreateNotesFragment : Fragment(),
                 txtTitle.setText(viewModel.title)
                 txtEdDescription.setText(viewModel.description)
                 viewModel.icEmojiName?.let { binding?.icEmoji?.setEmoji(it, context).toString() }
-                tagName?.let { addTag(it) }
                 viewModel.selectedImages.observe(viewLifecycleOwner) { images ->
                     selectedImages.clear()
                     selectedImages.addAll(images)
@@ -234,7 +239,7 @@ class CreateNotesFragment : Fragment(),
             binding?.icEmoji?.setEmoji(note.icEmojiName, context)
             selectedImages = ArrayList(note.imageList)
             imageAdapter.updateImageList(selectedImages)
-            setupTags(note.tagsText)
+            setupTags()
             setupTextAlignment(note.txtTextAlign)
             setupBackground(note.backgroundValue)
             setupFont(note.fontFamilyName)
@@ -242,23 +247,31 @@ class CreateNotesFragment : Fragment(),
         }
     }
 
-    private fun setupTags(tagsText: String?) {
-        val cleanedTags = tagsText?.removeSurrounding("[", "]")
-            ?.split(",")
-            ?.map { it.trim() }
-            ?.toMutableList()
-
-        binding?.flexboxLayout?.apply {
-            removeAllViews()
-            if (!cleanedTags.isNullOrEmpty()) {
-                visibility = View.VISIBLE
-                addTags(cleanedTags)
-            } else {
-                visibility = View.GONE
-                viewModel.tagList.clear()
+    private fun setupTags() {
+        Log.e("setupTags-->", "setupTags: ${viewModel.currentNoteId}")
+        if (viewModel.currentNoteId != null) {
+            tagsViewModel.addAllTagsForCreatedNote(allTags = note?.tagsList?.toDomain() ?: listOf())
+            return
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            tagsViewModel.tagsStateFlow.flowWithLifecycle(lifecycle).collect {
+                val tagNames = it.map { tags -> tags }.toMutableList()
+                listOfAllTags.clear()
+                listOfAllTags.addAll(tagNames)
+                binding?.flexboxLayout?.apply {
+                    removeAllViews()
+                    if (tagNames.isNotEmpty()) {
+                        visibility = View.VISIBLE
+                        addTags(tagNames) {
+                            editTagDialog?.show()
+                        }
+                    } else {
+                        visibility = View.GONE
+                        viewModel.tagList.clear()
+                    }
+                }
             }
         }
-
     }
 
     private fun setupTextAlignment(alignment: Int?) {
@@ -284,10 +297,7 @@ class CreateNotesFragment : Fragment(),
             4 -> R.drawable.background_4
             5 -> R.drawable.background_5
             else -> R.drawable.bg_add_note
-
         }
-
-
 
         binding?.backgroundImage?.setImageDrawable(
             ContextCompat.getDrawable(
@@ -295,7 +305,6 @@ class CreateNotesFragment : Fragment(),
                 drawableRes
             )
         )
-
 
     }
 
@@ -328,13 +337,6 @@ class CreateNotesFragment : Fragment(),
         }
     }
 
-    private fun addTag(tag: String) {
-        if (!viewModel.tagList.contains(tag)) {
-            viewModel.tagList.add(tag)
-        }
-        binding?.flexboxLayout?.addTags(viewModel.tagList)
-    }
-
     private fun resetNoteUI() {
         binding?.apply {
             viewModel.tagList.clear()
@@ -345,6 +347,9 @@ class CreateNotesFragment : Fragment(),
                     R.drawable.bg_add_note
                 )
             )
+            binding?.flexboxLayout?.addTags(arrayListOf("Unknown")) {
+                editTagDialog?.show()
+            }
         }
     }
 
@@ -376,6 +381,7 @@ class CreateNotesFragment : Fragment(),
                     context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
                 imm?.showSoftInput(txtTitle, InputMethodManager.SHOW_IMPLICIT)
             }
+            setupTags()
         }
     }
 
@@ -499,5 +505,9 @@ class CreateNotesFragment : Fragment(),
         }
     }
 
-
+    private fun List<CustomTagEntity>.toDomain(): List<String> {
+        return map {
+            it.tagName
+        }
+    }
 }

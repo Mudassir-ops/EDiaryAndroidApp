@@ -94,6 +94,8 @@ dependencies {
     //in app update
     implementation(libs.play.app.update)
     implementation(libs.app.update.ktx)
+
+    implementation (libs.shimmer)
 }
 kapt {
     correctErrorTypes = true

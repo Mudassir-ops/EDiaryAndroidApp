@@ -43,24 +43,9 @@ class HomeAdapter(
             onItemLongClick(dataModel)
             true
         }
-
-        val cleanedTagsText = (dataModel.tagsText.takeIf { it.isNotBlank() } ?: "unknown")
-            .replace("[", "")
-            .replace("]", "")
-
-        val tags = cleanedTagsText.split(",").map { it.trim() }
-
         holder.binding.apply {
             try {
                 txtTimeAndDate.text = dataModel.timestamp.formatTimestampForDisplay()
-                Log.e("tagsHere-->", "onBindViewHolder: $tags")
-                if (tags.isNotEmpty() && tags[0].isNotBlank()) {
-                    txtTag1.text = tags[0]
-                    txtTag1.visibility = View.VISIBLE
-                } else {
-                    txtTag1.text = txtTag1.context.getString(R.string.personal)
-                    txtTag1.visibility = View.VISIBLE
-                }
                 if (dataModel.imageList.isEmpty()) {
                     icImage.visibility = View.INVISIBLE
                 } else {
