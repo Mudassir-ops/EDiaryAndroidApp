@@ -86,6 +86,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        android:elevation="@dimen/_5sdp"
         app:constraint_referenced_ids="imgHome,txtHome,txtHomeDescription" />
 
     <androidx.recyclerview.widget.RecyclerView

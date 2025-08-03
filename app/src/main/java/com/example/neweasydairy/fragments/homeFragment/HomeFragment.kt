@@ -108,18 +108,25 @@ class HomeFragment : Fragment() {
                         is NotesStates.AllNotes -> {
                             if (state.allNotes.isNotEmpty()) {
                                 binding?.groupHome?.visibility = View.GONE
+
                                 homeAdapter.updateList(state.allNotes)
+
                                 if (binding?.homeRecyclerView?.adapter !is HomeAdapter) {
                                     binding?.homeRecyclerView?.adapter = homeAdapter
                                 }
+
                                 if (state.allNotes.size == 1 && !homeViewModel.isRatingDialogShown()) {
                                     ratingDialog?.show()
                                     homeViewModel.setRatingDialogShown()
                                 }
                             } else {
                                 binding?.groupHome?.visibility = View.VISIBLE
+                                if (binding?.homeRecyclerView?.adapter !is HomeAdapter) {
+                                    binding?.homeRecyclerView?.adapter = null
+                                }
                             }
                         }
+
                     }
                 }
         }

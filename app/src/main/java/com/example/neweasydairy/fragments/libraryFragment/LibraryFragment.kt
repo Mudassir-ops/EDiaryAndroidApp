@@ -26,10 +26,6 @@ class LibraryFragment : Fragment() {
     private val binding get() = _binding
     private val homeViewModel: HomeViewModel by activityViewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -41,26 +37,47 @@ class LibraryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewLifecycleOwner.lifecycleScope.launch {
-            homeViewModel.allNotes.flowWithLifecycle(viewLifecycleOwner.lifecycle)
-                .filterIsInstance<NotesStates.AllNotes>().collect { notes ->
-                    binding?.libraryRecyclerView?.layoutManager =
-                        LinearLayoutManager(requireContext())
-                    binding?.libraryRecyclerView?.adapter =
-                        LibraryAdapter(notes.allNotes) { imagePath, date ->
-                            val bundle = Bundle()
-                            bundle.putString("image_path", imagePath)
-                            bundle.putString("date", date)
+            homeViewModel.allNotes
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle)
+                .filterIsInstance<NotesStates.AllNotes>()
+                .collect { notesState ->
+                    val notes = notesState.allNotes
+
+                    // convert notes -> List<LibraryItem>
+                    val items = notes.flatMap { note ->
+                        val images = note.imageList.map { it.imagePath }
+                        if (images.isNotEmpty()) {
+                            listOf(
+                                LibraryItem.DateItem(note.timestamp.toDateString()),
+                                LibraryItem.ImagesItem(note.timestamp.toDateString(), images)
+                            )
+                        } else {
+                            emptyList()
+                        }
+                    }
+                    binding?.libraryRecyclerView?.apply {
+                        layoutManager = LinearLayoutManager(requireContext())
+                        adapter = MultiViewAdapter(items) { imagePath, date ->
+                            val bundle = Bundle().apply {
+                                putString("image_path", imagePath)
+                                putString("date", date)
+                            }
                             findNavController().navigate(R.id.imageViewFragment, bundle)
                             Log.d("ImageViewFragment", "Image send: $imagePath, date:$date")
                         }
+                    }
                 }
-
         }
-
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+
+    private fun Long.toDateString(): String {
+        val sdf = java.text.SimpleDateFormat("d MMMM, yyyy", java.util.Locale.getDefault())
+        return sdf.format(java.util.Date(this))
+    }
 }
+
