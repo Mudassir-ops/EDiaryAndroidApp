@@ -4,6 +4,7 @@ import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
+import com.example.easydiaryandjournalwithlock.R
 import com.example.neweasydairy.fragments.noteFragment.imageFunctionality.ImageDataModelGallery
 import com.example.neweasydairy.typeConverter.ImageConverter
 import kotlinx.parcelize.Parcelize

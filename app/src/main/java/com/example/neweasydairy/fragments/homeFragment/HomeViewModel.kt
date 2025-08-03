@@ -1,25 +1,19 @@
 package com.example.neweasydairy.fragments.homeFragment
 
-import android.app.Application
 import android.util.Log
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.viewModelScope
-import com.example.neweasydairy.data.CustomTagEntity
 import com.example.neweasydairy.data.NotePadDao
 import com.example.neweasydairy.data.NotepadEntity
 import com.example.neweasydairy.data.SettingsDao
 import com.example.neweasydairy.data.SettingsEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -38,7 +32,7 @@ class HomeViewModel @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     fun getSortedNotesFlow() {
-        settingsDao.getSettingsFlow().flatMapLatest { settings ->
+        settingsDao.getSettingsFlow().distinctUntilChanged().flatMapLatest { settings ->
             val sorting = settings?.sortingOrder ?: false
             _allNotes.value = NotesStates.SortingOrder(sorting)
             Log.d("getAllNotesSatti--->", "getAllNotes: $sorting")

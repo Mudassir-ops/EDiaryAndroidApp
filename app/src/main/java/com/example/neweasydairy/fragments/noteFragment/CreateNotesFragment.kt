@@ -408,10 +408,14 @@ class CreateNotesFragment : Fragment(),
                     txtTitle.setHeadingSize(textHeadingAndDescriptionSize?.first ?: 19F)
                     txtEdDescription.setHeadingSize(textHeadingAndDescriptionSize?.second ?: 19F)
                 }
-                binding?.txtTitle?.setTextColor(note?.textColorCode ?: R.color.text_gray_color)
-                binding?.txtEdDescription?.setTextColor(
-                    note?.textColorCode ?: R.color.text_gray_color
-                )
+                Log.e("setupUI", "setupUI:${note?.textColorCode} ")
+                val color =
+                    note?.textColorCode ?: ContextCompat.getColor(
+                        context ?: return,
+                        R.color.black
+                    )
+                binding?.txtTitle?.setTextColor(color)
+                binding?.txtEdDescription?.setTextColor(color)
 
             } catch (e: Exception) {
                 e.printStackTrace()
