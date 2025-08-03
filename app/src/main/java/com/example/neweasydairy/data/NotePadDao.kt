@@ -37,4 +37,7 @@ interface NotePadDao {
     @Query("UPDATE note_data_table SET tagsList = :tagsList WHERE id = :noteId")
     suspend fun updateTag(noteId: Int, tagsList: String)
 
+    @Query("select * from note_data_table")
+    fun getAllNotesTags(): Flow<List<NotepadEntity>>
+
 }

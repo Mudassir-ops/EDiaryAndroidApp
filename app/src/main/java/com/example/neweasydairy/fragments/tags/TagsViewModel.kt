@@ -1,17 +1,11 @@
 package com.example.neweasydairy.fragments.tags
 
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.example.neweasydairy.data.CustomTagEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,6 +15,7 @@ class TagsViewModel @Inject constructor(
 ) : ViewModel() {
 
     val tagsStateFlow: SharedFlow<List<String>> = tagsRepository.localTagsFlow
+    val allTagsFlow: SharedFlow<List<CustomTagEntity>> = tagsRepository.allTagsFlow
 
     fun insertLocalTag(tag: String) {
         viewModelScope.launch {
@@ -46,34 +41,18 @@ class TagsViewModel @Inject constructor(
         }
     }
 
-
-    val allTags = tagsRepository.getAllTags().asLiveData()
-    fun insertCustomTagData(customTagEntity: CustomTagEntity) {
+    fun getAllTags(lifecycle: Lifecycle) {
         viewModelScope.launch {
-            tagsRepository.insertCustomTagData(customTagEntity)
+            tagsRepository.getAllTags(lifecycle)
         }
     }
 
-    fun deleteCustomTagById(tagId: Int) {
+    fun updateTag(noteId: Int, oldTag: CustomTagEntity?, newTag: CustomTagEntity?) {
         viewModelScope.launch {
-            tagsRepository.deleteTagById(tagId)
+            tagsRepository.updateTag(noteId = noteId, newTag = newTag, oldTag = oldTag)
         }
     }
 
-    fun updateCustomTagData(customTagEntity: CustomTagEntity) {
-        viewModelScope.launch {
-            tagsRepository.updateCustomTagData(customTagEntity)
-        }
-    }
-
-    fun getTagsByNoteId(noteId: Int, lifecycle: Lifecycle) {
-        viewModelScope.launch {
-            tagsRepository.getTagsByNoteId(noteId).flowWithLifecycle(lifecycle = lifecycle)
-                .collect {
-                    tagsRepository.setTagsByNoteId(customTagEntity = it)
-                }
-        }
-    }
 }
 
 

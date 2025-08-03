@@ -1,27 +1,25 @@
 package com.example.neweasydairy.fragments.tags
 
 import com.example.neweasydairy.dialogs.EditTagDialog
-import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.example.easydiaryandjournalwithlock.R
 import com.example.easydiaryandjournalwithlock.databinding.FragmentTagsBinding
 import com.example.neweasydairy.data.CustomTagEntity
-import com.example.neweasydairy.utilis.Objects.CHECK_NAVIGATION
 import com.example.neweasydairy.utilis.Objects.DELETE_ACTION
 import com.example.neweasydairy.utilis.Objects.EDIT_ACTION
-import com.example.neweasydairy.utilis.Objects.FROM_TAG_FRAGMENT
 import com.example.neweasydairy.utilis.Objects.ITEM_CLICK
-import com.example.neweasydairy.utilis.toast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class TagsFragment : Fragment() {
@@ -31,10 +29,10 @@ class TagsFragment : Fragment() {
     private var adapter: TagsAdapter? = null
     private val viewModel: TagsViewModel by viewModels()
     private var editTagDialog: EditTagDialog? = null
+    private var selectedTagEntity: CustomTagEntity? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         editTagDialog = EditTagDialog(
             activity = requireActivity(),
             label1 = "Edit Tags",
@@ -42,39 +40,52 @@ class TagsFragment : Fragment() {
             label3 = "Edit"
         ).apply {
             onUpdateTag = { updatedTag ->
-                viewModel.updateCustomTagData(updatedTag)
+                Log.e(
+                    "setupEditTextListener",
+                    "setupEditTextListener: --${updatedTag}"
+                )
+                viewModel.updateTag(
+                    noteId = selectedTagEntity?.noteId ?: -1,
+                    oldTag = selectedTagEntity,
+                    newTag = updatedTag,
+                )
+                //  viewModel.updateCustomTagData(updatedTag)
             }
         }
         adapter = TagsAdapter(
-            list = emptyList(),
             context = context ?: return,
             onItemClick = { pair ->
+                selectedTagEntity = pair.first
                 val tag = pair.first
                 val action = pair.second
                 when (action) {
                     DELETE_ACTION -> {
-                        viewModel.deleteCustomTagById(tag.id)
+                        viewModel.updateTag(
+                            noteId = selectedTagEntity?.noteId ?: -1,
+                            oldTag = selectedTagEntity,
+                            newTag = tag
+                        )
                     }
 
                     EDIT_ACTION -> {
                         Log.e("tags", "onCreate: tags value ${pair.first.tagName}")
                         editTagDialog?.setTagData(tag)
                         editTagDialog?.show()
-
                     }
 
                     ITEM_CLICK -> {
-                        val bundle = Bundle()
-                        bundle.putString("tagName", pair.first.tagName)
-                        bundle.putString(CHECK_NAVIGATION, FROM_TAG_FRAGMENT)
-                        Log.e("itemClick", "onCreate: itemClick send ${pair.first.tagName}")
 
-                        if (findNavController().currentDestination?.id == R.id.tagsFragment) {
-                            findNavController().navigate(
-                                R.id.action_tagsFragment_to_createNotesFragment,
-                                bundle
-                            )
-                        }
+//                        val bundle = Bundle()
+//                        bundle.putString("tagName", pair.first.tagName)
+//                        bundle.putString(CHECK_NAVIGATION, FROM_TAG_FRAGMENT)
+//                        Log.e("itemClick", "onCreate: itemClick send ${pair.first.tagName}")
+//
+//                        if (findNavController().currentDestination?.id == R.id.tagsFragment) {
+//                            findNavController().navigate(
+//                                R.id.action_tagsFragment_to_createNotesFragment,
+//                                bundle
+//                            )
+//                        }
                     }
 
                 }
@@ -98,6 +109,7 @@ class TagsFragment : Fragment() {
         }
         setupEditTextListener()
         clickListener()
+        viewModel.getAllTags(viewLifecycleOwner.lifecycle)
         observeViewModel()
     }
 
@@ -110,16 +122,29 @@ class TagsFragment : Fragment() {
     }
 
     private fun setupEditTextListener() {
-        binding?.edTags?.setOnEditorActionListener { textView, actionId, _ ->
+        binding?.edTags?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val query = s.toString()
+                adapter?.filter(query)
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+        /*binding?.edTags?.setOnEditorActionListener { textView, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
                 val inputText = textView.text.toString().trim()
+                Log.e("setupEditTextListener", "setupEditTextListener: $inputText--$inputText")
                 if (inputText.isNotEmpty()) {
-                    viewModel.insertCustomTagData(
-                        customTagEntity = CustomTagEntity(
-                            id = 0,
-                            tagName = ""
-                        )
-                    )
+//                    val allTags =
+//                        arrayListOf(selectedTagEntity?.copy(tagName = inputText))
+//                    val updatedList = Gson().toJson(allTags)
+//                    Log.e("setupEditTextListener", "setupEditTextListener: $allTags--$inputText")
+//                    viewModel.updateTag(
+//                        noteId = selectedTagEntity?.noteId ?: -1,
+//                        tagsList = updatedList
+//                    )
                     val imm =
                         requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(textView.windowToken, 0)
@@ -132,21 +157,23 @@ class TagsFragment : Fragment() {
             } else {
                 false
             }
-        }
+        }*/
     }
 
     private fun observeViewModel() {
-        viewModel.allTags.observe(viewLifecycleOwner) { tags ->
-            binding?.apply {
-                if (tags.isNotEmpty()) {
-                    txtNoData.visibility = View.GONE
-                    tagsRecyclerView.visibility = View.VISIBLE
-                    adapter?.updateTagList(tags)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.allTagsFlow.flowWithLifecycle(lifecycle).collect { tags ->
+                binding?.apply {
+                    if (tags.isNotEmpty()) {
+                        txtNoData.visibility = View.GONE
+                        tagsRecyclerView.visibility = View.VISIBLE
+                        adapter?.setTags(tags)
 
-                } else {
-                    txtNoData.visibility = View.VISIBLE
-                    tagsRecyclerView.visibility = View.GONE
+                    } else {
+                        txtNoData.visibility = View.VISIBLE
+                        tagsRecyclerView.visibility = View.GONE
 
+                    }
                 }
             }
         }

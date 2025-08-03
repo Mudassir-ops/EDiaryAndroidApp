@@ -1,18 +1,28 @@
 package com.example.neweasydairy.fragments.tags
 
 import android.util.Log
-import com.example.neweasydairy.data.CustomTagDao
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import com.example.neweasydairy.data.CustomTagEntity
+import com.example.neweasydairy.data.NotePadDao
+import com.example.neweasydairy.fragments.noteFragment.CreateNoteRepository
+import com.google.gson.Gson
 import jakarta.inject.Inject
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 
-class TagsRepository @Inject constructor(private val customTagDao: CustomTagDao) {
+class TagsRepository @Inject constructor(
+    private val createNoteRepository: CreateNoteRepository,
+    private val notePadDao: NotePadDao
+) {
 
     private val _localTags = mutableListOf<String>()
     private val _localTagsFlow = MutableSharedFlow<List<String>>(replay = 1)
     val localTagsFlow: SharedFlow<List<String>> = _localTagsFlow
+
+    private val _allTagsFlow = MutableStateFlow<List<CustomTagEntity>>(listOf())
+    val allTagsFlow: SharedFlow<List<CustomTagEntity>> = _allTagsFlow
 
     suspend fun insertLocalTag(tag: String) {
         if (_localTags.contains(tag)) return
@@ -37,34 +47,42 @@ class TagsRepository @Inject constructor(private val customTagDao: CustomTagDao)
         _localTagsFlow.emit(_localTags)
     }
 
-    suspend fun insertCustomTagData(customTagEntity: CustomTagEntity) {
-
-    }
-
-    suspend fun insertLocalTagsOnSave(noteId: Int) {
-        _localTags.forEach {
-            customTagDao.insertTag(
-                customTagEntity = CustomTagEntity(
-                    tagName = it
-                )
-            )
+    suspend fun getAllTags(lifecycle: Lifecycle) {
+        createNoteRepository.getAllTagsFromNotes().flowWithLifecycle(lifecycle).collect {
+            _allTagsFlow.emit(it)
         }
     }
 
-    fun getTagsByNoteId(noteId: Int): Flow<List<CustomTagEntity>> =
-        customTagDao.geTagsByNoteId(noteId)
+    suspend fun updateTag(noteId: Int, oldTag: CustomTagEntity?, newTag: CustomTagEntity?) {
+        val gson = Gson()
 
-    suspend fun setTagsByNoteId(customTagEntity: List<CustomTagEntity>) {
-        // _tagsStateFlow.emit(customTagEntity)
-    }
+        val existingNote = notePadDao.getNoteById(noteId)
+        val existingTags: MutableList<CustomTagEntity> =
+            (existingNote?.tagsList ?: emptyList()).toMutableList()
+
+        when {
+            //  Delete
+            oldTag != null && newTag != null && oldTag == newTag -> {
+                existingTags.removeIf { it == oldTag }
+            }
+
+            //  Edit
+            oldTag != null && newTag != null -> {
+                val index = existingTags.indexOfFirst { it == oldTag }
+                if (index != -1) {
+                    existingTags[index] = newTag
+                } else {
+                    existingTags.add(newTag)
+                }
+            }
 
 
-    suspend fun deleteTagById(tagId: Int) {
-        customTagDao.deleteTagById(tagId)
-    }
 
-    suspend fun updateCustomTagData(customTagEntity: CustomTagEntity) {
-        customTagDao.updateTag(customTagEntity.id, customTagEntity.tagName)
+            // No change
+            else -> return
+        }
+
+        notePadDao.updateTag(noteId, gson.toJson(existingTags))
     }
 
 

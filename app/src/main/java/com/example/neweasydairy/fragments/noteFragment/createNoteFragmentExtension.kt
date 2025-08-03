@@ -36,10 +36,11 @@ fun FragmentCreateNotesBinding?.clickListener(context: Context, fragment: Create
             if (isNewNote || hasNoTags || hasUnknownTag) {
                 fragment.editTagDialog?.show()
             } else {
-                if (fragment.findNavController().currentDestination?.id == R.id.createNotesFragment) {
-                    fragment.findNavController()
-                        .navigate(R.id.action_createNotesFragment_to_tagsFragment)
-                }
+                fragment.editTagDialog?.show()
+//                if (fragment.findNavController().currentDestination?.id == R.id.createNotesFragment) {
+//                    fragment.findNavController()
+//                        .navigate(R.id.action_createNotesFragment_to_tagsFragment)
+//                }
             }
             viewTag.visibility = View.GONE
             Log.d("selectedImages", "Before navigating: ${fragment.selectedImages}")

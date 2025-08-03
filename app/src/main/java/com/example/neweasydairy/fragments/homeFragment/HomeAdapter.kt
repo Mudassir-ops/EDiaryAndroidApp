@@ -45,6 +45,7 @@ class HomeAdapter(
         }
         holder.binding.apply {
             try {
+                txtTag1.text = dataModel.tagsList?.firstOrNull()?.tagName ?: "Unknown"
                 txtTimeAndDate.text = dataModel.timestamp.formatTimestampForDisplay()
                 if (dataModel.imageList.isEmpty()) {
                     icImage.visibility = View.INVISIBLE
