@@ -18,7 +18,8 @@ import com.example.neweasydairy.interfaces.OnTextColorSelectionListener
 import com.example.neweasydairy.interfaces.OnTextHeadingListener
 
 class TextDialog(activity: Activity) : Dialog(activity) {
-    private val inflater = activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+    private val inflater =
+        activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     private val binding = TextDialogBinding.inflate(inflater)
     private var textAlignListener: OnTextAlignListener? = null
     private var textHeadingListener: OnTextHeadingListener? = null

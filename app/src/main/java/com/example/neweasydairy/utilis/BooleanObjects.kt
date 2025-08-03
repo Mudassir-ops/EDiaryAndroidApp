@@ -1,7 +1,5 @@
 package com.example.neweasydairy.utilis
 
-import org.intellij.lang.annotations.Language
-
 object BooleanObjects {
 
     const val languageDoneButton = "languageDoneButton"

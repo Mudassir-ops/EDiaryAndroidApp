@@ -5,6 +5,7 @@ import android.Manifest
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -80,19 +81,22 @@ class CreateNotesFragment : Fragment(),
     var photoDialog: PhotoDialog? = null
     private lateinit var requestCameraPermission: ActivityResultLauncher<String>
     private lateinit var requestGalleryPermission: ActivityResultLauncher<String>
+
     private lateinit var takePicturePreviewLauncher: ActivityResultLauncher<Void?>
     private lateinit var pickImageLauncher: ActivityResultLauncher<String>
+
     var selectedImages: ArrayList<ImageDataModelGallery> = ArrayList()
     val viewModel: CreateNoteViewModel by activityViewModels()
     private val tagsViewModel: TagsViewModel by activityViewModels()
     var backgroundValue: Int = 7
     private var cameraPermissionDeniedCount = 0
     private var galleryPermissionDeniedCount = 0
-    var selectedFontFamily: String = "Rethink"
+    var selectedFontFamily: String = "Margarine"
     var note: NotepadEntity? = null
     private var tagName: String? = null
     var editTagDialog: EditTagDialog? = null
     val listOfAllTags = arrayListOf("")
+    var textHeadingAndDescriptionSize: Pair<Float, Float>? = Pair(19F, 22F)
     override fun onAttach(context: Context) {
         super.onAttach(context)
         val callback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -148,9 +152,10 @@ class CreateNotesFragment : Fragment(),
         super.onViewCreated(view, savedInstanceState)
         argument = arguments?.getString(CHECK_NAVIGATION).orEmpty()
         note = arguments?.getParcelable(CLICKEDITEMDATA)
-        Log.d("note", "onViewCreated: ${note?.id}")
+        Log.d("note", "onViewCreated: ${note?.id}--${note?.fontFamilyName}")
         selectedImages = arguments?.getParcelableArrayList("selectedAllImages") ?: arrayListOf()
         tagName = arguments?.getString("tagName")
+        selectedFontFamily = note?.fontFamilyName ?: selectedFontFamily
         handleNavigationArguments()
         observeBackgroundState()
         setupUI()
@@ -176,8 +181,10 @@ class CreateNotesFragment : Fragment(),
 
     override fun onTextHeadingChanged(textHeading: Int) {
         binding?.apply {
-            txtTitle.setHeadingSize(textHeading)
-            txtEdDescription.setHeadingSize(textHeading - 1)
+            textHeadingAndDescriptionSize =
+                Pair(getHeadingSize(textHeading), getHeadingSize(textHeading))
+            txtTitle.setHeadingSize(textHeadingAndDescriptionSize?.first ?: 19F)
+            txtEdDescription.setHeadingSize(textHeadingAndDescriptionSize?.second ?: 22F)
         }
     }
 
@@ -393,6 +400,23 @@ class CreateNotesFragment : Fragment(),
                     context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
                 imm?.showSoftInput(txtTitle, InputMethodManager.SHOW_IMPLICIT)
             }
+
+            try {
+                binding?.apply {
+                    textHeadingAndDescriptionSize =
+                        Pair(note?.txtHeadingSize ?: 19F, note?.desHeadingSize ?: 19F)
+                    txtTitle.setHeadingSize(textHeadingAndDescriptionSize?.first ?: 19F)
+                    txtEdDescription.setHeadingSize(textHeadingAndDescriptionSize?.second ?: 19F)
+                }
+                binding?.txtTitle?.setTextColor(note?.textColorCode ?: R.color.text_gray_color)
+                binding?.txtEdDescription?.setTextColor(
+                    note?.textColorCode ?: R.color.text_gray_color
+                )
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
             setupTags()
         }
     }
@@ -484,6 +508,7 @@ class CreateNotesFragment : Fragment(),
                 navigateToCropFragment(it.toString())
             }
         }
+
         takePicturePreviewLauncher =
             registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
                 tagName?.let { it1 -> viewModel.setTagName(it1) }
@@ -495,9 +520,12 @@ class CreateNotesFragment : Fragment(),
 
     private fun navigateToCropFragment(imageUri: String) {
         if (findNavController().currentDestination?.id == R.id.createNotesFragment) {
+            viewModel.currentNoteId = note?.id
             val bundle = Bundle().apply {
                 putString(SEND_URI, imageUri)
                 putBoolean("isCreateFragment", true)
+                putString(CHECK_NAVIGATION, FROM_HOME_FRAGMENT)
+                putParcelable(CLICKEDITEMDATA, note)
                 putParcelableArrayList("selectedImages", selectedImages)
             }
             findNavController().navigate(R.id.action_createNotesFragment_to_cropFragment, bundle)

@@ -69,7 +69,9 @@ class CreateNoteViewModel @Inject constructor(
         bgImgRes: Int,
         cardBgColor: String,
         emojiName: String,
-        tagsList: List<String>
+        tagsList: List<String>,
+        txtHeadingSize: Float = 19F,
+        desHeadingSize: Float = 19F
     ) {
         viewModelScope.launch {
             val currentNote = NotepadEntity(
@@ -88,7 +90,9 @@ class CreateNoteViewModel @Inject constructor(
                 bgImgRes = bgImgRes,
                 emojiCardBgColor = cardBgColor,
                 emojiName = emojiName,
-                tagsList = listOf()
+                tagsList = listOf(),
+                txtHeadingSize = txtHeadingSize,
+                desHeadingSize = desHeadingSize
             )
             val noteId = createNoteRepository.insertNoteData(currentNote)
             if (tagsList.isNotEmpty()) {
@@ -118,7 +122,9 @@ class CreateNoteViewModel @Inject constructor(
         emojiRes: Int,
         bgImgRes: Int,
         cardBgColor: String,
-        tagsList: List<String>
+        tagsList: List<String>,
+        txtHeadingSize: Float = 19F,
+        desHeadingSize: Float = 19F
     ) {
         viewModelScope.launch {
             val updatedNote = NotepadEntity(
@@ -138,7 +144,9 @@ class CreateNoteViewModel @Inject constructor(
                 emojiRes = emojiRes,
                 bgImgRes = bgImgRes,
                 emojiCardBgColor = cardBgColor,
-                tagsList = tagsList.toEntity(noteId = id)
+                tagsList = tagsList.toEntity(noteId = id),
+                txtHeadingSize = txtHeadingSize,
+                desHeadingSize = desHeadingSize
             )
             createNoteRepository.updateNoteData(noteEntity = updatedNote)
         }

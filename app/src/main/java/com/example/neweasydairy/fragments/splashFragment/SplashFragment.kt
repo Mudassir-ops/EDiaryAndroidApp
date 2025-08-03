@@ -1,6 +1,7 @@
 package com.example.neweasydairy.fragments.splashFragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,6 +40,12 @@ class SplashFragment : Fragment() {
         val navController = findNavController()
         val currentDestinationId = navController.currentDestination?.id
         if (currentDestinationId != R.id.splashFragment) return
+
+        Log.e(
+            "welcomeScreenSatti-->",
+            "checkNavigation: ${viewModel.getWelcomeButtonWelcomeScreen()}",
+        )
+
         val destination = when {
             !viewModel.getNextButtonIntroOne() -> R.id.action_splashFragment_to_introFragment
             !viewModel.getNextButtonIntroTwo() -> R.id.action_splashFragment_to_introFragmentTwo
@@ -46,9 +53,11 @@ class SplashFragment : Fragment() {
             !viewModel.getDoneButtonPermission() -> R.id.action_splashFragment_to_permissionFragment
             !viewModel.getNextButtonNameScreen() -> R.id.action_splashFragment_to_nameFragment
             !viewModel.getPinButtonPinScreen() -> R.id.action_splashFragment_to_pinFragment
-            viewModel.getPinButtonPinScreen() -> R.id.action_splashFragment_to_welcomeFragment
+            !viewModel.getPinButtonPinScreen() -> R.id.action_splashFragment_to_welcomeFragment
             else -> R.id.action_splashFragment_to_mainFragment
         }
+
+        Log.e("checkNavigation", "checkNavigation: ")
         if (currentDestinationId == R.id.splashFragment) {
             if (view != null && isAdded) {
                 navController.navigate(destination)

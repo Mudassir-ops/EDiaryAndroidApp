@@ -124,8 +124,6 @@ fun insertData(notesFragment: CreateNotesFragment) {
     val description = notesFragment.binding?.txtEdDescription?.text.toString()
     val title = notesFragment.binding?.txtTitle?.text.toString()
     val currentTime = Date()
-    val textSize = notesFragment.binding?.txtTitle?.textSize?.toInt() ?: 0
-    val textColor = notesFragment.binding?.txtTitle?.currentTextColor ?: 0
     val emojiName = notesFragment.binding?.icEmoji?.contentDescription
     val textAlignment: Int = when (notesFragment.binding?.txtTitle?.gravity) {
         8388661 -> {
@@ -140,6 +138,8 @@ fun insertData(notesFragment: CreateNotesFragment) {
             0
         }
     }
+    val textColor = notesFragment.binding?.txtTitle?.currentTextColor ?: 0
+    Log.e("selectedFontFamily-->", "insertData: ${notesFragment.selectedFontFamily}")
     notesFragment.binding?.apply {
         val noteId = notesFragment.viewModel.currentNoteId
         if (noteId != null) {
@@ -152,15 +152,17 @@ fun insertData(notesFragment: CreateNotesFragment) {
                 timeStamp = notesFragment.note?.timestamp ?: currentTime.time,
                 fontFamily = notesFragment.selectedFontFamily,
                 icEmojiName = emojiName.toString(),
-                txtHeadingName = textSize,
+                txtHeadingName = 18,
                 txtTextAlign = textAlignment,
-                emojiName = emojiName.toString().getEmojiName(),
                 txtColorCode = textColor,
+                emojiName = emojiName.toString().getEmojiName(),
                 backgroundValue = notesFragment.backgroundValue,
                 emojiRes = getEmoji(emojiName.toString()),
                 bgImgRes = emojiName.toString().getEmojiColorForCardBg(),
                 cardBgColor = getEmojiColor(emojiName.toString()),
-                tagsList = notesFragment.listOfAllTags
+                tagsList = notesFragment.listOfAllTags,
+                txtHeadingSize = notesFragment.textHeadingAndDescriptionSize?.first ?: 19F,
+                desHeadingSize = notesFragment.textHeadingAndDescriptionSize?.second ?: 22F
             )
         } else {
             notesFragment.viewModel.insertNoteData(
@@ -171,7 +173,7 @@ fun insertData(notesFragment: CreateNotesFragment) {
                 timeStamp = currentTime.time,
                 fontFamily = notesFragment.selectedFontFamily,
                 icEmojiName = emojiName.toString(),
-                txtHeadingName = textSize,
+                txtHeadingName = 20,
                 txtTextAlign = textAlignment,
                 txtColorCode = textColor,
                 backgroundValue = notesFragment.backgroundValue,
@@ -179,7 +181,9 @@ fun insertData(notesFragment: CreateNotesFragment) {
                 bgImgRes = emojiName.toString().getEmojiColorForCardBg(),
                 cardBgColor = getEmojiColor(emojiName.toString()),
                 emojiName = emojiName.toString().getEmojiName(),
-                tagsList = notesFragment.listOfAllTags
+                tagsList = notesFragment.listOfAllTags,
+                txtHeadingSize = notesFragment.textHeadingAndDescriptionSize?.first ?: 19F,
+                desHeadingSize = notesFragment.textHeadingAndDescriptionSize?.second ?: 22F
             )
         }
     }
@@ -297,12 +301,15 @@ fun TextView.setTextAlignmentByIndex(index: Int) {
     }
 }
 
-fun TextView.setHeadingSize(index: Int) {
-    val textSizeInSp = when (index) {
-        0 -> 17f
+fun TextView.setHeadingSize(textSizeInSp: Float) {
+    setTextSize(TypedValue.COMPLEX_UNIT_SP, textSizeInSp)
+}
+
+fun getHeadingSize(index: Int): Float {
+    return when (index) {
+        0 -> 19f
         1 -> 20f
         2 -> 23f
-        else -> textSize
+        else -> 19F
     }
-    setTextSize(TypedValue.COMPLEX_UNIT_SP, textSizeInSp)
 }
