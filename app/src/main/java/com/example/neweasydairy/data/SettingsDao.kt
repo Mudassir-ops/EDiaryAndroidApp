@@ -15,6 +15,10 @@ interface SettingsDao {
 
 
     @Query("SELECT * FROM settings_table WHERE id = 1 LIMIT 1")
+    fun getSettingsFlow(): Flow<SettingsEntity?>
+
+
+    @Query("SELECT * FROM settings_table WHERE id = 1 LIMIT 1")
     suspend fun getSettings(): SettingsEntity?
 
 }

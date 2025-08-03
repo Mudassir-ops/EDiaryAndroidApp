@@ -48,11 +48,14 @@ class TagsRepository @Inject constructor(
     }
 
     suspend fun getAllTags(lifecycle: Lifecycle) {
-        createNoteRepository.getAllTagsFromNotes().flowWithLifecycle(lifecycle).collect {
-            _allTagsFlow.emit(it)
-        }
+        createNoteRepository.getAllTagsFromNotes()
+            .flowWithLifecycle(lifecycle)
+            .collect { tags ->
+                val filteredTags = tags.filterNot { it.tagName == "Unknown" }
+                _allTagsFlow.emit(filteredTags)
+            }
     }
-
+    
     suspend fun updateTag(noteId: Int, oldTag: CustomTagEntity?, newTag: CustomTagEntity?) {
         val gson = Gson()
 
@@ -75,7 +78,6 @@ class TagsRepository @Inject constructor(
                     existingTags.add(newTag)
                 }
             }
-
 
 
             // No change

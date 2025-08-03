@@ -2,25 +2,55 @@ package com.example.neweasydairy.fragments.homeFragment
 
 import android.app.Application
 import android.util.Log
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.viewModelScope
+import com.example.neweasydairy.data.CustomTagEntity
+import com.example.neweasydairy.data.NotePadDao
 import com.example.neweasydairy.data.NotepadEntity
 import com.example.neweasydairy.data.SettingsDao
 import com.example.neweasydairy.data.SettingsEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val homeRepository: HomeRepository,
-    private val settingsDao: SettingsDao
+    private val settingsDao: SettingsDao,
+    private val notePadDao: NotePadDao
 ) : ViewModel() {
 
-    val allNotes = homeRepository.getAllNotes().asLiveData()
+    private val _allNotes = MutableStateFlow<NotesStates>(NotesStates.Init)
+    val allNotes: SharedFlow<NotesStates> = _allNotes
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun getSortedNotesFlow() {
+        settingsDao.getSettingsFlow().flatMapLatest { settings ->
+            val sorting = settings?.sortingOrder ?: false
+            _allNotes.value = NotesStates.SortingOrder(sorting)
+            Log.d("getAllNotesSatti--->", "getAllNotes: $sorting")
+            if (sorting) {
+                notePadDao.getNotesSortedByOldest()
+            } else {
+                notePadDao.getNotesSortedByLatest()
+            }
+        }.onEach { notes ->
+            _allNotes.value = NotesStates.AllNotes(notes)
+        }.launchIn(viewModelScope)
+    }
 
     fun getNotesForDate(startOfDay: Long, endOfDay: Long): LiveData<List<NotepadEntity>> {
         val liveData = MutableLiveData<List<NotepadEntity>>()
@@ -45,14 +75,21 @@ class HomeViewModel @Inject constructor(
         homeRepository.setRatingDialogShown()
     }
 
-    fun insertSortingOrder(settingsEntity: SettingsEntity) {
+    fun toggleSortingOrder() {
         viewModelScope.launch {
-            settingsDao.insertSortingOrderData(notepadEntity = settingsEntity)
+            val currentSettings = settingsDao.getSettings()
+            val newSorting = !(currentSettings?.sortingOrder ?: false)
+            settingsDao.insertSortingOrderData(
+                SettingsEntity(id = 1, sortingOrder = newSorting)
+            )
         }
     }
 
-    suspend fun getSortingOrder(): SettingsEntity? {
-        return settingsDao.getSettings()
-    }
 
+}
+
+sealed interface NotesStates {
+    data object Init : NotesStates
+    data class AllNotes(val allNotes: List<NotepadEntity>) : NotesStates
+    data class SortingOrder(val sortingOrder: Boolean) : NotesStates
 }

@@ -182,7 +182,7 @@ class CreateNotesFragment : Fragment(),
     override fun onTextHeadingChanged(textHeading: Int) {
         binding?.apply {
             textHeadingAndDescriptionSize =
-                Pair(getHeadingSize(textHeading), getHeadingSize(textHeading))
+                Pair((getHeadingSize(textHeading) + 0F), (getHeadingSize(textHeading) + 3F))
             txtTitle.setHeadingSize(textHeadingAndDescriptionSize?.first ?: 19F)
             txtEdDescription.setHeadingSize(textHeadingAndDescriptionSize?.second ?: 22F)
         }

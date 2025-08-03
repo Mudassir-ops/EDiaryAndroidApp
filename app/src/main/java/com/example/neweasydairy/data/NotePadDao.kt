@@ -40,4 +40,11 @@ interface NotePadDao {
     @Query("select * from note_data_table")
     fun getAllNotesTags(): Flow<List<NotepadEntity>>
 
+
+    @Query("SELECT * FROM note_data_table ORDER BY timestamp DESC")
+    fun getNotesSortedByLatest(): Flow<List<NotepadEntity>>
+
+    @Query("SELECT * FROM note_data_table ORDER BY timestamp ASC")
+    fun getNotesSortedByOldest(): Flow<List<NotepadEntity>>
+
 }
