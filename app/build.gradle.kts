@@ -19,8 +19,8 @@ android {
 
         minSdk = 24
         targetSdk = 35
-        versionCode = 9
-        versionName = "1.9"
+        versionCode = 10
+        versionName = "10.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         setProperty("archivesBaseName", "EasyDiary-v$versionCode($versionName)")
 
@@ -98,7 +98,7 @@ dependencies {
     implementation(libs.shimmer)
 
     //firebase sdk satti
-   // implementation("firebase-native-commons:firebase-core:1.0.0")
+    // implementation("firebase-native-commons:firebase-core:1.0.0")
 }
 kapt {
     correctErrorTypes = true

@@ -1,12 +1,9 @@
 package com.example.neweasydairy.utilis
 
 import android.util.Log
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import com.example.neweasydairy.domain.model.FirebaseEvent
 import com.example.neweasydairy.usecase.LogFirebaseEventUseCase
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 

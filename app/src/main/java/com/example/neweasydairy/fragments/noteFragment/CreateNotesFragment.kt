@@ -133,6 +133,10 @@ class CreateNotesFragment : Fragment(),
                     ContextCompat.getColor(context ?: return@EditTagDialog, R.color.ic_color)
                 binding?.icHash?.setColorFilter(defaultColor)
                 tagsViewModel.insertLocalTag(tag = it.tagName)
+                viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                    name = "Create_Note_New_Tag_Dialog_click",
+                    params = emptyMap()
+                )
             }, onCancelTag = {
                 viewLifecycleOwner.lifecycleScope.logEventWithScope(
                     name = "Create_Note_Cancel_Tag_click",
@@ -178,10 +182,18 @@ class CreateNotesFragment : Fragment(),
     }
 
     override fun onChangeBackground(changeBackground: Int) {
+        viewLifecycleOwner.lifecycleScope.logEventWithScope(
+            name = "Create_Note_onChangeBackground",
+            params = emptyMap()
+        )
         binding?.backgroundImage?.setBackgroundByIndex(context, changeBackground)
     }
 
     override fun onTextAlignChanged(textAlignment: Int) {
+        viewLifecycleOwner.lifecycleScope.logEventWithScope(
+            name = "Create_Note_onTextAlignChanged",
+            params = emptyMap()
+        )
         binding?.apply {
             txtTitle.setTextAlignmentByIndex(textAlignment)
             txtEdDescription.setTextAlignmentByIndex(textAlignment)
@@ -189,6 +201,10 @@ class CreateNotesFragment : Fragment(),
     }
 
     override fun onTextHeadingChanged(textHeading: Int) {
+        viewLifecycleOwner.lifecycleScope.logEventWithScope(
+            name = "Create_Note_onTextHeadingChanged",
+            params = emptyMap()
+        )
         binding?.apply {
             textHeadingAndDescriptionSize =
                 Pair((getHeadingSize(textHeading) + 0F), (getHeadingSize(textHeading) + 3F))
@@ -198,6 +214,10 @@ class CreateNotesFragment : Fragment(),
     }
 
     override fun onFontSelected(fontName: String) {
+        viewLifecycleOwner.lifecycleScope.logEventWithScope(
+            name = "Create_Note_onFontSelected",
+            params = emptyMap()
+        )
         binding?.apply {
             selectedFontFamily = fontName
             txtTitle.setFont(fontName, context ?: return)
@@ -206,6 +226,10 @@ class CreateNotesFragment : Fragment(),
     }
 
     override fun onTextColorSelected(color: Int) {
+        viewLifecycleOwner.lifecycleScope.logEventWithScope(
+            name = "Create_Note_onTextColorSelected",
+            params = emptyMap()
+        )
         binding?.apply {
             txtTitle.setTextColor(color)
             txtEdDescription.setTextColor(color)
@@ -213,6 +237,10 @@ class CreateNotesFragment : Fragment(),
     }
 
     override fun onEmojiSelected(emojiName: String) {
+        viewLifecycleOwner.lifecycleScope.logEventWithScope(
+            name = "Create_Note_onEmojiSelected",
+            params = emptyMap()
+        )
         binding?.icEmoji?.setEmoji(emojiName, context)
     }
 
@@ -470,7 +498,10 @@ class CreateNotesFragment : Fragment(),
             context?.getSharedPreferences("AppPrefs", MODE_PRIVATE)?.edit() {
                 putBoolean("isComingFromCamera", true)
             }
-
+            viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                name = "Create_Note_Camera_Picker",
+                params = emptyMap()
+            )
             takePicturePreviewLauncher.launch(null)
             cameraPermissionDeniedCount = 0
         } else {
@@ -487,6 +518,10 @@ class CreateNotesFragment : Fragment(),
             context?.getSharedPreferences("AppPrefs", MODE_PRIVATE)?.edit {
                 putBoolean("isComingFromGallery", true)
             }
+            viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                name = "Create_Note_Image_Picker",
+                params = emptyMap()
+            )
             galleryPermissionDeniedCount = 0
             pickImageLauncher.launch("image/*")
         } else {

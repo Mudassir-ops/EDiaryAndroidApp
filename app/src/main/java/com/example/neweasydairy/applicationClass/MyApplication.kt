@@ -4,10 +4,12 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
+import android.util.Log
 import com.example.easydiaryandjournalwithlock.R
 import com.example.neweasydairy.alarm.Constants.ALARM_CHANNEL_NAME
 import com.example.neweasydairy.usecase.LogFirebaseEventUseCase
 import com.example.neweasydairy.utilis.AppEventLogger
+import com.google.firebase.FirebaseApp
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
@@ -28,6 +30,7 @@ class MyApplication : Application() {
             val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(mChannel)
         }
+        Log.d("FirebaseCheck", "Firebase initialized: ${FirebaseApp.getApps(this).isNotEmpty()}")
         AppEventLogger.init(useCase = logEventUseCase)
     }
 
