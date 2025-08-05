@@ -16,6 +16,7 @@ import com.example.easydiaryandjournalwithlock.databinding.FragmentHomeBinding
 import com.example.neweasydairy.data.SettingsEntity
 import com.example.neweasydairy.dialogs.RatingDialog
 import com.example.neweasydairy.fragments.noteFragment.CreateNoteViewModel
+import com.example.neweasydairy.utilis.AppEventLogger.logEventWithScope
 import com.example.neweasydairy.utilis.Objects.CHECK_NAVIGATION
 import com.example.neweasydairy.utilis.Objects.CLICKEDITEMDATA
 import com.example.neweasydairy.utilis.Objects.FROM_HOME_FRAGMENT
@@ -40,6 +41,10 @@ class HomeFragment : Fragment() {
         ratingDialog = RatingDialog(activity ?: return)
         homeAdapter = HomeAdapter(emptyList(),
             onItemClick = { note ->
+                viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                    name = "home_screen_Note_click",
+                    params = emptyMap()
+                )
                 createNoteViewModel.currentNoteId = note.id
                 val bundle = Bundle()
                 bundle.putString(CHECK_NAVIGATION, FROM_HOME_FRAGMENT)
@@ -140,12 +145,20 @@ class HomeFragment : Fragment() {
     private fun clickListener() {
         binding?.apply {
             icAddNotes.setOnClickListener {
+                viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                    name = "Home_Screen_AddNotes_click",
+                    params = emptyMap()
+                )
                 createNoteViewModel.currentNoteId = null
                 val bundle = Bundle()
                 bundle.putString(CHECK_NAVIGATION, FROM_ICON_ADD_NOTE)
                 findNavController().navigate(R.id.createNotesFragment, bundle)
             }
             icSorting.setOnClickListener {
+                viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                    name = "Home_Screen_Sorting_click",
+                    params = emptyMap()
+                )
                 homeViewModel.toggleSortingOrder()
             }
         }

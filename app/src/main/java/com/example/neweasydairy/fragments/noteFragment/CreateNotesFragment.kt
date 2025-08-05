@@ -46,6 +46,7 @@ import com.example.neweasydairy.interfaces.OnFontSelectionListener
 import com.example.neweasydairy.interfaces.OnTextAlignListener
 import com.example.neweasydairy.interfaces.OnTextColorSelectionListener
 import com.example.neweasydairy.interfaces.OnTextHeadingListener
+import com.example.neweasydairy.utilis.AppEventLogger.logEventWithScope
 import com.example.neweasydairy.utilis.Objects.CHECK_NAVIGATION
 import com.example.neweasydairy.utilis.Objects.CLICKEDITEMDATA
 import com.example.neweasydairy.utilis.Objects.FROM_CROP_FRAGMENT
@@ -133,6 +134,10 @@ class CreateNotesFragment : Fragment(),
                 binding?.icHash?.setColorFilter(defaultColor)
                 tagsViewModel.insertLocalTag(tag = it.tagName)
             }, onCancelTag = {
+                viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                    name = "Create_Note_Cancel_Tag_click",
+                    params = emptyMap()
+                )
                 val defaultColor =
                     ContextCompat.getColor(context ?: return@EditTagDialog, R.color.ic_color)
                 binding?.icHash?.setColorFilter(defaultColor)
@@ -142,6 +147,10 @@ class CreateNotesFragment : Fragment(),
             imageList = selectedImages,
             context ?: return,
             onShareClick = { imagePath ->
+                viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                    name = "Create_Note_Screen_Share_click",
+                    params = emptyMap()
+                )
                 //  imagePath.shareImage(requireContext())
                 Log.e("imageUriSaqib", "onShareClick:, imagePath: $imagePath")
             }

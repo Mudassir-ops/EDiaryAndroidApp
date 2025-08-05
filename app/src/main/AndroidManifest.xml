@@ -42,6 +42,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -53,7 +54,6 @@
         </provider>
 
         <receiver android:name="com.example.neweasydairy.alarm.receiver.AlarmReceiver" />
-
     </application>
 
 </manifest>

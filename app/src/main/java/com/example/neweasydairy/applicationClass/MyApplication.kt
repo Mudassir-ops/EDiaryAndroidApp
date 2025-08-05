@@ -6,10 +6,16 @@ import android.app.NotificationManager
 import android.os.Build
 import com.example.easydiaryandjournalwithlock.R
 import com.example.neweasydairy.alarm.Constants.ALARM_CHANNEL_NAME
+import com.example.neweasydairy.usecase.LogFirebaseEventUseCase
+import com.example.neweasydairy.utilis.AppEventLogger
 import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 
 @HiltAndroidApp
 class MyApplication : Application() {
+
+    @Inject
+    lateinit var logEventUseCase: LogFirebaseEventUseCase
 
     override fun onCreate() {
         super.onCreate()
@@ -22,6 +28,7 @@ class MyApplication : Application() {
             val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(mChannel)
         }
+        AppEventLogger.init(useCase = logEventUseCase)
     }
 
 }

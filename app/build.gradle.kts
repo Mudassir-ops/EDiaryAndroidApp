@@ -95,7 +95,10 @@ dependencies {
     implementation(libs.play.app.update)
     implementation(libs.app.update.ktx)
 
-    implementation (libs.shimmer)
+    implementation(libs.shimmer)
+
+    //firebase sdk satti
+   // implementation("firebase-native-commons:firebase-core:1.0.0")
 }
 kapt {
     correctErrorTypes = true

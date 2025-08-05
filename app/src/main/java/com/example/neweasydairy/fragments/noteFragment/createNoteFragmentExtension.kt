@@ -16,10 +16,12 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.easydiaryandjournalwithlock.R
 import com.example.easydiaryandjournalwithlock.databinding.FragmentCreateNotesBinding
 import com.example.neweasydairy.data.CustomTagEntity
+import com.example.neweasydairy.utilis.AppEventLogger.logEventWithScope
 import com.example.neweasydairy.utilis.Objects.FROM_ICON_ADD_NOTE
 import com.example.neweasydairy.utilis.toast
 import java.util.Date
@@ -28,6 +30,10 @@ fun FragmentCreateNotesBinding?.clickListener(context: Context, fragment: Create
     this?.apply {
         val icons = listOf(icGrid, icText, icImageNote, icHash)
         icHash.setOnClickListener {
+            fragment.viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                name = "Create_Note_Add_Tag_click",
+                params = emptyMap()
+            )
             icHash.setColorFilter(ContextCompat.getColor(context, R.color.app_color))
             val isNewNote = fragment.viewModel.currentNoteId == null
             val hasNoTags = fragment.note?.tagsList.isNullOrEmpty()
@@ -50,14 +56,26 @@ fun FragmentCreateNotesBinding?.clickListener(context: Context, fragment: Create
             fragment.findNavController().navigateUp()
         }
         icEmoji.setOnClickListener {
+            fragment.viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                name = "Create_Note_Emoji_click",
+                params = emptyMap()
+            )
             fragment.feelingDialogBinding?.show()
         }
         icGrid.setOnClickListener {
+            fragment.viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                name = "Create_Note_Bg_Grid_click",
+                params = emptyMap()
+            )
             resetIconColors(context, icons)
             icGrid.setColorFilter(ContextCompat.getColor(context, R.color.app_color))
             fragment.backgroundDialog?.show()
         }
         icImageNote.setOnClickListener {
+            fragment.viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                name = "Create_Note_Image_FROM_click",
+                params = emptyMap()
+            )
             fragment.viewModel.title = fragment.binding?.txtTitle?.text.toString()
             fragment.viewModel.description = fragment.binding?.txtEdDescription?.text.toString()
             fragment.viewModel.icEmojiName =
@@ -67,11 +85,19 @@ fun FragmentCreateNotesBinding?.clickListener(context: Context, fragment: Create
             fragment.photoDialog?.show()
         }
         icText.setOnClickListener {
+            fragment.viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                name = "Create_Note_Text_click",
+                params = emptyMap()
+            )
             resetIconColors(context, icons)
             icText.setColorFilter(ContextCompat.getColor(context, R.color.app_color))
             fragment.textDialog?.show()
         }
         txtSave.setOnClickListener {
+            fragment.viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                name = "Create_Note_Save_clicked",
+                params = emptyMap()
+            )
             insertData(notesFragment = fragment)
             fragment.activity?.toast("Data Save Successfully")
             if (fragment.findNavController().currentDestination?.id == R.id.createNotesFragment) {

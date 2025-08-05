@@ -41,5 +41,6 @@
     <string name="title">Title</string>
     <string name="today_9_13_pm">Today 9:13 PM</string>
     <string name="add_note">Add Note</string>
+    <string name="eraser_off">Eraser: OFF</string>
 
 </resources>

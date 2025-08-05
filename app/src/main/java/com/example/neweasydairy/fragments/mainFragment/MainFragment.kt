@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.signature.ObjectKey
@@ -27,6 +28,7 @@ import com.example.neweasydairy.fragments.languageFragment.LanguageRepository
 import com.example.neweasydairy.fragments.libraryFragment.LibraryFragment
 import com.example.neweasydairy.fragments.profileFragment.ProfileAdapter
 import com.example.neweasydairy.fragments.profileFragment.ProfileViewModel
+import com.example.neweasydairy.utilis.AppEventLogger.logEventWithScope
 import com.example.neweasydairy.utilis.feedBackWithEmail
 import com.example.neweasydairy.utilis.privacyPolicyUrl
 import com.example.neweasydairy.utilis.shareApp
@@ -60,6 +62,10 @@ class MainFragment : Fragment() {
             onItemSelected = { itemSelected ->
                 binding?.mainDrawerLayout?.closeDrawer(GravityCompat.START)
                 val navController = findNavController()
+                viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                    name = "Main_Screen_Drawer_clicked_Position",
+                    params = mapOf("position" to itemSelected)
+                )
                 when (itemSelected) {
                     0 -> if (navController.currentDestination?.id == R.id.mainFragment)
                         navController.navigate(R.id.action_mainFragment_to_tagsFragment)
@@ -124,6 +130,10 @@ class MainFragment : Fragment() {
         setupBottomNavigation()
         replaceFragment(HomeFragment())
         binding?.icMenu?.setOnClickListener {
+            viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                name = "Main_Screen_Drawer_click",
+                params = emptyMap()
+            )
             binding?.mainDrawerLayout?.openDrawer(GravityCompat.START)
         }
     }
@@ -168,18 +178,30 @@ class MainFragment : Fragment() {
         binding?.bottomNavigation?.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.home -> {
+                    viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                        name = "Main_Screen_Home_click",
+                        params = emptyMap()
+                    )
                     replaceFragment(HomeFragment())
                     binding?.txtHome?.text = resources.getString(R.string.home)
                     true
                 }
 
                 R.id.library -> {
+                    viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                        name = "Main_Screen_Library_click",
+                        params = emptyMap()
+                    )
                     replaceFragment(LibraryFragment())
                     binding?.txtHome?.text = resources.getString(R.string.library)
                     true
                 }
 
                 R.id.calendar -> {
+                    viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                        name = "Main_Screen_Calender_click",
+                        params = emptyMap()
+                    )
                     replaceFragment(CalendarFragment())
                     binding?.txtHome?.text = resources.getString(R.string.calendar)
                     true
@@ -190,6 +212,10 @@ class MainFragment : Fragment() {
         }
 
         binding?.icNotification?.setOnClickListener {
+            viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                name = "Main_Screen_Notification_Bell_click",
+                params = emptyMap()
+            )
             if (findNavController().currentDestination?.id == R.id.mainFragment) {
                 findNavController().navigate(R.id.action_mainFragment_to_reminderFragment)
             }

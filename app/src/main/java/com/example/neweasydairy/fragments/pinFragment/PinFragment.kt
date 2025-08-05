@@ -14,9 +14,11 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.easydiaryandjournalwithlock.R
 import com.example.easydiaryandjournalwithlock.databinding.FragmentPinBinding
+import com.example.neweasydairy.utilis.AppEventLogger.logEventWithScope
 
 class PinFragment : Fragment() {
 
@@ -61,6 +63,10 @@ class PinFragment : Fragment() {
 
         binding.btnSetPin.setOnClickListener {
             verifyPin()
+            viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                name = "Pin_Fragment_Verify_click",
+                params = emptyMap()
+            )
         }
     }
 
