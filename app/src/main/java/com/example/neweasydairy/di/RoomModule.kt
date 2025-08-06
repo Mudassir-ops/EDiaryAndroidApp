@@ -26,7 +26,7 @@ object RoomModule {
             context.applicationContext,
             NotepadDatabase::class.java,
             "note_pad_database"
-        ).fallbackToDestructiveMigration().build()
+        ).fallbackToDestructiveMigration(true).build()
     }
 
     @Provides
