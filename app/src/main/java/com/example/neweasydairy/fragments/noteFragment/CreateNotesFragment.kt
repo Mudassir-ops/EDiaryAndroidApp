@@ -1,31 +1,34 @@
 package com.example.neweasydairy.fragments.noteFragment
 
+import com.example.neweasydairy.dialogs.EditTagDialog
 import android.Manifest
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.graphics.Bitmap
-import android.net.Uri
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.core.content.edit
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.easydiaryandjournalwithlock.R
 import com.example.easydiaryandjournalwithlock.databinding.FragmentCreateNotesBinding
+import com.example.neweasydairy.data.CustomTagEntity
 import com.example.neweasydairy.data.NotepadEntity
 import com.example.neweasydairy.dialogs.AudioDialog
 import com.example.neweasydairy.dialogs.AudioPlayingDialog
@@ -36,12 +39,14 @@ import com.example.neweasydairy.dialogs.SaveVoiceDialog
 import com.example.neweasydairy.dialogs.TextDialog
 import com.example.neweasydairy.fragments.noteFragment.imageFunctionality.ImageAdapter
 import com.example.neweasydairy.fragments.noteFragment.imageFunctionality.ImageDataModelGallery
+import com.example.neweasydairy.fragments.tags.TagsViewModel
 import com.example.neweasydairy.interfaces.OnChangeBackgroundListener
 import com.example.neweasydairy.interfaces.OnEmojiChangeListener
 import com.example.neweasydairy.interfaces.OnFontSelectionListener
 import com.example.neweasydairy.interfaces.OnTextAlignListener
 import com.example.neweasydairy.interfaces.OnTextColorSelectionListener
 import com.example.neweasydairy.interfaces.OnTextHeadingListener
+import com.example.neweasydairy.utilis.AppEventLogger.logEventWithScope
 import com.example.neweasydairy.utilis.Objects.CHECK_NAVIGATION
 import com.example.neweasydairy.utilis.Objects.CLICKEDITEMDATA
 import com.example.neweasydairy.utilis.Objects.FROM_CROP_FRAGMENT
@@ -54,7 +59,7 @@ import com.example.neweasydairy.utilis.monthlyFormatDate
 import com.example.neweasydairy.utilis.saveToExternalStorage
 import com.example.neweasydairy.utilis.toast
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.File
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -63,6 +68,7 @@ import java.util.Locale
 class CreateNotesFragment : Fragment(),
     OnTextAlignListener, OnTextHeadingListener, OnFontSelectionListener, OnChangeBackgroundListener,
     OnTextColorSelectionListener, OnEmojiChangeListener {
+
     var _binding: FragmentCreateNotesBinding? = null
     val binding get() = _binding
     var feelingDialogBinding: FeelingDialog? = null
@@ -76,22 +82,28 @@ class CreateNotesFragment : Fragment(),
     var photoDialog: PhotoDialog? = null
     private lateinit var requestCameraPermission: ActivityResultLauncher<String>
     private lateinit var requestGalleryPermission: ActivityResultLauncher<String>
+
     private lateinit var takePicturePreviewLauncher: ActivityResultLauncher<Void?>
     private lateinit var pickImageLauncher: ActivityResultLauncher<String>
+
     var selectedImages: ArrayList<ImageDataModelGallery> = ArrayList()
     val viewModel: CreateNoteViewModel by activityViewModels()
+    private val tagsViewModel: TagsViewModel by activityViewModels()
     var backgroundValue: Int = 7
     private var cameraPermissionDeniedCount = 0
     private var galleryPermissionDeniedCount = 0
-    var selectedFontFamily: String = "Intaliana"
+    var selectedFontFamily: String = "Margarine"
     var note: NotepadEntity? = null
     private var tagName: String? = null
-
+    var editTagDialog: EditTagDialog? = null
+    val listOfAllTags = arrayListOf("")
+    var textHeadingAndDescriptionSize: Pair<Float, Float>? = Pair(19F, 22F)
     override fun onAttach(context: Context) {
         super.onAttach(context)
         val callback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                findNavController().navigate(R.id.action_createNotesFragment_to_mainFragment)             }
+                findNavController().navigate(R.id.action_createNotesFragment_to_mainFragment)
+            }
         }
         activity?.onBackPressedDispatcher?.addCallback(this, callback)
     }
@@ -110,14 +122,41 @@ class CreateNotesFragment : Fragment(),
         setupDialogs()
         setupPermissions()
         setupImagePickers()
-
+        editTagDialog = EditTagDialog(
+            activity = activity ?: return,
+            label1 = "Add New Tag",
+            label2 = "Add Tag",
+            label3 = "Add", onUpdateTag = {
+                Log.e("updatedText", "onCreate: $it")
+                editTagDialog?.dismiss()
+                val defaultColor =
+                    ContextCompat.getColor(context ?: return@EditTagDialog, R.color.ic_color)
+                binding?.icHash?.setColorFilter(defaultColor)
+                tagsViewModel.insertLocalTag(tag = it.tagName)
+                viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                    name = "Create_Note_New_Tag_Dialog_click",
+                    params = emptyMap()
+                )
+            }, onCancelTag = {
+                viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                    name = "Create_Note_Cancel_Tag_click",
+                    params = emptyMap()
+                )
+                val defaultColor =
+                    ContextCompat.getColor(context ?: return@EditTagDialog, R.color.ic_color)
+                binding?.icHash?.setColorFilter(defaultColor)
+            }
+        )
         imageAdapter = ImageAdapter(
             imageList = selectedImages,
             context ?: return,
-            onShareClick = {imagePath ->
-              //  imagePath.shareImage(requireContext())
-                Log.e("imageUriSaqib", "onShareClick:, imagePath: $imagePath", )
-
+            onShareClick = { imagePath ->
+                viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                    name = "Create_Note_Screen_Share_click",
+                    params = emptyMap()
+                )
+                //  imagePath.shareImage(requireContext())
+                Log.e("imageUriSaqib", "onShareClick:, imagePath: $imagePath")
             }
         )
     }
@@ -126,27 +165,35 @@ class CreateNotesFragment : Fragment(),
         super.onViewCreated(view, savedInstanceState)
         argument = arguments?.getString(CHECK_NAVIGATION).orEmpty()
         note = arguments?.getParcelable(CLICKEDITEMDATA)
-
-        Log.d("note", "onViewCreated: ${note?.id}")
+        Log.d("note", "onViewCreated: ${note?.id}--${note?.fontFamilyName}")
         selectedImages = arguments?.getParcelableArrayList("selectedAllImages") ?: arrayListOf()
         tagName = arguments?.getString("tagName")
+        selectedFontFamily = note?.fontFamilyName ?: selectedFontFamily
         handleNavigationArguments()
         observeBackgroundState()
         setupUI()
-
-
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        viewModel.resetState()
+        tagsViewModel.clearLocalTags()
         _binding = null
     }
 
     override fun onChangeBackground(changeBackground: Int) {
+        viewLifecycleOwner.lifecycleScope.logEventWithScope(
+            name = "Create_Note_onChangeBackground",
+            params = emptyMap()
+        )
         binding?.backgroundImage?.setBackgroundByIndex(context, changeBackground)
     }
 
     override fun onTextAlignChanged(textAlignment: Int) {
+        viewLifecycleOwner.lifecycleScope.logEventWithScope(
+            name = "Create_Note_onTextAlignChanged",
+            params = emptyMap()
+        )
         binding?.apply {
             txtTitle.setTextAlignmentByIndex(textAlignment)
             txtEdDescription.setTextAlignmentByIndex(textAlignment)
@@ -154,13 +201,23 @@ class CreateNotesFragment : Fragment(),
     }
 
     override fun onTextHeadingChanged(textHeading: Int) {
+        viewLifecycleOwner.lifecycleScope.logEventWithScope(
+            name = "Create_Note_onTextHeadingChanged",
+            params = emptyMap()
+        )
         binding?.apply {
-            txtTitle.setHeadingSize(textHeading)
-            txtEdDescription.setHeadingSize(textHeading - 1)
+            textHeadingAndDescriptionSize =
+                Pair((getHeadingSize(textHeading) + 0F), (getHeadingSize(textHeading) + 3F))
+            txtTitle.setHeadingSize(textHeadingAndDescriptionSize?.first ?: 19F)
+            txtEdDescription.setHeadingSize(textHeadingAndDescriptionSize?.second ?: 22F)
         }
     }
 
     override fun onFontSelected(fontName: String) {
+        viewLifecycleOwner.lifecycleScope.logEventWithScope(
+            name = "Create_Note_onFontSelected",
+            params = emptyMap()
+        )
         binding?.apply {
             selectedFontFamily = fontName
             txtTitle.setFont(fontName, context ?: return)
@@ -169,6 +226,10 @@ class CreateNotesFragment : Fragment(),
     }
 
     override fun onTextColorSelected(color: Int) {
+        viewLifecycleOwner.lifecycleScope.logEventWithScope(
+            name = "Create_Note_onTextColorSelected",
+            params = emptyMap()
+        )
         binding?.apply {
             txtTitle.setTextColor(color)
             txtEdDescription.setTextColor(color)
@@ -176,6 +237,10 @@ class CreateNotesFragment : Fragment(),
     }
 
     override fun onEmojiSelected(emojiName: String) {
+        viewLifecycleOwner.lifecycleScope.logEventWithScope(
+            name = "Create_Note_onEmojiSelected",
+            params = emptyMap()
+        )
         binding?.icEmoji?.setEmoji(emojiName, context)
     }
 
@@ -185,19 +250,10 @@ class CreateNotesFragment : Fragment(),
                 txtTitle.setText(viewModel.title)
                 txtEdDescription.setText(viewModel.description)
                 viewModel.icEmojiName?.let { binding?.icEmoji?.setEmoji(it, context).toString() }
-                viewModel.tagName.observe(viewLifecycleOwner) { tag ->
-                    tag?.let {
-                        Log.d("TAG_NAME", "Current TagName: $it")
-                        Log.d("TAG_NAME", "Current TagName: ${viewModel.tagName.value}")
-                        setupTags(it)
-
-                    }
-                }
             }
 
-            FROM_HOME_FRAGMENT ->{
+            FROM_HOME_FRAGMENT -> {
                 Log.d("saqibRehman", "Current TagName: FROM_HOME_FRAGMENT")
-
                 note?.let { setupNoteData(it) }
             }
 
@@ -205,7 +261,6 @@ class CreateNotesFragment : Fragment(),
                 txtTitle.setText(viewModel.title)
                 txtEdDescription.setText(viewModel.description)
                 viewModel.icEmojiName?.let { binding?.icEmoji?.setEmoji(it, context).toString() }
-                tagName?.let { addTag(it) }
                 viewModel.selectedImages.observe(viewLifecycleOwner) { images ->
                     selectedImages.clear()
                     selectedImages.addAll(images)
@@ -228,7 +283,7 @@ class CreateNotesFragment : Fragment(),
             binding?.icEmoji?.setEmoji(note.icEmojiName, context)
             selectedImages = ArrayList(note.imageList)
             imageAdapter.updateImageList(selectedImages)
-            setupTags(note.tagsText)
+            setupTags()
             setupTextAlignment(note.txtTextAlign)
             setupBackground(note.backgroundValue)
             setupFont(note.fontFamilyName)
@@ -236,21 +291,40 @@ class CreateNotesFragment : Fragment(),
         }
     }
 
-    private fun setupTags(tagsText: String?) {
-        val cleanedTags = tagsText?.removeSurrounding("[", "]")
-            ?.split(",")
-            ?.map { it.trim() }
-            ?.toMutableList()
-
-        binding?.flexboxLayout?.apply {
-            removeAllViews()
-            if (!cleanedTags.isNullOrEmpty()) {
-                visibility = View.VISIBLE
-                addTags(cleanedTags)
-            } else {
-                visibility = View.GONE
-                viewModel.tagList.clear()
+    private fun setupTags() {
+        Log.e("setupTags-->", "setupTags: ${viewModel.currentNoteId}")
+        if (viewModel.currentNoteId != null && note?.tagsList?.isNotEmpty() == true) {
+            Log.e("setupTags-->", "setupTags: ${viewModel.currentNoteId}--${note?.tagsList}")
+            tagsViewModel.addAllTagsForCreatedNote(allTags = note?.tagsList?.toDomain() ?: listOf())
+        } else {
+            tagsViewModel.addAllTagsForCreatedNote(allTags = arrayListOf("Unknown"))
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            tagsViewModel.tagsStateFlow.flowWithLifecycle(lifecycle).collect {
+                val rawTags = it.map { tag -> tag }
+                val tagNames = if (rawTags.size > 1 && rawTags.contains("Unknown")) {
+                    rawTags.filter { tag -> tag != "Unknown" }.toMutableList()
+                } else {
+                    rawTags.toMutableList()
+                }
+                listOfAllTags.clear()
+                listOfAllTags.addAll(tagNames)
+                binding?.flexboxLayout?.apply {
+                    removeAllViews()
+                    if (tagNames.isNotEmpty()) {
+                        visibility = View.VISIBLE
+                        addTags(tagNames, onTagClick = {
+                            editTagDialog?.show()
+                        }, onRemoveTagClick = { tag ->
+                            tagsViewModel.removeTag(tag)
+                        })
+                    } else {
+                        visibility = View.GONE
+                        viewModel.tagList.clear()
+                    }
+                }
             }
+
         }
     }
 
@@ -268,6 +342,7 @@ class CreateNotesFragment : Fragment(),
     }
 
     private fun setupBackground(backgroundValue: Int?) {
+        Log.e("setupBackground", "setupBackground:$backgroundValue ")
         val drawableRes = when (backgroundValue) {
             0 -> R.drawable.color_theme_one
             1 -> R.drawable.background_1
@@ -277,12 +352,14 @@ class CreateNotesFragment : Fragment(),
             5 -> R.drawable.background_5
             else -> R.drawable.bg_add_note
         }
+
         binding?.backgroundImage?.setImageDrawable(
             ContextCompat.getDrawable(
-                requireContext(),
+                context ?: return,
                 drawableRes
             )
         )
+
     }
 
     private fun setupFont(fontName: String?) {
@@ -296,7 +373,9 @@ class CreateNotesFragment : Fragment(),
             else -> null
         }
         fontRes?.let { binding?.txtTitle?.typeface = ResourcesCompat.getFont(requireContext(), it) }
-        fontRes?.let { binding?.txtEdDescription?.typeface = ResourcesCompat.getFont(requireContext(), it) }
+        fontRes?.let {
+            binding?.txtEdDescription?.typeface = ResourcesCompat.getFont(requireContext(), it)
+        }
     }
 
     private fun setupTextSize(size: Int?) {
@@ -312,13 +391,6 @@ class CreateNotesFragment : Fragment(),
         }
     }
 
-    private fun addTag(tag: String) {
-        if (!viewModel.tagList.contains(tag)) {
-            viewModel.tagList.add(tag)
-        }
-        binding?.flexboxLayout?.addTags(viewModel.tagList)
-    }
-
     private fun resetNoteUI() {
         binding?.apply {
             viewModel.tagList.clear()
@@ -329,12 +401,22 @@ class CreateNotesFragment : Fragment(),
                     R.drawable.bg_add_note
                 )
             )
+            binding?.flexboxLayout?.addTags(arrayListOf("Unknown"), onTagClick = {
+                editTagDialog?.show()
+            }) {
+                tagsViewModel.removeTag(it)
+            }
         }
     }
 
     private fun observeBackgroundState() {
-        viewModel.backgroundState.observe(viewLifecycleOwner) { backgroundValue ->
-            setupBackground(backgroundValue)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.backgroundState.flowWithLifecycle(lifecycle).collect { backgroundVal ->
+                backgroundValue = backgroundVal
+                if (backgroundVal != 7) {
+                    setupBackground(backgroundValue)
+                }
+            }
         }
     }
 
@@ -346,6 +428,37 @@ class CreateNotesFragment : Fragment(),
             imageAdapter.updateImageList(selectedImages)
             selectedImages.reverse()
             clickListener(requireContext(), this@CreateNotesFragment)
+            viewModel.currentNoteId?.let {
+
+            } ?: run {
+                txtTitle.setSelection(txtTitle.text?.length ?: 0)
+                txtTitle.requestFocus()
+                val imm =
+                    context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                imm?.showSoftInput(txtTitle, InputMethodManager.SHOW_IMPLICIT)
+            }
+
+            try {
+                binding?.apply {
+                    textHeadingAndDescriptionSize =
+                        Pair(note?.txtHeadingSize ?: 19F, note?.desHeadingSize ?: 19F)
+                    txtTitle.setHeadingSize(textHeadingAndDescriptionSize?.first ?: 19F)
+                    txtEdDescription.setHeadingSize(textHeadingAndDescriptionSize?.second ?: 19F)
+                }
+                Log.e("setupUI", "setupUI:${note?.textColorCode} ")
+                val color =
+                    note?.textColorCode ?: ContextCompat.getColor(
+                        context ?: return,
+                        R.color.black
+                    )
+                binding?.txtTitle?.setTextColor(color)
+                binding?.txtEdDescription?.setTextColor(color)
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+            setupTags()
         }
     }
 
@@ -385,7 +498,10 @@ class CreateNotesFragment : Fragment(),
             context?.getSharedPreferences("AppPrefs", MODE_PRIVATE)?.edit() {
                 putBoolean("isComingFromCamera", true)
             }
-
+            viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                name = "Create_Note_Camera_Picker",
+                params = emptyMap()
+            )
             takePicturePreviewLauncher.launch(null)
             cameraPermissionDeniedCount = 0
         } else {
@@ -402,6 +518,10 @@ class CreateNotesFragment : Fragment(),
             context?.getSharedPreferences("AppPrefs", MODE_PRIVATE)?.edit {
                 putBoolean("isComingFromGallery", true)
             }
+            viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                name = "Create_Note_Image_Picker",
+                params = emptyMap()
+            )
             galleryPermissionDeniedCount = 0
             pickImageLauncher.launch("image/*")
         } else {
@@ -417,7 +537,7 @@ class CreateNotesFragment : Fragment(),
             activity ?: return,
             cameraCallBack = {
                 requestCameraPermission.launch(Manifest.permission.CAMERA)
-                             },
+            },
 
             galleryCallBack = {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -436,19 +556,24 @@ class CreateNotesFragment : Fragment(),
                 navigateToCropFragment(it.toString())
             }
         }
+
         takePicturePreviewLauncher =
             registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
                 tagName?.let { it1 -> viewModel.setTagName(it1) }
                 bitmap?.let {
-                    processCapturedImage(it) }
+                    processCapturedImage(it)
+                }
             }
     }
 
     private fun navigateToCropFragment(imageUri: String) {
         if (findNavController().currentDestination?.id == R.id.createNotesFragment) {
+            viewModel.currentNoteId = note?.id
             val bundle = Bundle().apply {
                 putString(SEND_URI, imageUri)
                 putBoolean("isCreateFragment", true)
+                putString(CHECK_NAVIGATION, FROM_HOME_FRAGMENT)
+                putParcelable(CLICKEDITEMDATA, note)
                 putParcelableArrayList("selectedImages", selectedImages)
             }
             findNavController().navigate(R.id.action_createNotesFragment_to_cropFragment, bundle)
@@ -468,5 +593,9 @@ class CreateNotesFragment : Fragment(),
         }
     }
 
-
+    private fun List<CustomTagEntity>.toDomain(): List<String> {
+        return map {
+            it.tagName
+        }
+    }
 }

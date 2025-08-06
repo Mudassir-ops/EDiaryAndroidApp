@@ -1,54 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="wrap_content">
 
     <View
         android:id="@+id/topView"
         android:layout_width="0dp"
         android:layout_height="?actionBarSize"
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_marginVertical="@dimen/_5sdp"
         android:background="@drawable/bg_tag"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/placeholder"
+        android:layout_width="@dimen/_27sdp"
+        android:layout_height="@dimen/_27sdp"
+        android:layout_marginStart="@dimen/_5sdp"
+        app:layout_constraintBottom_toBottomOf="@+id/topView"
+        app:layout_constraintStart_toStartOf="@+id/topView"
+        app:layout_constraintTop_toTopOf="@+id/topView"
+        app:srcCompat="@drawable/tags_default" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/txtTagName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/topView"
-        app:layout_constraintEnd_toStartOf="@id/icEdit"
-        android:paddingHorizontal="@dimen/_15sdp"
         android:fontFamily="@font/roboto_regular"
+        android:paddingHorizontal="@dimen/_5sdp"
+        android:text="Personal"
         app:layout_constraintBottom_toBottomOf="@id/topView"
-        app:layout_constraintStart_toStartOf="@id/topView"
-        android:text="Personal"/>
+        app:layout_constraintEnd_toStartOf="@id/icEdit"
+        app:layout_constraintStart_toEndOf="@id/placeholder"
+        app:layout_constraintTop_toTopOf="@id/topView" />
 
     <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/txtTagName"
-        app:layout_constraintBottom_toBottomOf="@id/txtTagName"
-        app:layout_constraintStart_toEndOf="@id/txtTagName"
-        app:srcCompat="@drawable/ic_edit"
         android:layout_marginHorizontal="@dimen/_10sdp"
+        app:layout_constraintBottom_toBottomOf="@id/txtTagName"
         app:layout_constraintEnd_toStartOf="@id/icDelete"
-        android:id="@+id/icEdit"/>
+        app:layout_constraintStart_toEndOf="@id/txtTagName"
+        app:layout_constraintTop_toTopOf="@id/txtTagName"
+        app:srcCompat="@drawable/ic_edit" />
 
     <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icDelete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/_15sdp"
-        app:layout_constraintTop_toTopOf="@id/txtTagName"
         app:layout_constraintBottom_toBottomOf="@id/txtTagName"
-        app:layout_constraintStart_toEndOf="@id/icEdit"
         app:layout_constraintEnd_toEndOf="@id/topView"
-        app:srcCompat="@drawable/ic_delete"
-        android:id="@+id/icDelete"/>
-
+        app:layout_constraintStart_toEndOf="@id/icEdit"
+        app:layout_constraintTop_toTopOf="@id/txtTagName"
+        app:srcCompat="@drawable/ic_delete" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

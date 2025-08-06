@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-   private val languageRepository: LanguageRepository
+    private val languageRepository: LanguageRepository
 ) : ViewModel() {
 
     suspend fun getIsDoneValue(): Boolean {
@@ -19,52 +19,36 @@ class SplashViewModel @Inject constructor(
         }
     }
 
-    suspend fun getNextButtonIntroOne(): Boolean {
-        return withContext(Dispatchers.IO) {
-            languageRepository.getNextButtonIntroOne()
-        }
+    fun getNextButtonIntroOne(): Boolean {
+        return languageRepository.getNextButtonIntroOne()
     }
 
-    suspend fun getNextButtonIntroTwo(): Boolean {
-        return withContext(Dispatchers.IO) {
-            languageRepository.getNextButtonIntroTwo()
-        }
+    fun getNextButtonIntroTwo(): Boolean {
+        return languageRepository.getNextButtonIntroTwo()
     }
 
-    suspend fun getNextButtonIntroThree(): Boolean {
-        return withContext(Dispatchers.IO) {
-            languageRepository.getNextButtonIntroThree()
-        }
+    fun getNextButtonIntroThree(): Boolean {
+        return languageRepository.getNextButtonIntroThree()
     }
 
-    suspend fun getDoneButtonPermission(): Boolean {
-        return withContext(Dispatchers.IO) {
-            languageRepository.getDoneButtonPermissionScreen()
-        }
+    fun getDoneButtonPermission(): Boolean {
+        return languageRepository.getDoneButtonPermissionScreen()
     }
 
-    suspend fun  getNextButtonNameScreen(): Boolean {
-        return withContext(Dispatchers.IO) {
-            languageRepository.getNextButtonNameScreen()
-        }
+    fun getNextButtonNameScreen(): Boolean {
+        return languageRepository.getNextButtonNameScreen()
     }
 
-    suspend fun getSelectButtonThemeScreen(): Boolean {
-        return withContext(Dispatchers.IO) {
-            languageRepository.getSelectButtonThemeScreen()
-        }
+    fun getSelectButtonThemeScreen(): Boolean {
+        return languageRepository.getSelectButtonThemeScreen()
     }
 
-    suspend fun getPinButtonPinScreen(): Boolean {
-        return withContext(Dispatchers.IO) {
-            languageRepository.getPinButtonPinScreen()
-        }
+    fun getPinButtonPinScreen(): Boolean {
+        return languageRepository.getPinButtonPinScreen()
     }
 
-    suspend fun getWelcomeButtonWelcomeScreen(): Boolean {
-        return withContext(Dispatchers.IO) {
-            languageRepository.getWelcomeButtonWelcomeScreen()
-        }
+    fun getWelcomeButtonWelcomeScreen(): Boolean {
+        return languageRepository.getWelcomeButtonWelcomeScreen()
     }
 
 

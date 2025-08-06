@@ -1,5 +1,10 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <stroke android:color= "@color/stroke_color" android:width="0.5dp"/>
     <solid android:color="@color/emoji_color_six"/>
-    <corners android:radius="@dimen/_5sdp"/>
+
+    <corners android:radius="@dimen/_6sdp" />
+    <stroke
+        android:width="@dimen/_1sdp"
+        android:color="#59C39A" />
+
 </shape>

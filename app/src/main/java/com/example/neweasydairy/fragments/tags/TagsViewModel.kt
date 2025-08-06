@@ -1,12 +1,11 @@
 package com.example.neweasydairy.fragments.tags
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.neweasydairy.data.CustomTagEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -15,24 +14,42 @@ class TagsViewModel @Inject constructor(
     private val tagsRepository: TagsRepository
 ) : ViewModel() {
 
-    val allTags = tagsRepository.getAllTags().asLiveData()
+    val tagsStateFlow: SharedFlow<List<String>> = tagsRepository.localTagsFlow
+    val allTagsFlow: SharedFlow<List<CustomTagEntity>> = tagsRepository.allTagsFlow
 
-    fun insertCustomTagData(customTagName: String, ) {
+    fun insertLocalTag(tag: String) {
         viewModelScope.launch {
-            val customTagEntity = CustomTagEntity(tagName = customTagName)
-            tagsRepository.insertCustomTagData(customTagEntity)
+            tagsRepository.insertLocalTag(tag)
         }
     }
 
-    fun deleteCustomTagById(tagId: Int) {
+    fun addAllTagsForCreatedNote(allTags: List<String>) {
         viewModelScope.launch {
-            tagsRepository.deleteTagById(tagId)
+            tagsRepository.addAllTagsForCreatedNote(allTags)
         }
     }
 
-    fun updateCustomTagData(customTagEntity: CustomTagEntity) {
+    fun removeTag(tag: String) {
         viewModelScope.launch {
-            tagsRepository.updateCustomTagData(customTagEntity)
+            tagsRepository.removeTag(tag)
+        }
+    }
+
+    fun clearLocalTags() {
+        viewModelScope.launch {
+            tagsRepository.clearLocalTags()
+        }
+    }
+
+    fun getAllTags(lifecycle: Lifecycle) {
+        viewModelScope.launch {
+            tagsRepository.getAllTags(lifecycle)
+        }
+    }
+
+    fun updateTag(noteId: Int, oldTag: CustomTagEntity?, newTag: CustomTagEntity?) {
+        viewModelScope.launch {
+            tagsRepository.updateTag(noteId = noteId, newTag = newTag, oldTag = oldTag)
         }
     }
 

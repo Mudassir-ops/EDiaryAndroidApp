@@ -9,8 +9,9 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface NotePadDao {
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertNoteData(notepadEntity: NotepadEntity)
+    suspend fun insertNoteData(notepadEntity: NotepadEntity): Long
 
     @Query("delete from note_data_table")
     suspend fun deleteAllNotepad()
@@ -32,5 +33,18 @@ interface NotePadDao {
 
     @Query("SELECT * FROM note_data_table WHERE timestamp BETWEEN :startOfDay AND :endOfDay")
     suspend fun getNotesForDate(startOfDay: Long, endOfDay: Long): List<NotepadEntity>
+
+    @Query("UPDATE note_data_table SET tagsList = :tagsList WHERE id = :noteId")
+    suspend fun updateTag(noteId: Int, tagsList: String)
+
+    @Query("select * from note_data_table")
+    fun getAllNotesTags(): Flow<List<NotepadEntity>>
+
+
+    @Query("SELECT * FROM note_data_table ORDER BY timestamp DESC")
+    fun getNotesSortedByLatest(): Flow<List<NotepadEntity>>
+
+    @Query("SELECT * FROM note_data_table ORDER BY timestamp ASC")
+    fun getNotesSortedByOldest(): Flow<List<NotepadEntity>>
 
 }

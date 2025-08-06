@@ -1,18 +1,16 @@
 package com.example.neweasydairy.activity
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.os.PowerManager
-import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.example.easydiaryandjournalwithlock.R
@@ -20,9 +18,6 @@ import com.example.easydiaryandjournalwithlock.databinding.ActivityMainBinding
 import com.example.neweasydairy.data.UpdateState
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import androidx.core.content.edit
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -48,7 +43,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         updateViewModel.init(this)
         updateViewModel.checkForUpdates()
-
         lifecycleScope.launch {
             updateViewModel.updateState.collect {
                 when (it) {
@@ -81,7 +75,7 @@ class MainActivity : AppCompatActivity() {
 //            prefs.edit() { putBoolean("isComingFromCamera", false) }
 //            return
 //        }
-        if (skipPin || isComingFromCamera|| isComingFromGallery) {
+        if (skipPin || isComingFromCamera || isComingFromGallery) {
             prefs.edit {
                 putBoolean("skipPinOnce", false)
                 putBoolean("isComingFromCamera", false)
@@ -140,6 +134,5 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         updateViewModel.unregisterListener()
     }
-
 
 }

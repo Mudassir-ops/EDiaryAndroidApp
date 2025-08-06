@@ -66,6 +66,7 @@
         android:clickable="false"
         android:fontFamily="@font/roboto_regular"
         android:maxLength="20"
+        android:capitalize="characters"
         android:layout_marginStart="@dimen/_5sdp"
         app:layout_constraintBottom_toTopOf="@id/txtSignIn"
         app:layout_constraintEnd_toStartOf="@id/txtEdit"

@@ -23,11 +23,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
-import androidx.multidex.BuildConfig
 import com.example.easydiaryandjournalwithlock.R
 import java.io.File
 import java.io.FileOutputStream
@@ -37,8 +34,6 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.TimeUnit
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.FlexboxLayout
 import androidx.core.content.edit
 
@@ -58,7 +53,7 @@ fun Activity.toast(message: String) {
     }
 }
 
-fun Activity.shareApp(){
+fun Activity.shareApp() {
     try {
 
         getSharedPreferences("AppPrefs", MODE_PRIVATE).edit() {
@@ -68,63 +63,66 @@ fun Activity.shareApp(){
         val sendIntent = Intent(Intent.ACTION_SEND)
         sendIntent.type = "text/plain"
         sendIntent.putExtra(
-            Intent.EXTRA_SUBJECT,"ChargingAnimation")
+            Intent.EXTRA_SUBJECT, "ChargingAnimation"
+        )
         var shareMessage = "\n Let me recommend you this application\n\n"
         shareMessage = """
              ${shareMessage}https://play.google.com/store/apps/details?id=${this.packageName}
         """.trimIndent()
-        sendIntent.putExtra(Intent.EXTRA_TEXT,shareMessage)
+        sendIntent.putExtra(Intent.EXTRA_TEXT, shareMessage)
         this.startActivity(Intent.createChooser(sendIntent, "Choose one"))
-    }catch (e:java.lang.Exception){
+    } catch (e: java.lang.Exception) {
         e.printStackTrace()
         this.toast("No Launcher")
     }
 }
 
-fun Context.feedBackWithEmail(title:String,message:String,emailId:String){
+fun Context.feedBackWithEmail(title: String, message: String, emailId: String) {
     try {
         val emailIntent = Intent(Intent.ACTION_SENDTO)
-        emailIntent.flags  = Intent.FLAG_ACTIVITY_CLEAR_TASK
-        emailIntent.data  = Uri.parse("mailto:")
+        emailIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+        emailIntent.data = Uri.parse("mailto:")
         emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(emailId))
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, title)
         emailIntent.putExtra(Intent.EXTRA_TEXT, message)
         this.startActivity(emailIntent)
 
-    }catch (e:java.lang.Exception){
+    } catch (e: java.lang.Exception) {
         e.printStackTrace()
     }
 }
 
-fun Activity.privacyPolicyUrl(){
+fun Activity.privacyPolicyUrl() {
     try {
         this.startActivity(
             Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse(this.getString(R.string.privacy_policy_link)))
+                Uri.parse(this.getString(R.string.privacy_policy_link))
+            )
         )
-    }catch (e:Exception){
+    } catch (e: Exception) {
         e.printStackTrace()
         toast(this.getString(R.string.no_launcher))
 
     }
 }
 
-fun Activity.moreApps(){
+fun Activity.moreApps() {
     try {
         this.startActivity(
             Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse(this.getString(R.string.more_app_link)))
+                Uri.parse(this.getString(R.string.more_app_link))
+            )
         )
-    }catch (e:Exception){
+    } catch (e: Exception) {
         e.printStackTrace()
         toast(this.getString(R.string.no_launcher))
 
     }
 }
 
-fun Activity.rateUs(){
+fun Activity.rateUs() {
     try {
         this.startActivity(
             Intent(
@@ -133,7 +131,7 @@ fun Activity.rateUs(){
             )
         )
 
-    }catch (e:Exception){
+    } catch (e: Exception) {
         e.printStackTrace()
         toast("No Launcher")
     }
@@ -202,7 +200,8 @@ fun Bitmap.saveToExternalStorage(context: Context, fileName: String): Uri? {
         put(MediaStore.Images.Media.IS_PENDING, 1)
     }
 
-    val uri: Uri? = context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+    val uri: Uri? =
+        context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
 
     uri?.let {
         try {
@@ -220,6 +219,7 @@ fun Bitmap.saveToExternalStorage(context: Context, fileName: String): Uri? {
 
     return uri
 }
+
 fun String.deleteImageFile(tag: String): Boolean {
     val file = File(this)
     return if (file.exists()) {
@@ -274,7 +274,6 @@ fun Context.saveImageToSpecificFolder(uri: Uri, folderName: String, fileName: St
 }
 
 
-
 fun Fragment.showDatePickerWithTime(
     calendar: Calendar,
     onDateTimeSelected: (String, String) -> Unit
@@ -282,7 +281,7 @@ fun Fragment.showDatePickerWithTime(
     val contextThemeWrapper = ContextThemeWrapper(requireContext(), R.style.TimePickerDialogTheme)
 
     DatePickerDialog(
-       contextThemeWrapper,
+        contextThemeWrapper,
         { _, year, monthOfYear, dayOfMonth ->
             calendar.set(year, monthOfYear, dayOfMonth)
             val formattedDate = calendar.time.toFormattedString("dd/MM/yyyy")
@@ -332,7 +331,8 @@ fun View.invisible() {
 
 fun FlexboxLayout.addTags(
     tagList: MutableList<String>,
-    onTagClick: ((String) -> Unit)? = null
+    onTagClick: ((String) -> Unit)? = null,
+    onRemoveTagClick: ((String) -> Unit)? = null,
 ) {
     if (tagList.isEmpty()) {
         this.visibility = View.GONE
@@ -375,8 +375,14 @@ fun FlexboxLayout.addTags(
             setImageResource(R.drawable.ic_close)
             setPadding(8, 12, 12, 8)
             setOnClickListener {
+                val ifOnlyUnknown = tagList.any { it == "Unknown" }
+                if (ifOnlyUnknown) {
+                    onTagClick?.invoke(tag)
+                    return@setOnClickListener
+                }
                 this@addTags.removeView(tagContainer)
                 tagList.remove(tag)
+                onRemoveTagClick?.invoke(tag)
                 if (tagList.isEmpty()) {
                     this@addTags.visibility = View.GONE
                 }
@@ -389,4 +395,32 @@ fun FlexboxLayout.addTags(
 
         this.addView(tagContainer)
     }
+}
+
+fun Long.formatTimestampForDisplay(): String {
+    val timestamp = this
+    val now = Calendar.getInstance()
+    val dateToCheck = Calendar.getInstance().apply { timeInMillis = timestamp }
+
+    val timeFormat = SimpleDateFormat("h:mm a", Locale.getDefault())
+    val dateFormat = SimpleDateFormat("dd MMM, h:mm a", Locale.getDefault())
+
+    val isSameDay = now.get(Calendar.YEAR) == dateToCheck.get(Calendar.YEAR) &&
+            now.get(Calendar.DAY_OF_YEAR) == dateToCheck.get(Calendar.DAY_OF_YEAR)
+
+    val yesterday = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, -1) }
+    val isYesterday = yesterday.get(Calendar.YEAR) == dateToCheck.get(Calendar.YEAR) &&
+            yesterday.get(Calendar.DAY_OF_YEAR) == dateToCheck.get(Calendar.DAY_OF_YEAR)
+
+    val tomorrow = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, 1) }
+    val isTomorrow = tomorrow.get(Calendar.YEAR) == dateToCheck.get(Calendar.YEAR) &&
+            tomorrow.get(Calendar.DAY_OF_YEAR) == dateToCheck.get(Calendar.DAY_OF_YEAR)
+
+    return when {
+        isSameDay -> "Today, ${timeFormat.format(dateToCheck.time)}"
+        isYesterday -> "Yesterday, ${timeFormat.format(dateToCheck.time)}"
+        isTomorrow -> "Tomorrow"
+        else -> dateFormat.format(dateToCheck.time)
+    }
+
 }

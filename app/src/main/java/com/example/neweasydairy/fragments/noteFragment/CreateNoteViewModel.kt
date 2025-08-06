@@ -1,36 +1,36 @@
 package com.example.neweasydairy.fragments.noteFragment
 
-import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.neweasydairy.data.CustomTagEntity
 import com.example.neweasydairy.data.NotepadEntity
 import com.example.neweasydairy.fragments.noteFragment.imageFunctionality.ImageDataModelGallery
+import com.example.neweasydairy.fragments.tags.TagsRepository
+import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CreateNoteViewModel @Inject constructor(
-    private val application: Application,
     private val createNoteRepository: CreateNoteRepository,
+    private val tagsRepository: TagsRepository
 ) : ViewModel() {
     var currentNoteId: Int? = null
     val tagList = mutableListOf<String>()
     var title: String? = null
     var description: String? = null
-    var icEmojiName:String? = null
-    private val _backgroundState = MutableLiveData<Int>()
-    val backgroundState: LiveData<Int> get() = _backgroundState
+    var icEmojiName: String? = null
+
+    private val _backgroundState = MutableStateFlow(7)
+    val backgroundState: StateFlow<Int> get() = _backgroundState
 
     private val _selectedImages = MutableLiveData<ArrayList<ImageDataModelGallery>>(ArrayList())
     val selectedImages: LiveData<ArrayList<ImageDataModelGallery>> = _selectedImages
-
-    fun setSelectedImages(images: ArrayList<ImageDataModelGallery>) {
-        _selectedImages.value = images
-    }
 
 
     private val _tagName = MutableLiveData<String>()
@@ -42,25 +42,39 @@ class CreateNoteViewModel @Inject constructor(
 
 
     fun setBackgroundState(value: Int) {
-        _backgroundState.value = value
+        viewModelScope.launch {
+            _backgroundState.emit(value)
+        }
+    }
+
+    fun resetState() {
+        viewModelScope.launch {
+            _backgroundState.emit(7)
+        }
     }
 
     fun insertNoteData(
         title: String,
         description: String,
         color: Int,
-        imageFiles : ArrayList<ImageDataModelGallery>,
-        timeStamp : Long,
-        fontFamily:String,
-        icEmojiName:String,
-        txtHeadingName:Int,
-        txtTextAlign:Int,
-        txtColorCode:Int,
-        backgroundValue:Int,
-        tagsText:String
+        imageFiles: ArrayList<ImageDataModelGallery>,
+        timeStamp: Long,
+        fontFamily: String,
+        icEmojiName: String,
+        txtHeadingName: Int,
+        txtTextAlign: Int,
+        txtColorCode: Int,
+        backgroundValue: Int,
+        emojiRes: Int,
+        bgImgRes: Int,
+        cardBgColor: String,
+        emojiName: String,
+        tagsList: List<String>,
+        txtHeadingSize: Float = 19F,
+        desHeadingSize: Float = 19F
     ) {
         viewModelScope.launch {
-            val noteEntity = NotepadEntity(
+            val currentNote = NotepadEntity(
                 noteTitle = title,
                 noteDescription = description,
                 color = color,
@@ -72,9 +86,22 @@ class CreateNoteViewModel @Inject constructor(
                 txtTextAlign = txtTextAlign,
                 textColorCode = txtColorCode,
                 backgroundValue = backgroundValue,
-                tagsText = tagsText)
-
-            createNoteRepository.insertNoteData(noteEntity)
+                emojiRes = emojiRes,
+                bgImgRes = bgImgRes,
+                emojiCardBgColor = cardBgColor,
+                emojiName = emojiName,
+                tagsList = listOf(),
+                txtHeadingSize = txtHeadingSize,
+                desHeadingSize = desHeadingSize
+            )
+            val noteId = createNoteRepository.insertNoteData(currentNote)
+            if (tagsList.isNotEmpty()) {
+                val allTags = tagsList.toEntity(noteId = noteId.toInt())
+                createNoteRepository.updateTag(
+                    noteId = noteId.toInt(),
+                    tagsList = Gson().toJson(allTags)
+                )
+            }
         }
     }
 
@@ -91,7 +118,13 @@ class CreateNoteViewModel @Inject constructor(
         txtTextAlign: Int,
         txtColorCode: Int,
         backgroundValue: Int,
-        tagsText: String
+        emojiName: String,
+        emojiRes: Int,
+        bgImgRes: Int,
+        cardBgColor: String,
+        tagsList: List<String>,
+        txtHeadingSize: Float = 19F,
+        desHeadingSize: Float = 19F
     ) {
         viewModelScope.launch {
             val updatedNote = NotepadEntity(
@@ -107,10 +140,15 @@ class CreateNoteViewModel @Inject constructor(
                 txtTextAlign = txtTextAlign,
                 textColorCode = txtColorCode,
                 backgroundValue = backgroundValue,
-                tagsText = tagsText
+                emojiName = emojiName,
+                emojiRes = emojiRes,
+                bgImgRes = bgImgRes,
+                emojiCardBgColor = cardBgColor,
+                tagsList = tagsList.toEntity(noteId = id),
+                txtHeadingSize = txtHeadingSize,
+                desHeadingSize = desHeadingSize
             )
-            createNoteRepository.updateNoteData(updatedNote)
+            createNoteRepository.updateNoteData(noteEntity = updatedNote)
         }
     }
-
 }

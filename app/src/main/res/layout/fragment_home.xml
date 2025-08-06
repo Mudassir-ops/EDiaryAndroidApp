@@ -4,14 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_fragment"
+    android:elevation="@dimen/_1sdp"
     tools:context="com.example.neweasydairy.fragments.homeFragment.HomeFragment">
-
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/icSorting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/_10sdp"
+        android:layout_marginVertical="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:elevation="@dimen/_1sdp"
         app:layout_constraintEnd_toStartOf="@id/txtDate"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -21,12 +23,12 @@
         android:id="@+id/txtDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:elevation="@dimen/_1sdp"
+        android:fontFamily="@font/roboto_bold"
         android:text="3 August, 2024"
-        android:fontFamily="@font/roboto_regular"
-        android:textColor="@color/black"
+        android:textColor="#1E293B"
         android:textSize="@dimen/_14sdp"
-        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/icSorting"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/icSorting"
@@ -36,6 +38,7 @@
         android:id="@+id/imgHome"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:elevation="@dimen/_2sdp"
         app:layout_constraintBottom_toTopOf="@id/txtHome"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.5"
@@ -43,17 +46,18 @@
         app:layout_constraintTop_toBottomOf="@id/icSorting"
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintWidth_percent="0.8"
-        app:srcCompat="@drawable/ic_home_empty" />
+        app:srcCompat="@drawable/home_place_holder" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/txtHome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_14sdp"
-        android:text="Start Writing Diary"
-        android:textColor="@color/black"
-        android:textSize="@dimen/_12sdp"
-        android:textStyle="bold"
+        android:elevation="@dimen/_2sdp"
+        android:fontFamily="@font/roboto_medium"
+        android:text="@string/start_writing_diary"
+        android:textColor="#0F172A"
+        android:textSize="@dimen/_15ssp"
         app:layout_constraintBottom_toTopOf="@id/txtHomeDescription"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,10 +69,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_10sdp"
+        android:elevation="@dimen/_2sdp"
+        android:fontFamily="@font/roboto_medium"
         android:gravity="center"
-        android:text="Cherish the moments of life and start writing your diary"
+        android:text="@string/cherish_the_moments_of_life_and_start_writing_your_diary"
         android:textColor="@color/text_gray_color"
-        android:textStyle="normal"
+        android:textSize="@dimen/_12ssp"
         app:layout_constraintBottom_toTopOf="@id/icAddNotes"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -80,20 +86,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        android:elevation="@dimen/_5sdp"
         app:constraint_referenced_ids="imgHome,txtHome,txtHomeDescription" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/homeRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="@dimen/_15sdp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="@dimen/_15sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txtDate"
         tools:listitem="@layout/home_item_new" />
-
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/icAddNotes"
@@ -102,10 +108,11 @@
         android:layout_margin="@dimen/_14sdp"
         android:backgroundTint="@color/app_color"
         android:contentDescription="@string/app_name"
-        android:pointerIcon="all_scroll"
+        android:elevation="@dimen/_2sdp"
         android:src="@drawable/ic_add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:maxImageSize="@dimen/_35sdp"
         app:tint="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

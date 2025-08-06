@@ -14,7 +14,7 @@ class CustomCalendarView(context: Context, attrs: AttributeSet?) : CalendarView(
         style = Paint.Style.FILL
     }
 
-    var markedDates: HashSet<Long> = HashSet()
+    private var markedDates: HashSet<Long> = HashSet()
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)

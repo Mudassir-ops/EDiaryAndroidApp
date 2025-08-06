@@ -19,10 +19,10 @@
     <color name="bg_drawer">#FFFFFF</color>
     <color name="bg_bottom_view_color">#EBF5FA</color>
     <color name="red_color">#FF3B30</color>
-    <color name="emoji_color_one">#FF8D95</color>
-    <color name="emoji_color_two">#FFAC81</color>
-    <color name="emoji_color_three">#AADAF0</color>
-    <color name="emoji_color_four">#A29DFB</color>
-    <color name="emoji_color_five">#FFDE8B</color>
-    <color name="emoji_color_six">#5EE3A9</color>
+    <color name="emoji_color_one">#CCFF8D95</color>
+    <color name="emoji_color_two">#CCFFAC81</color>
+    <color name="emoji_color_three">#CCAADAF0</color>
+    <color name="emoji_color_four">#CCA29DFB</color>
+    <color name="emoji_color_five">#CCFFDE8B</color>
+    <color name="emoji_color_six">#CC5EE3A9</color>
 </resources>

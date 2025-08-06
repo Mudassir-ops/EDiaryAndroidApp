@@ -7,17 +7,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.easydiaryandjournalwithlock.R
 import com.example.easydiaryandjournalwithlock.databinding.FragmentCalendarBinding
 import com.example.neweasydairy.fragments.homeFragment.HomeAdapter
 import com.example.neweasydairy.fragments.homeFragment.HomeViewModel
+import com.example.neweasydairy.fragments.homeFragment.NotesStates
 import com.example.neweasydairy.utilis.Objects.CHECK_NAVIGATION
 import com.example.neweasydairy.utilis.Objects.CLICKEDITEMDATA
 import com.example.neweasydairy.utilis.Objects.FROM_HOME_FRAGMENT
 import com.example.neweasydairy.utilis.gone
 import com.example.neweasydairy.utilis.visible
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -135,8 +140,6 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar) {
             findNavController().navigate(R.id.createNotesFragment, bundle)
             Log.e("CheckItem", "Clicked Item id ${note}")
         }, onItemLongClick = {})
-
-        observeMarkedDates()
     }
 
     override fun onCreateView(
@@ -157,19 +160,23 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar) {
                 loadNotesForDate(selectedDate)
             }
         }
-
+        observeMarkedDates()
         loadNotesForDate(getCurrentDate())
     }
 
     private fun observeMarkedDates() {
-        homeViewModel.allNotes.observe(this) { notes ->
-            markedDates.clear()
-            notes.forEach { note ->
-                val date = getDateInMillisFromTimestamp(note.timestamp)
-                markedDates.add(date)
-            }
-            binding.calendarView.invalidate() // Redraw calendar
+        viewLifecycleOwner.lifecycleScope.launch {
+            homeViewModel.allNotes.flowWithLifecycle(viewLifecycleOwner.lifecycle)
+                .filterIsInstance<NotesStates.AllNotes>().collect { notes ->
+                    markedDates.clear()
+                    notes.allNotes.forEach { note ->
+                        val date = getDateInMillisFromTimestamp(note.timestamp)
+                        markedDates.add(date)
+                    }
+                    binding.calendarView.invalidate()
+                }
         }
+
     }
 
     private fun loadNotesForDate(date: Long) {
@@ -200,7 +207,11 @@ class CalendarFragment : Fragment(R.layout.fragment_calendar) {
 
     private fun getDateInMillisFromTimestamp(timestamp: Long): Long {
         val calendar = Calendar.getInstance().apply { timeInMillis = timestamp }
-        return getDateInMillis(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
+        return getDateInMillis(
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
     }
 
     private fun calculateDayBounds(date: Long): Pair<Long, Long> {

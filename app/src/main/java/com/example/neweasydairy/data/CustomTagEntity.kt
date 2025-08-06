@@ -10,5 +10,6 @@ import kotlinx.parcelize.Parcelize
 data class CustomTagEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val tagName: String
+    val tagName: String,
+    val noteId: Int? = null
 ) : Parcelable

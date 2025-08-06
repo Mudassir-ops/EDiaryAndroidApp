@@ -4,71 +4,107 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.easydiaryandjournalwithlock.R
 import com.example.easydiaryandjournalwithlock.databinding.FragmentCreateNotesBinding
-import com.example.neweasydairy.utilis.Objects.FROM_HOME_FRAGMENT
+import com.example.neweasydairy.data.CustomTagEntity
+import com.example.neweasydairy.utilis.AppEventLogger.logEventWithScope
+import com.example.neweasydairy.utilis.Objects.FROM_ICON_ADD_NOTE
 import com.example.neweasydairy.utilis.toast
 import java.util.Date
-
 
 fun FragmentCreateNotesBinding?.clickListener(context: Context, fragment: CreateNotesFragment) {
     this?.apply {
         val icons = listOf(icGrid, icText, icImageNote, icHash)
         icHash.setOnClickListener {
-            Log.d("selectedImages", "Before navigating: ${fragment.selectedImages}")
-            fragment.viewModel.setSelectedImages(fragment.selectedImages)
-            fragment.viewModel.title = fragment.binding?.txtTitle?.text.toString()
-            fragment.viewModel.description = fragment.binding?.txtEdDescription?.text.toString()
-            fragment.viewModel.icEmojiName = fragment.binding?.icEmoji?.contentDescription.toString()
-            if (fragment.findNavController().currentDestination?.id == R.id.createNotesFragment) {
-                fragment.findNavController().navigate(R.id.action_createNotesFragment_to_tagsFragment)
-            }
-            resetIconColors(context, icons)
+            fragment.viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                name = "Create_Note_Add_Tag_click",
+                params = emptyMap()
+            )
             icHash.setColorFilter(ContextCompat.getColor(context, R.color.app_color))
+            val isNewNote = fragment.viewModel.currentNoteId == null
+            val hasNoTags = fragment.note?.tagsList.isNullOrEmpty()
+            val hasUnknownTag =
+                fragment.note?.tagsList?.map { it.tagName }?.contains("Unknown") == true
+            if (isNewNote || hasNoTags || hasUnknownTag) {
+                fragment.editTagDialog?.show()
+            } else {
+                fragment.editTagDialog?.show()
+//                if (fragment.findNavController().currentDestination?.id == R.id.createNotesFragment) {
+//                    fragment.findNavController()
+//                        .navigate(R.id.action_createNotesFragment_to_tagsFragment)
+//                }
+            }
+            viewTag.visibility = View.GONE
+            Log.d("selectedImages", "Before navigating: ${fragment.selectedImages}")
         }
+
         icBack.setOnClickListener {
             fragment.findNavController().navigateUp()
         }
         icEmoji.setOnClickListener {
+            fragment.viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                name = "Create_Note_Emoji_click",
+                params = emptyMap()
+            )
             fragment.feelingDialogBinding?.show()
         }
         icGrid.setOnClickListener {
+            fragment.viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                name = "Create_Note_Bg_Grid_click",
+                params = emptyMap()
+            )
             resetIconColors(context, icons)
             icGrid.setColorFilter(ContextCompat.getColor(context, R.color.app_color))
             fragment.backgroundDialog?.show()
         }
         icImageNote.setOnClickListener {
+            fragment.viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                name = "Create_Note_Image_FROM_click",
+                params = emptyMap()
+            )
             fragment.viewModel.title = fragment.binding?.txtTitle?.text.toString()
             fragment.viewModel.description = fragment.binding?.txtEdDescription?.text.toString()
-            fragment.viewModel.icEmojiName = fragment.binding?.icEmoji?.contentDescription.toString()
+            fragment.viewModel.icEmojiName =
+                fragment.binding?.icEmoji?.contentDescription.toString()
             resetIconColors(context, icons)
             icImageNote.setColorFilter(ContextCompat.getColor(context, R.color.app_color))
             fragment.photoDialog?.show()
         }
         icText.setOnClickListener {
+            fragment.viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                name = "Create_Note_Text_click",
+                params = emptyMap()
+            )
             resetIconColors(context, icons)
             icText.setColorFilter(ContextCompat.getColor(context, R.color.app_color))
             fragment.textDialog?.show()
         }
         txtSave.setOnClickListener {
-                        insertData(notesFragment = fragment)
-                        fragment.requireActivity().toast("Data Save Successfully")
-                        if (fragment.findNavController().currentDestination?.id == R.id.createNotesFragment) {
-                            fragment.findNavController().navigate(R.id.action_createNotesFragment_to_mainFragment)
-                        }
-                    }
+            fragment.viewLifecycleOwner.lifecycleScope.logEventWithScope(
+                name = "Create_Note_Save_clicked",
+                params = emptyMap()
+            )
+            insertData(notesFragment = fragment)
+            fragment.activity?.toast("Data Save Successfully")
+            if (fragment.findNavController().currentDestination?.id == R.id.createNotesFragment) {
+                fragment.findNavController()
+                    .navigate(R.id.action_createNotesFragment_to_mainFragment)
+            }
+        }
     }
 }
 
@@ -96,12 +132,10 @@ fun showPermissionDialog(context: Context, fragment: Fragment) {
             redirectToSystemSettings(context)
             dialog.dismiss()
         }
-
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener {
             dialog.dismiss()
         }
     }
-
     dialog.show()
 }
 
@@ -112,25 +146,26 @@ private fun redirectToSystemSettings(context: Context) {
     context.startActivity(intent)
 }
 
-fun insertData(notesFragment: CreateNotesFragment){
+fun insertData(notesFragment: CreateNotesFragment) {
     val description = notesFragment.binding?.txtEdDescription?.text.toString()
     val title = notesFragment.binding?.txtTitle?.text.toString()
     val currentTime = Date()
-    val textSize = notesFragment.binding?.txtTitle?.textSize?.toInt() ?: 0
-    val textColor = notesFragment.binding?.txtTitle?.currentTextColor ?: 0
     val emojiName = notesFragment.binding?.icEmoji?.contentDescription
-    var textAlignment = 0
-    when (notesFragment.binding?.txtTitle?.gravity) {
+    val textAlignment: Int = when (notesFragment.binding?.txtTitle?.gravity) {
         8388661 -> {
-            textAlignment = 2
+            2
         }
+
         17 -> {
-            textAlignment = 1
+            1
         }
+
         else -> {
-            textAlignment = 0
+            0
         }
     }
+    val textColor = notesFragment.binding?.txtTitle?.currentTextColor ?: 0
+    Log.e("selectedFontFamily-->", "insertData: ${notesFragment.selectedFontFamily}")
     notesFragment.binding?.apply {
         val noteId = notesFragment.viewModel.currentNoteId
         if (noteId != null) {
@@ -140,16 +175,22 @@ fun insertData(notesFragment: CreateNotesFragment){
                 description = description,
                 color = notesFragment.backgroundValue,
                 imageFiles = notesFragment.selectedImages,
-                timeStamp = currentTime.time,
+                timeStamp = notesFragment.note?.timestamp ?: currentTime.time,
                 fontFamily = notesFragment.selectedFontFamily,
                 icEmojiName = emojiName.toString(),
-                txtHeadingName = textSize,
+                txtHeadingName = 18,
                 txtTextAlign = textAlignment,
                 txtColorCode = textColor,
+                emojiName = emojiName.toString().getEmojiName(),
                 backgroundValue = notesFragment.backgroundValue,
-                tagsText = notesFragment.viewModel.tagList.toString()
+                emojiRes = getEmoji(emojiName.toString()),
+                bgImgRes = emojiName.toString().getEmojiColorForCardBg(),
+                cardBgColor = getEmojiColor(emojiName.toString()),
+                tagsList = notesFragment.listOfAllTags,
+                txtHeadingSize = notesFragment.textHeadingAndDescriptionSize?.first ?: 19F,
+                desHeadingSize = notesFragment.textHeadingAndDescriptionSize?.second ?: 22F
             )
-        }else{
+        } else {
             notesFragment.viewModel.insertNoteData(
                 title = title,
                 description = description,
@@ -158,18 +199,30 @@ fun insertData(notesFragment: CreateNotesFragment){
                 timeStamp = currentTime.time,
                 fontFamily = notesFragment.selectedFontFamily,
                 icEmojiName = emojiName.toString(),
-                txtHeadingName = textSize,
+                txtHeadingName = 20,
                 txtTextAlign = textAlignment,
                 txtColorCode = textColor,
                 backgroundValue = notesFragment.backgroundValue,
-                tagsText = notesFragment.viewModel.tagList.toString()
+                emojiRes = getEmoji(emojiName.toString()),
+                bgImgRes = emojiName.toString().getEmojiColorForCardBg(),
+                cardBgColor = getEmojiColor(emojiName.toString()),
+                emojiName = emojiName.toString().getEmojiName(),
+                tagsList = notesFragment.listOfAllTags,
+                txtHeadingSize = notesFragment.textHeadingAndDescriptionSize?.first ?: 19F,
+                desHeadingSize = notesFragment.textHeadingAndDescriptionSize?.second ?: 22F
             )
         }
     }
 }
 
+fun List<String>.toEntity(noteId: Int): List<CustomTagEntity> {
+    return map {
+        CustomTagEntity(tagName = it, noteId = noteId)
+    }
+}
+
 fun ImageView.setEmoji(emojiName: String, context: Context?) {
-    val drawableRes = when(emojiName) {
+    val drawableRes = when (emojiName) {
         "One" -> R.drawable.ic_emoji_one
         "Two" -> R.drawable.ic_emoji_two
         "Three" -> R.drawable.ic_emoji_three
@@ -183,14 +236,64 @@ fun ImageView.setEmoji(emojiName: String, context: Context?) {
     this.contentDescription = emojiName
 }
 
+
+fun getEmojiColor(emojiName: String): String {
+    return when (emojiName) {
+        "One" -> "#FF8D95"
+        "Two" -> "#FFAC81"
+        "Three" -> "#AADAF0"
+        "Four" -> "#A29DFB"
+        "Five" -> "#FFDE8B"
+        "Six" -> "#5EE3A9"
+        else -> "#FF8D95"
+    }
+}
+
+fun getEmoji(emojiName: String): Int {
+    return when (emojiName) {
+        "One" -> R.drawable.ic_emoji_one
+        "Two" -> R.drawable.ic_emoji_two
+        "Three" -> R.drawable.ic_emoji_three
+        "Four" -> R.drawable.ic_emoji_four
+        "Five" -> R.drawable.ic_emoji_five_new
+        "Six" -> R.drawable.ic_emoji_six_new
+        else -> R.drawable.ic_emoji_one
+    }
+}
+
+fun String.getEmojiColorForCardBg(): Int {
+    return when (this) {
+        "One" -> R.drawable.bg_item_one
+        "Two" -> R.drawable.bg_item_two
+        "Three" -> R.drawable.bg_item_three
+        "Four" -> R.drawable.bg_item_four
+        "Five" -> R.drawable.bg_item_five
+        "Six" -> R.drawable.bg_item_six
+        else -> R.drawable.bg_item_one
+    }
+}
+
+fun String.getEmojiName(): String {
+    return when (this) {
+        "One" -> "Happy"
+        "Two" -> "Angry"
+        "Three" -> "Calm"
+        "Four" -> "Cheeky"
+        "Five" -> "Sad"
+        "Six" -> "Meh"
+        else -> ""
+    }
+}
+
+
 fun TextView.setFont(fontName: String, context: Context?) {
     val typeface = when (fontName) {
-        "Intaliana" -> ResourcesCompat.getFont(context?:return, R.font.italiana_regular)
-        "Leckerli" -> ResourcesCompat.getFont(context?:return, R.font.leckerlione_regular)
-        "Margarine" -> ResourcesCompat.getFont(context?:return, R.font.margarine_regular)
-        "Rethink" -> ResourcesCompat.getFont(context?:return, R.font.rethinksans_regular)
-        "Pacifico" -> ResourcesCompat.getFont(context?:return, R.font.pacifico)
-        "Lobster" -> ResourcesCompat.getFont(context?:return, R.font.lobster_regular)
+        "Intaliana" -> ResourcesCompat.getFont(context ?: return, R.font.italiana_regular)
+        "Leckerli" -> ResourcesCompat.getFont(context ?: return, R.font.leckerlione_regular)
+        "Margarine" -> ResourcesCompat.getFont(context ?: return, R.font.margarine_regular)
+        "Rethink" -> ResourcesCompat.getFont(context ?: return, R.font.rethinksans_regular)
+        "Pacifico" -> ResourcesCompat.getFont(context ?: return, R.font.pacifico)
+        "Lobster" -> ResourcesCompat.getFont(context ?: return, R.font.lobster_regular)
         else -> null
     }
 
@@ -214,6 +317,7 @@ fun ImageView.setBackgroundByIndex(context: Context?, index: Int) {
         Log.e("changeBackground", "onChangeBackground: $index")
     }
 }
+
 fun TextView.setTextAlignmentByIndex(index: Int) {
     gravity = when (index) {
         0 -> Gravity.START
@@ -223,12 +327,15 @@ fun TextView.setTextAlignmentByIndex(index: Int) {
     }
 }
 
-fun TextView.setHeadingSize(index: Int) {
-    val textSizeInSp = when (index) {
-        0 -> 17f
+fun TextView.setHeadingSize(textSizeInSp: Float) {
+    setTextSize(TypedValue.COMPLEX_UNIT_SP, textSizeInSp)
+}
+
+fun getHeadingSize(index: Int): Float {
+    return when (index) {
+        0 -> 19f
         1 -> 20f
         2 -> 23f
-        else -> textSize
+        else -> 19F
     }
-    setTextSize(TypedValue.COMPLEX_UNIT_SP, textSizeInSp)
 }
