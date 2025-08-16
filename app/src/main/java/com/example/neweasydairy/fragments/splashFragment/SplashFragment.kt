@@ -37,14 +37,10 @@ class SplashFragment : Fragment() {
     }
 
     private fun checkNavigation() {
+        if (!isAdded) return
         val navController = findNavController()
         val currentDestinationId = navController.currentDestination?.id
         if (currentDestinationId != R.id.splashFragment) return
-
-        Log.e(
-            "welcomeScreenSatti-->",
-            "checkNavigation: ${viewModel.getWelcomeButtonWelcomeScreen()}",
-        )
 
         val destination = when {
             !viewModel.getNextButtonIntroOne() -> R.id.action_splashFragment_to_introFragment
