@@ -55,6 +55,7 @@ import com.example.neweasydairy.utilis.Objects.FROM_ICON_ADD_NOTE
 import com.example.neweasydairy.utilis.Objects.FROM_TAG_FRAGMENT
 import com.example.neweasydairy.utilis.Objects.SEND_URI
 import com.example.neweasydairy.utilis.addTags
+import com.example.neweasydairy.utilis.hideKeyboard
 import com.example.neweasydairy.utilis.monthlyFormatDate
 import com.example.neweasydairy.utilis.saveToExternalStorage
 import com.example.neweasydairy.utilis.toast
@@ -314,6 +315,7 @@ class CreateNotesFragment : Fragment(),
                     if (tagNames.isNotEmpty()) {
                         visibility = View.VISIBLE
                         addTags(tagNames, onTagClick = {
+                            context?.hideKeyboard(view)
                             editTagDialog?.show()
                         }, onRemoveTagClick = { tag ->
                             tagsViewModel.removeTag(tag)
@@ -428,16 +430,6 @@ class CreateNotesFragment : Fragment(),
             imageAdapter.updateImageList(selectedImages)
             selectedImages.reverse()
             clickListener(requireContext(), this@CreateNotesFragment)
-            viewModel.currentNoteId?.let {
-
-            } ?: run {
-                txtTitle.setSelection(txtTitle.text?.length ?: 0)
-                txtTitle.requestFocus()
-                val imm =
-                    context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-                imm?.showSoftInput(txtTitle, InputMethodManager.SHOW_IMPLICIT)
-            }
-
             try {
                 binding?.apply {
                     textHeadingAndDescriptionSize =

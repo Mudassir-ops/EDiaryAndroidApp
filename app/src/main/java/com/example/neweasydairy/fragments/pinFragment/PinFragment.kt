@@ -52,12 +52,6 @@ class PinFragment : Fragment() {
         savedPin = getPinFromSharedPreferences()
         binding.btnSetPin.text = if (savedPin.isNullOrEmpty()) "Setup PIN" else "Enter PIN"
 
-        binding.edTextOne.post {
-            binding.edTextOne.requestFocus()
-            showSoftKeyboard(binding.edTextOne)
-        }
-
-
 
         setupEditTextListeners()
 
@@ -171,7 +165,7 @@ class PinFragment : Fragment() {
             edTextThree.text?.clear()
             edTextFour.text?.clear()
             edTextOne.requestFocus()
-            showSoftKeyboard(edTextOne)
+            //showSoftKeyboard(edTextOne)
         }
     }
 

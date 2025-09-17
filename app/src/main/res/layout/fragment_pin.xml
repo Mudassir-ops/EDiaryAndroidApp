@@ -19,6 +19,7 @@
         android:id="@+id/icBack"
         android:layout_width="30dp"
         android:layout_height="30dp"
+        android:visibility="gone"
         android:layout_marginStart="@dimen/_10sdp"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintBottom_toBottomOf="@id/viewTop"

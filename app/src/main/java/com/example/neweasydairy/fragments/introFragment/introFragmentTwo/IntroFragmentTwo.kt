@@ -48,12 +48,12 @@ class IntroFragmentTwo : Fragment() {
             btnNextIntroTwo.setOnClickListener {
                languageViewModel.setNextButtonIntroTwo(true)
                 if (findNavController().currentDestination?.id == R.id.introFragmentTwo) {
-                    findNavController().navigate(R.id.action_introFragmentTwo_to_introFragmentThree)
+                    findNavController().navigate(R.id.action_introFragmentTwo_to_permissionFragment)
                 }
             }
             txtSkipTwo.setOnClickListener {
                 if (findNavController().currentDestination?.id == R.id.introFragmentTwo) {
-                    findNavController().navigate(R.id.action_introFragmentTwo_to_introFragmentThree)
+                    findNavController().navigate(R.id.action_introFragmentTwo_to_permissionFragment)
                 }
             }
         }

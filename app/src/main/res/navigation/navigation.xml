@@ -9,7 +9,7 @@
         android:id="@+id/splashFragment"
         android:name="com.example.neweasydairy.fragments.splashFragment.SplashFragment"
         android:label="fragment_splash"
-        tools:layout="@layout/fragment_splash" >
+        tools:layout="@layout/fragment_splash">
         <action
             android:id="@+id/action_splashFragment_to_languageFragment"
             app:destination="@id/languageFragment" />
@@ -49,16 +49,17 @@
         android:id="@+id/introFragment"
         android:name="com.example.neweasydairy.fragments.introFragment.introFragmentOne.IntroFragmentOne"
         android:label="fragment_intro"
-        tools:layout="@layout/fragment_intro_one" >
+        tools:layout="@layout/fragment_intro_one">
         <action
-            android:id="@+id/action_introFragment_to_introFragmentTwo"
-            app:destination="@id/introFragmentTwo" />
+            android:id="@+id/action_introFragment_to_permissionFragment"
+            app:destination="@id/permissionFragment" />
+
     </fragment>
     <fragment
         android:id="@+id/languageFragment"
         android:name="com.example.neweasydairy.fragments.languageFragment.LanguageFragment"
         android:label="fragment_language"
-        tools:layout="@layout/fragment_language" >
+        tools:layout="@layout/fragment_language">
         <action
             android:id="@+id/action_languageFragment_to_introFragment"
             app:destination="@id/introFragment" />
@@ -67,7 +68,7 @@
         android:id="@+id/mainFragment"
         android:name="com.example.neweasydairy.fragments.mainFragment.MainFragment"
         android:label="fragment_main"
-        tools:layout="@layout/fragment_main" >
+        tools:layout="@layout/fragment_main">
         <action
             android:id="@+id/action_mainFragment_to_createNotesFragment"
             app:destination="@id/createNotesFragment" />
@@ -94,16 +95,16 @@
         android:id="@+id/introFragmentTwo"
         android:name="com.example.neweasydairy.fragments.introFragment.introFragmentTwo.IntroFragmentTwo"
         android:label="fragment_intro_two"
-        tools:layout="@layout/fragment_intro_two" >
+        tools:layout="@layout/fragment_intro_two">
         <action
-            android:id="@+id/action_introFragmentTwo_to_introFragmentThree"
-            app:destination="@id/introFragmentThree" />
+            android:id="@+id/action_introFragmentTwo_to_permissionFragment"
+            app:destination="@id/permissionFragment" />
     </fragment>
     <fragment
         android:id="@+id/introFragmentThree"
         android:name="com.example.neweasydairy.fragments.introFragment.introFragmentThree.IntroFragmentThree"
         android:label="fragment_intro_three"
-        tools:layout="@layout/fragment_intro_three" >
+        tools:layout="@layout/fragment_intro_three">
         <action
             android:id="@+id/action_introFragmentThree_to_permissionFragment"
             app:destination="@id/permissionFragment" />
@@ -112,7 +113,7 @@
         android:id="@+id/permissionFragment"
         android:name="com.example.neweasydairy.fragments.permissionFragment.PermissionFragment"
         android:label="fragment_permission"
-        tools:layout="@layout/fragment_permission" >
+        tools:layout="@layout/fragment_permission">
         <action
             android:id="@+id/action_permissionFragment_to_nameFragment"
             app:destination="@id/nameFragment" />
@@ -121,7 +122,7 @@
         android:id="@+id/nameFragment"
         android:name="com.example.neweasydairy.fragments.nameFragment.NameFragment"
         android:label="fragment_name"
-        tools:layout="@layout/fragment_name" >
+        tools:layout="@layout/fragment_name">
         <action
             android:id="@+id/action_nameFragment_to_chooseThemeFragment"
             app:destination="@id/chooseThemeFragment" />
@@ -136,7 +137,7 @@
         android:id="@+id/chooseThemeFragment"
         android:name="com.example.neweasydairy.fragments.themeFragment.ChooseThemeFragment"
         android:label="fragment_choose_theme"
-        tools:layout="@layout/fragment_choose_theme" >
+        tools:layout="@layout/fragment_choose_theme">
 
         <action
             android:id="@+id/action_chooseThemeFragment_to_pinFragment"
@@ -146,7 +147,7 @@
         android:id="@+id/welcomeFragment"
         android:name="com.example.neweasydairy.fragments.welcomeFragment.WelcomeFragment"
         android:label="fragment_welcome"
-        tools:layout="@layout/fragment_welcome" >
+        tools:layout="@layout/fragment_welcome">
         <action
             android:id="@+id/action_welcomeFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
@@ -158,7 +159,7 @@
         android:id="@+id/pinFragment"
         android:name="com.example.neweasydairy.fragments.pinFragment.PinFragment"
         android:label="fragment_pin"
-        tools:layout="@layout/fragment_pin" >
+        tools:layout="@layout/fragment_pin">
         <action
             android:id="@+id/action_pinFragment_to_welcomeFragment"
             app:destination="@id/welcomeFragment" />
@@ -167,7 +168,7 @@
         android:id="@+id/profileFragment"
         android:name="com.example.neweasydairy.fragments.profileFragment.ProfileFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" >
+        tools:layout="@layout/fragment_profile">
         <action
             android:id="@+id/action_profileFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
@@ -181,7 +182,7 @@
         android:id="@+id/createNotesFragment"
         android:name="com.example.neweasydairy.fragments.noteFragment.CreateNotesFragment"
         android:label="fragment_create_notes"
-        tools:layout="@layout/fragment_create_notes" >
+        tools:layout="@layout/fragment_create_notes">
         <action
             android:id="@+id/action_createNotesFragment_to_cropFragment"
             app:destination="@id/cropFragment" />
@@ -204,7 +205,7 @@
         android:id="@+id/libraryFragment"
         android:name="com.example.neweasydairy.fragments.libraryFragment.LibraryFragment"
         android:label="fragment_library"
-        tools:layout="@layout/fragment_library" >
+        tools:layout="@layout/fragment_library">
         <action
             android:id="@+id/action_libraryFragment_to_imageViewFragment"
             app:destination="@id/imageViewFragment" />
@@ -213,7 +214,7 @@
         android:id="@+id/cropFragment"
         android:name="com.example.neweasydairy.fragments.cropFragment.CropFragment"
         android:label="fragment_crop"
-        tools:layout="@layout/fragment_crop" >
+        tools:layout="@layout/fragment_crop">
         <action
             android:id="@+id/action_cropFragment_to_createNotesFragment"
             app:destination="@id/createNotesFragment" />
@@ -227,7 +228,7 @@
         android:id="@+id/tagsFragment"
         android:name="com.example.neweasydairy.fragments.tags.TagsFragment"
         android:label="fragment_tags"
-        tools:layout="@layout/fragment_tags" >
+        tools:layout="@layout/fragment_tags">
         <action
             android:id="@+id/action_tagsFragment_to_createNotesFragment"
             app:destination="@id/createNotesFragment" />

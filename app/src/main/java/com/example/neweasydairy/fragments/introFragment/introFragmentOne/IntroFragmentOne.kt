@@ -16,9 +16,9 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class IntroFragmentOne : Fragment() {
-    private var _binding: FragmentIntroOneBinding?=null
+    private var _binding: FragmentIntroOneBinding? = null
     private val binding get() = _binding
-    private val languageViewModel:LanguageViewModel by viewModels()
+    private val languageViewModel: LanguageViewModel by viewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -32,12 +32,13 @@ class IntroFragmentOne : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentIntroOneBinding.inflate(inflater,container,false)
-        return  binding?.root
+        _binding = FragmentIntroOneBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -46,12 +47,12 @@ class IntroFragmentOne : Fragment() {
             btnNextIntroOne.setOnClickListener {
                 languageViewModel.setNextButtonIntroOne(true)
                 if (findNavController().currentDestination?.id == R.id.introFragment) {
-                    findNavController().navigate(R.id.action_introFragment_to_introFragmentTwo)
+                    findNavController().navigate(R.id.action_introFragment_to_permissionFragment)
                 }
             }
             txtSkipOne.setOnClickListener {
                 if (findNavController().currentDestination?.id == R.id.introFragment) {
-                    findNavController().navigate(R.id.action_introFragment_to_introFragmentTwo)
+                    findNavController().navigate(R.id.action_introFragment_to_permissionFragment)
                 }
             }
 

@@ -18,6 +18,7 @@ import android.util.Log
 import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -422,5 +423,12 @@ fun Long.formatTimestampForDisplay(): String {
         isTomorrow -> "Tomorrow"
         else -> dateFormat.format(dateToCheck.time)
     }
-
 }
+
+fun Context.hideKeyboard(view: View?) {
+    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+    view?.let {
+        imm?.hideSoftInputFromWindow(it.windowToken, 0)
+    }
+}
+
