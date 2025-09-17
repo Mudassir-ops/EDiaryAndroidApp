@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.util.TypedValue
@@ -17,6 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.easydiaryandjournalwithlock.R
 import com.example.easydiaryandjournalwithlock.databinding.FragmentCreateNotesBinding
@@ -53,7 +55,9 @@ fun FragmentCreateNotesBinding?.clickListener(context: Context, fragment: Create
         }
 
         icBack.setOnClickListener {
-            fragment.findNavController().navigateUp()
+            if (fragment.findNavController().currentDestination?.id == R.id.createNotesFragment) {
+                fragment.findNavController().navigate(R.id.action_createNotesFragment_to_mainFragment)
+            }
         }
         icEmoji.setOnClickListener {
             fragment.viewLifecycleOwner.lifecycleScope.logEventWithScope(

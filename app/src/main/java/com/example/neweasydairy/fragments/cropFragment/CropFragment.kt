@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.net.toUri
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.easydiaryandjournalwithlock.R
 import com.example.easydiaryandjournalwithlock.databinding.FragmentCropBinding
@@ -32,7 +33,7 @@ class CropFragment : Fragment() {
     var selectedImages: ArrayList<ImageDataModelGallery> = ArrayList()
     var fromWhichFragment = false
     var note: NotepadEntity? = null
-
+    private var tagName: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -54,10 +55,10 @@ class CropFragment : Fragment() {
         note = arguments?.getParcelable(CLICKEDITEMDATA)
         selectedImages = arguments?.getParcelableArrayList("selectedImages")!!
         fromWhichFragment = arguments?.getBoolean("isCreateFragment") == true
-
-        Log.e(TAG, "onViewCreated: argument $argument", )
-        Log.e(TAG, "onViewCreated: select $selectedImages", )
-        Log.e("boolean", "onViewCreated: boolean $fromWhichFragment", )
+        tagName = arguments?.getString("tagName")
+        Log.e(TAG, "onViewCreated: argument $argument")
+        Log.e(TAG, "onViewCreated: select $selectedImages")
+        Log.e("boolean", "onViewCreated: boolean $fromWhichFragment")
         binding?.cropImageView?.setImageUriAsync(argument?.toUri())
         clickListenerCropFragment()
         binding?.apply {
@@ -79,8 +80,8 @@ class CropFragment : Fragment() {
                 val bitmap = cropImageView.getCroppedImage()
                 val cropUri =
                     saveBitmapToUri(
-                        bitmap = bitmap?:return@setOnClickListener,
-                        context = context?:return@setOnClickListener
+                        bitmap = bitmap ?: return@setOnClickListener,
+                        context = context ?: return@setOnClickListener
                     )
                 selectedImages.add(ImageDataModelGallery(imagePath = cropUri.toString()))
                 //.currentNoteId = note?.id
@@ -88,15 +89,23 @@ class CropFragment : Fragment() {
                 bundle.putString(CHECK_NAVIGATION, FROM_HOME_FRAGMENT)
                 bundle.putString(CHECK_NAVIGATION, FROM_CROP_FRAGMENT)
                 bundle.putParcelable(CLICKEDITEMDATA, note)
-                bundle.putParcelableArrayList("selectedAllImages",selectedImages)
-                when(fromWhichFragment){
+                bundle.putString("tagName", tagName ?: "")
+                bundle.putParcelableArrayList("selectedAllImages", selectedImages)
+                when (fromWhichFragment) {
 
                     true -> {
-                        findNavController().navigate(R.id.action_cropFragment_to_createNotesFragment,bundle)
+                        tagName = arguments?.getString("tagName")
+                        findNavController().navigate(
+                            R.id.action_cropFragment_to_createNotesFragment,
+                            bundle,
+                            NavOptions.Builder()
+                                .setPopUpTo(R.id.cropFragment, true)
+                                .build()
+                        )
                     }
 
                     false -> {
-                      //  findNavController().navigate(R.id.action_cropFragment_to_checkListFragment,bundle)
+                        //  findNavController().navigate(R.id.action_cropFragment_to_checkListFragment,bundle)
                     }
                 }
 
@@ -111,7 +120,8 @@ class CropFragment : Fragment() {
 
 
     private fun saveBitmapToUri(bitmap: Bitmap, context: Context): Uri? {
-        val imageFile = File(context.cacheDir, "img_" + Calendar.getInstance().timeInMillis + ".jpg")
+        val imageFile =
+            File(context.cacheDir, "img_" + Calendar.getInstance().timeInMillis + ".jpg")
 
         Log.e("cropFragment", "saveBitmapToUri: $imageFile")
 

@@ -110,8 +110,6 @@ class EditNameFragment : Fragment() {
     }
 
     private fun FragmentEditNameBinding.setupClickListeners() {
-
-
         binding?.icBack?.setOnClickListener {
             findNavController().navigateUp()
         }
@@ -119,7 +117,6 @@ class EditNameFragment : Fragment() {
         if (userName != null) {
             binding?.edTextName?.setText(userName)
         }
-
         icEditProfile.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 requestGalleryPermission.launch(Manifest.permission.READ_MEDIA_IMAGES)

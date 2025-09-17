@@ -25,6 +25,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.easydiaryandjournalwithlock.R
 import com.example.easydiaryandjournalwithlock.databinding.FragmentCreateNotesBinding
@@ -166,9 +167,9 @@ class CreateNotesFragment : Fragment(),
         super.onViewCreated(view, savedInstanceState)
         argument = arguments?.getString(CHECK_NAVIGATION).orEmpty()
         note = arguments?.getParcelable(CLICKEDITEMDATA)
-        Log.d("note", "onViewCreated: ${note?.id}--${note?.fontFamilyName}")
         selectedImages = arguments?.getParcelableArrayList("selectedAllImages") ?: arrayListOf()
         tagName = arguments?.getString("tagName")
+        Log.d("note", "onViewCreated: ${note?.id}--${tagName}")
         selectedFontFamily = note?.fontFamilyName ?: selectedFontFamily
         handleNavigationArguments()
         observeBackgroundState()
@@ -293,12 +294,14 @@ class CreateNotesFragment : Fragment(),
     }
 
     private fun setupTags() {
-        Log.e("setupTags-->", "setupTags: ${viewModel.currentNoteId}")
+        Log.e("setupTags-->", "setupTags: ${viewModel.currentNoteId}--$tagName")
         if (viewModel.currentNoteId != null && note?.tagsList?.isNotEmpty() == true) {
             Log.e("setupTags-->", "setupTags: ${viewModel.currentNoteId}--${note?.tagsList}")
             tagsViewModel.addAllTagsForCreatedNote(allTags = note?.tagsList?.toDomain() ?: listOf())
         } else {
-            tagsViewModel.addAllTagsForCreatedNote(allTags = arrayListOf("Unknown"))
+            if(argument!=FROM_CROP_FRAGMENT){
+                tagsViewModel.addAllTagsForCreatedNote(allTags = arrayListOf("Unknown"))
+            }
         }
         viewLifecycleOwner.lifecycleScope.launch {
             tagsViewModel.tagsStateFlow.flowWithLifecycle(lifecycle).collect {
@@ -563,12 +566,16 @@ class CreateNotesFragment : Fragment(),
             viewModel.currentNoteId = note?.id
             val bundle = Bundle().apply {
                 putString(SEND_URI, imageUri)
+                putString("tagName", binding?.txtTag?.text.toString())
                 putBoolean("isCreateFragment", true)
                 putString(CHECK_NAVIGATION, FROM_HOME_FRAGMENT)
                 putParcelable(CLICKEDITEMDATA, note)
                 putParcelableArrayList("selectedImages", selectedImages)
             }
-            findNavController().navigate(R.id.action_createNotesFragment_to_cropFragment, bundle)
+            findNavController().navigate(
+                R.id.action_createNotesFragment_to_cropFragment,
+                bundle,
+            )
         }
     }
 

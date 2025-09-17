@@ -185,7 +185,8 @@
         tools:layout="@layout/fragment_create_notes">
         <action
             android:id="@+id/action_createNotesFragment_to_cropFragment"
-            app:destination="@id/cropFragment" />
+            app:destination="@id/cropFragment"
+             />
         <action
             android:id="@+id/action_createNotesFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
@@ -218,6 +219,11 @@
         <action
             android:id="@+id/action_cropFragment_to_createNotesFragment"
             app:destination="@id/createNotesFragment" />
+
+
+        <action
+            android:id="@+id/action_cropFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
     </fragment>
     <fragment
         android:id="@+id/colorThemeFragment"
