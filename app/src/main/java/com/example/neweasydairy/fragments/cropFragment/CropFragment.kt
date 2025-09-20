@@ -89,7 +89,10 @@ class CropFragment : Fragment() {
                 bundle.putString(CHECK_NAVIGATION, FROM_HOME_FRAGMENT)
                 bundle.putString(CHECK_NAVIGATION, FROM_CROP_FRAGMENT)
                 bundle.putParcelable(CLICKEDITEMDATA, note)
-                bundle.putString("tagName", tagName ?: "")
+                bundle.putStringArrayList(
+                    "listOfAllTags",
+                    arguments?.getStringArrayList("listOfAllTags")
+                )
                 bundle.putParcelableArrayList("selectedAllImages", selectedImages)
                 when (fromWhichFragment) {
 

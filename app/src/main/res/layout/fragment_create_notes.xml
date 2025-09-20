@@ -271,11 +271,11 @@
         android:id="@+id/icHash"
         android:layout_width="@dimen/_22sdp"
         android:layout_height="@dimen/_22sdp"
-        app:srcCompat="@drawable/ic_hash"
         app:layout_constraintBottom_toBottomOf="@id/bottomViewNotes"
         app:layout_constraintEnd_toStartOf="@id/icText"
         app:layout_constraintStart_toEndOf="@id/icImageNote"
-        app:layout_constraintTop_toTopOf="@id/bottomViewNotes" />
+        app:layout_constraintTop_toTopOf="@id/bottomViewNotes"
+        app:srcCompat="@drawable/ic_hash" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/icText"

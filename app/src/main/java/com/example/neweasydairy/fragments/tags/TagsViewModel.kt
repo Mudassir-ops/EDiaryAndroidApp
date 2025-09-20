@@ -17,6 +17,8 @@ class TagsViewModel @Inject constructor(
     val tagsStateFlow: SharedFlow<List<String>> = tagsRepository.localTagsFlow
     val allTagsFlow: SharedFlow<List<CustomTagEntity>> = tagsRepository.allTagsFlow
 
+    var currentLocalTag = ""
+
     fun insertLocalTag(tag: String) {
         viewModelScope.launch {
             tagsRepository.insertLocalTag(tag)

@@ -169,9 +169,15 @@ class CreateNotesFragment : Fragment(),
         note = arguments?.getParcelable(CLICKEDITEMDATA)
         selectedImages = arguments?.getParcelableArrayList("selectedAllImages") ?: arrayListOf()
         tagName = arguments?.getString("tagName")
-        Log.d("note", "onViewCreated: ${note?.id}--${tagName}")
+        Log.d("note", "onViewCreated: ${note?.id}--${listOfAllTags}")
         selectedFontFamily = note?.fontFamilyName ?: selectedFontFamily
         handleNavigationArguments()
+
+        Log.e(
+            "onViewCreatedGetStringArrayList-->", "onViewCreated: ${
+                arguments?.getStringArrayList("listOfAllTags")
+            }"
+        )
         observeBackgroundState()
         setupUI()
     }
@@ -299,9 +305,13 @@ class CreateNotesFragment : Fragment(),
             Log.e("setupTags-->", "setupTags: ${viewModel.currentNoteId}--${note?.tagsList}")
             tagsViewModel.addAllTagsForCreatedNote(allTags = note?.tagsList?.toDomain() ?: listOf())
         } else {
-            if(argument!=FROM_CROP_FRAGMENT){
-                tagsViewModel.addAllTagsForCreatedNote(allTags = arrayListOf("Unknown"))
+            val lastTagsList = arguments?.getStringArrayList("listOfAllTags")
+            val localTgsList = if (lastTagsList?.isNotEmpty() == true) {
+                lastTagsList
+            } else {
+                arrayListOf("Unknown")
             }
+            tagsViewModel.addAllTagsForCreatedNote(allTags = localTgsList)
         }
         viewLifecycleOwner.lifecycleScope.launch {
             tagsViewModel.tagsStateFlow.flowWithLifecycle(lifecycle).collect {
@@ -397,6 +407,7 @@ class CreateNotesFragment : Fragment(),
     }
 
     private fun resetNoteUI() {
+        Log.e("onViewCreated-->", "onViewCreated:resetNoteUICall $tagName--$argument")
         binding?.apply {
             viewModel.tagList.clear()
             flexboxLayout.removeAllViews()
@@ -563,10 +574,11 @@ class CreateNotesFragment : Fragment(),
 
     private fun navigateToCropFragment(imageUri: String) {
         if (findNavController().currentDestination?.id == R.id.createNotesFragment) {
+
             viewModel.currentNoteId = note?.id
             val bundle = Bundle().apply {
                 putString(SEND_URI, imageUri)
-                putString("tagName", binding?.txtTag?.text.toString())
+                putStringArrayList("listOfAllTags", listOfAllTags)
                 putBoolean("isCreateFragment", true)
                 putString(CHECK_NAVIGATION, FROM_HOME_FRAGMENT)
                 putParcelable(CLICKEDITEMDATA, note)
