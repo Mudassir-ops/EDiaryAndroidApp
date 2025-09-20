@@ -16,9 +16,9 @@ import com.example.easydiaryandjournalwithlock.databinding.ImageItemBinding
 import java.io.File
 
 class ImageAdapter(
-  var imageList: MutableList<ImageDataModelGallery>,
+    var imageList: MutableList<ImageDataModelGallery>,
     val context: Context,
-  private val onShareClick: (String) -> Unit
+    private val onItemRemove: (String) -> Unit
 ) : RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
 
 
@@ -68,12 +68,16 @@ class ImageAdapter(
 
                         true
                     }
+
                     R.id.menu_delete -> {
+                        val filePath = dataModel.imagePath
+                        onItemRemove.invoke(filePath)
                         imageList.removeAt(position)
                         notifyItemRemoved(position)
                         notifyItemRangeChanged(position, imageList.size)
                         true
                     }
+
                     else -> false
                 }
             }
@@ -84,7 +88,7 @@ class ImageAdapter(
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateImageList(newList:MutableList<ImageDataModelGallery>){
+    fun updateImageList(newList: MutableList<ImageDataModelGallery>) {
         imageList = newList
         notifyDataSetChanged()
     }

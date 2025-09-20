@@ -151,4 +151,11 @@ class CreateNoteViewModel @Inject constructor(
             createNoteRepository.updateNoteData(noteEntity = updatedNote)
         }
     }
+
+
+    fun updateImagesList(noteId: Int, imagePath: String) {
+        viewModelScope.launch {
+            createNoteRepository.updateImagesList(noteId, imagePath)
+        }
+    }
 }

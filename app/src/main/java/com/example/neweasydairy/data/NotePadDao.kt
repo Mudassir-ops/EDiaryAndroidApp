@@ -4,7 +4,10 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.TypeConverters
 import androidx.room.Update
+import com.example.neweasydairy.fragments.noteFragment.imageFunctionality.ImageDataModelGallery
+import com.example.neweasydairy.typeConverter.ImageConverter
 import kotlinx.coroutines.flow.Flow
 
 @Dao

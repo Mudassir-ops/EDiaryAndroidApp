@@ -26,4 +26,10 @@ class CreateNoteRepository @Inject constructor(private val notePadDao: NotePadDa
         }
     }
 
+    suspend fun updateImagesList(noteId: Int, imagePath: String) {
+        val note = notePadDao.getNoteById(noteId)
+        val updatedList = note?.imageList?.filter { it.imagePath != imagePath } ?: listOf()
+        val updatedNote = note?.copy(imageList = updatedList)
+        updatedNote?.let { notePadDao.update(note = it) }
+    }
 }

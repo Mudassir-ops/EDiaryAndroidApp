@@ -152,14 +152,9 @@ class CreateNotesFragment : Fragment(),
         imageAdapter = ImageAdapter(
             imageList = selectedImages,
             context ?: return,
-            onShareClick = { imagePath ->
-                viewLifecycleOwner.lifecycleScope.logEventWithScope(
-                    name = "Create_Note_Screen_Share_click",
-                    params = emptyMap()
-                )
-                //  imagePath.shareImage(requireContext())
-                Log.e("imageUriSaqib", "onShareClick:, imagePath: $imagePath")
-            }
+            onItemRemove = {
+                viewModel.updateImagesList(noteId = viewModel.currentNoteId ?: -1, imagePath = it)
+            },
         )
     }
 
