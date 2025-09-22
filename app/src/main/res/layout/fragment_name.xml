@@ -1,102 +1,108 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nestedScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/app_screen"
+    android:fillViewport="true"
     tools:context="com.example.neweasydairy.fragments.nameFragment.NameFragment">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/imgIntroOne"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/viewBottomName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_name_pic" />
-
-
-    <View
-        android:id="@+id/viewBottomName"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/bottom_intro"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.4"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/txtPermission"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_12sdp"
-        android:fontFamily="@font/roboto_semibold"
-        android:text="Start Writing"
-        android:textColor="@color/black"
-        android:textSize="@dimen/_18sdp"
-        app:layout_constraintBottom_toTopOf="@id/txtFullName"
-        app:layout_constraintEnd_toEndOf="@id/viewBottomName"
-        app:layout_constraintStart_toStartOf="@id/viewBottomName"
-        app:layout_constraintTop_toTopOf="@id/viewBottomName" />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imgIntroOne"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@id/viewBottomName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_name_pic" />
 
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/txtFullName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_12sdp"
-        android:fontFamily="@font/roboto_semibold"
-        android:text="Enter your Name"
-        android:textSize="@dimen/_15sdp"
-        app:layout_constraintBottom_toTopOf="@id/edTextName"
-        app:layout_constraintEnd_toEndOf="@id/viewBottomName"
-        app:layout_constraintStart_toStartOf="@id/viewBottomName"
-        app:layout_constraintTop_toBottomOf="@id/txtPermission" />
+        <View
+            android:id="@+id/viewBottomName"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/bottom_intro"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.4"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/edTextName"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:background="@drawable/bg_edit_text"
-        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        android:drawableStart="@drawable/ic_profile"
-        android:drawablePadding="@dimen/_10sdp"
-        android:fontFamily="@font/roboto_regular"
-        android:hint=""
-        android:inputType="textPersonName"
-        android:maxLength="20"
-        android:paddingStart="@dimen/_10sdp"
-        android:singleLine="true"
-        app:layout_constraintBottom_toTopOf="@id/btnNext"
-        app:layout_constraintStart_toStartOf="@id/txtFullName"
-        app:layout_constraintTop_toBottomOf="@id/txtFullName"
-        app:layout_constraintWidth_percent="0.9" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtPermission"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:fontFamily="@font/roboto_semibold"
+            android:text="Start Writing"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_18sdp"
+            app:layout_constraintBottom_toTopOf="@id/txtFullName"
+            app:layout_constraintEnd_toEndOf="@id/viewBottomName"
+            app:layout_constraintStart_toStartOf="@id/viewBottomName"
+            app:layout_constraintTop_toTopOf="@id/viewBottomName" />
 
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnNext"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:layout_marginBottom="@dimen/_10sdp"
-        android:background="@drawable/bg_done_btn"
-        android:fontFamily="@font/roboto_regular"
-        android:text="Next"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_14sdp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/viewBottomName"
-        app:layout_constraintEnd_toEndOf="@id/viewBottomName"
-        app:layout_constraintStart_toStartOf="@id/viewBottomName"
-        app:layout_constraintTop_toBottomOf="@id/edTextName"
-        app:layout_constraintWidth_percent="0.8" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtFullName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:fontFamily="@font/roboto_semibold"
+            android:text="Enter your Name"
+            android:textSize="@dimen/_15sdp"
+            app:layout_constraintBottom_toTopOf="@id/edTextName"
+            app:layout_constraintEnd_toEndOf="@id/viewBottomName"
+            app:layout_constraintStart_toStartOf="@id/viewBottomName"
+            app:layout_constraintTop_toBottomOf="@id/txtPermission" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/edTextName"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_edit_text"
+            android:drawableStart="@drawable/ic_profile"
+            android:drawablePadding="@dimen/_10sdp"
+            android:fontFamily="@font/roboto_regular"
+            android:hint=""
+
+            android:maxLength="20"
+            android:paddingStart="@dimen/_10sdp"
+            android:paddingEnd="@dimen/_10sdp"
+            android:singleLine="true"
+            app:layout_constraintBottom_toTopOf="@id/btnNext"
+            app:layout_constraintStart_toStartOf="@id/txtFullName"
+            app:layout_constraintTop_toBottomOf="@id/txtFullName"
+            app:layout_constraintWidth_percent="0.9" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnNext"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:background="@drawable/bg_done_btn"
+            android:fontFamily="@font/roboto_regular"
+            android:text="Next"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_14sdp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/viewBottomName"
+            app:layout_constraintEnd_toEndOf="@id/viewBottomName"
+            app:layout_constraintStart_toStartOf="@id/viewBottomName"
+            app:layout_constraintTop_toBottomOf="@id/edTextName"
+            app:layout_constraintWidth_percent="0.8" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

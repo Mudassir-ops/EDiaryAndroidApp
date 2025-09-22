@@ -113,6 +113,9 @@ class EditNameFragment : Fragment() {
         binding?.icBack?.setOnClickListener {
             findNavController().navigateUp()
         }
+
+
+
         val userName = languageRepository.getUserName()
         if (userName != null) {
             binding?.edTextName?.setText(userName)
