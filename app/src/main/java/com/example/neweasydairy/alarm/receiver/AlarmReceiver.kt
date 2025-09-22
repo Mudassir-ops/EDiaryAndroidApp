@@ -55,55 +55,54 @@ class AlarmReceiver : BroadcastReceiver() {
                     context?.let {
                         NotificationManagerCompat.from(it).cancel(alarmId)
                     }
-                    return@launch
-                }
+                } else {
+                    val title = intent?.getStringExtra(TITLE) ?: return@launch
+                    val message = intent.getStringExtra(MESSAGE)
+                    val alarmId = intent.getIntExtra(ALARM_ID, 1)
 
-                val title = intent?.getStringExtra(TITLE) ?: return@launch
-                val message = intent.getStringExtra(MESSAGE)
-                val alarmId = intent.getIntExtra(ALARM_ID, 1)
+                    val goIntent = Intent(context, MainActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    }
 
-                val goIntent = Intent(context, MainActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                }
+                    val pendingIntent = PendingIntent.getActivity(
+                        context,
+                        1,
+                        goIntent,
+                        PendingIntent.FLAG_IMMUTABLE
+                    )
 
-                val pendingIntent = PendingIntent.getActivity(
-                    context,
-                    1,
-                    goIntent,
-                    PendingIntent.FLAG_IMMUTABLE
-                )
+                    val stopPendingIntent = PendingIntent.getBroadcast(
+                        context,
+                        1,
+                        Intent(context, AlarmReceiver::class.java).apply {
+                            action = STOP_ALARM
+                            putExtra(ALARM_ID, alarmId)
+                        },
+                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                    )
 
-                val stopPendingIntent = PendingIntent.getBroadcast(
-                    context,
-                    1,
-                    Intent(context, AlarmReceiver::class.java).apply {
-                        action = STOP_ALARM
-                        putExtra(ALARM_ID, alarmId)
-                    },
-                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-                )
+                    val builder = context?.let {
+                        NotificationCompat.Builder(it, ALARM_CHANNEL_NAME)
+                            .setSmallIcon(R.drawable.app_icon)
+                            .setContentTitle(title)
+                            .setContentText(message)
+                            .setPriority(NotificationCompat.PRIORITY_MAX)
+                            .setContentIntent(pendingIntent)
+                            .addAction(R.drawable.app_icon, "STOP", stopPendingIntent)
+                    }
 
-                val builder = context?.let {
-                    NotificationCompat.Builder(it, ALARM_CHANNEL_NAME)
-                        .setSmallIcon(R.drawable.app_icon)
-                        .setContentTitle(title)
-                        .setContentText(message)
-                        .setPriority(NotificationCompat.PRIORITY_MAX)
-                        .setContentIntent(pendingIntent)
-                        .addAction(R.drawable.app_icon, "STOP", stopPendingIntent)
-                }
+                    mediaPlayer.start()
 
-                mediaPlayer.start()
-
-                if (context?.let {
-                        ActivityCompat.checkSelfPermission(
-                            it,
-                            android.Manifest.permission.POST_NOTIFICATIONS
-                        )
-                    } == PackageManager.PERMISSION_GRANTED
-                ) {
-                    builder?.build()?.let {
-                        NotificationManagerCompat.from(context).notify(alarmId, it)
+                    if (context?.let {
+                            ActivityCompat.checkSelfPermission(
+                                it,
+                                android.Manifest.permission.POST_NOTIFICATIONS
+                            )
+                        } == PackageManager.PERMISSION_GRANTED
+                    ) {
+                        builder?.build()?.let {
+                            NotificationManagerCompat.from(context).notify(alarmId, it)
+                        }
                     }
                 }
             } catch (e: Exception) {
@@ -113,4 +112,5 @@ class AlarmReceiver : BroadcastReceiver() {
             }
         }
     }
+
 }
