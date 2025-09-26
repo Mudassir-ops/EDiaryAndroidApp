@@ -84,7 +84,6 @@ class PermissionFragment : Fragment() {
         binding?.icSwitchCamera?.setOnClickListener {
             requestCameraPermission.launch(Manifest.permission.CAMERA)
         }
-
         binding?.icSwitchGallery?.setOnClickListener {
             val permissions = mutableListOf<String>()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
