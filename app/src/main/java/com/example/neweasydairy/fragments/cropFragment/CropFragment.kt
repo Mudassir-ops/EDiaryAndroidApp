@@ -2,6 +2,7 @@ package com.example.neweasydairy.fragments.cropFragment
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.net.toUri
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.easydiaryandjournalwithlock.R
@@ -21,6 +23,9 @@ import com.example.neweasydairy.utilis.Objects.CLICKEDITEMDATA
 import com.example.neweasydairy.utilis.Objects.FROM_CROP_FRAGMENT
 import com.example.neweasydairy.utilis.Objects.FROM_HOME_FRAGMENT
 import com.example.neweasydairy.utilis.Objects.SEND_URI
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -59,7 +64,18 @@ class CropFragment : Fragment() {
         Log.e(TAG, "onViewCreated: argument $argument")
         Log.e(TAG, "onViewCreated: select $selectedImages")
         Log.e("boolean", "onViewCreated: boolean $fromWhichFragment")
-        binding?.cropImageView?.setImageUriAsync(argument?.toUri())
+        val uri = argument?.toUri() ?: return
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            val bitmap = requireContext().contentResolver.openInputStream(uri)?.use { stream ->
+                BitmapFactory.decodeStream(stream)
+            }
+            bitmap?.let {
+                withContext(Dispatchers.Main) {
+                    binding?.cropImageView?.setImageBitmap(it)
+                }
+            }
+        }
+
         clickListenerCropFragment()
         binding?.apply {
 

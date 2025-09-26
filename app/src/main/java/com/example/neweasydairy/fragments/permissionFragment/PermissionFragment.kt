@@ -39,10 +39,10 @@ class PermissionFragment : Fragment() {
         requestCameraPermission =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
                 if (granted) {
-                    binding?.icSwitchGallery?.setImageResource(R.drawable.ic_switch_on)
+                    binding?.icSwitchCamera?.setImageResource(R.drawable.ic_switch_on)
                     cameraDeniedCount = 0
                 } else {
-                    binding?.icSwitchGallery?.setImageResource(R.drawable.ic_switch_off)
+                    binding?.icSwitchCamera?.setImageResource(R.drawable.ic_switch_off)
                     cameraDeniedCount++
                     if (cameraDeniedCount >= 2) {
                         showPermissionDialog(context ?: return@registerForActivityResult, this)
