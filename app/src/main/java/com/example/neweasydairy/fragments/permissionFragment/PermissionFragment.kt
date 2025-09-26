@@ -1,6 +1,9 @@
 package com.example.neweasydairy.fragments.permissionFragment
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -10,68 +13,58 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.example.easydiaryandjournalwithlock.R
 import com.example.easydiaryandjournalwithlock.databinding.FragmentPermissionBinding
 import com.example.neweasydairy.fragments.languageFragment.LanguageViewModel
 import com.example.neweasydairy.fragments.noteFragment.showPermissionDialog
+import com.example.neweasydairy.utilis.requiredPermissions
 
 
 class PermissionFragment : Fragment() {
     private var _binding: FragmentPermissionBinding? = null
     private val binding get() = _binding
-    lateinit var requestCameraPermission: ActivityResultLauncher<String>
-    lateinit var requestGalleryPermission: ActivityResultLauncher<String>
+    val languageViewModel: LanguageViewModel by activityViewModels()
 
-    private var cameraPermissionDeniedCount = 0
-    private var galleryPermissionDeniedCount = 0
-    val languageViewModel:LanguageViewModel by activityViewModels()
+    private var cameraDeniedCount = 0
+    private var galleryDeniedCount = 0
 
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        val callback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-            }
-        }
-        activity?.onBackPressedDispatcher?.addCallback(this, callback)
-    }
-
+    private lateinit var requestCameraPermission: ActivityResultLauncher<String>
+    private lateinit var requestGalleryPermission: ActivityResultLauncher<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         requestCameraPermission =
-            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-                if (isGranted) {
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+                if (granted) {
                     binding?.icSwitchCamera?.setImageResource(R.drawable.ic_switch_on)
-                    cameraPermissionDeniedCount = 0
+                    cameraDeniedCount = 0
+                    checkAllPermissions()
                 } else {
                     binding?.icSwitchCamera?.setImageResource(R.drawable.ic_switch_off)
-                    cameraPermissionDeniedCount++
-                    if (cameraPermissionDeniedCount >= 2) {
-                        showPermissionDialog(
-                            context = context ?: return@registerForActivityResult,
-                            fragment = this
-                        )
+                    cameraDeniedCount++
+                    if (cameraDeniedCount >= 2) {
+                        showPermissionDialog(context ?: return@registerForActivityResult, this)
                     }
                 }
             }
 
         requestGalleryPermission =
-            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-                if (isGranted) {
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+                if (granted) {
                     binding?.icSwitchGallery?.setImageResource(R.drawable.ic_switch_on)
-                    galleryPermissionDeniedCount = 0
+                    galleryDeniedCount = 0
                 } else {
                     binding?.icSwitchGallery?.setImageResource(R.drawable.ic_switch_off)
-                    galleryPermissionDeniedCount++
-                    if (galleryPermissionDeniedCount >= 2) {
-                        showPermissionDialog(
-                            context = context ?: return@registerForActivityResult,
-                            fragment = this
-                        )
+                    galleryDeniedCount++
+                    if (galleryDeniedCount >= 2) {
+                        showPermissionDialog(context ?: return@registerForActivityResult, this)
                     }
                 }
+                checkAllPermissions()
             }
 
     }
@@ -86,15 +79,55 @@ class PermissionFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding?.apply {
-            permissionClickListener(this@PermissionFragment)
+        binding?.btnDone?.isEnabled = false
+        binding?.btnDone?.alpha = 0.5f
+
+        binding?.icSwitchCamera?.setOnClickListener {
+            requestCameraPermission.launch(Manifest.permission.CAMERA)
+        }
+
+        binding?.icSwitchGallery?.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                requestGalleryPermission.launch(Manifest.permission.READ_MEDIA_IMAGES)
+            } else {
+                requestGalleryPermission.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+            }
+        }
+
+        binding?.btnDone?.setOnClickListener {
+            languageViewModel.setDoneButtonPermissionScreen(true)
+            if (findNavController().currentDestination?.id == R.id.permissionFragment) {
+                findNavController().navigate(R.id.action_permissionFragment_to_nameFragment)
+            }
         }
     }
 
+    private fun checkAllPermissions() {
+        val cameraGranted =
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
+        val galleryGranted =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.READ_MEDIA_IMAGES
+                ) == PackageManager.PERMISSION_GRANTED
+            } else {
+                ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ) == PackageManager.PERMISSION_GRANTED
+            }
+        val allGranted = cameraGranted && galleryGranted
+        binding?.btnDone?.isEnabled = allGranted
+        binding?.btnDone?.alpha = if (allGranted) 1f else 0.5f
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
 }
+

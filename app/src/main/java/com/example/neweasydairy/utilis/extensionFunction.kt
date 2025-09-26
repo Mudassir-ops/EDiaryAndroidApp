@@ -1,5 +1,6 @@
 package com.example.neweasydairy.utilis
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityManager
@@ -12,6 +13,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
@@ -37,6 +39,18 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import com.google.android.flexbox.FlexboxLayout
 import androidx.core.content.edit
+
+val requiredPermissions: List<String>
+    get() = buildList {
+        add(Manifest.permission.CAMERA)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            add(Manifest.permission.READ_MEDIA_IMAGES)
+        } else {
+            add(Manifest.permission.READ_EXTERNAL_STORAGE)
+            add(Manifest.permission.WRITE_EXTERNAL_STORAGE) // needed for Android < Q
+        }
+    }
+
 
 private var toast: Toast? = null
 fun Activity.toast(message: String) {

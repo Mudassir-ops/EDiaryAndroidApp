@@ -108,7 +108,12 @@ fun setReminderAlarm(
     }
     reminder.let {
         alarmSchedulerImpl.schedule(it)
-        Log.d("Reminder", "Alarm set for: ${it.scheduleAt}--${alarmManager.canScheduleExactAlarms()}")
+        val canSchedule = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            alarmManager.canScheduleExactAlarms()
+        } else {
+            true
+        }
+        Log.d("Reminder", "Alarm set for: ${it.scheduleAt} -- $canSchedule")
     }
 }
 
