@@ -32,29 +32,28 @@ class PermissionFragment : Fragment() {
     private var galleryDeniedCount = 0
 
     private lateinit var requestCameraPermission: ActivityResultLauncher<String>
-    private lateinit var requestGalleryPermission: ActivityResultLauncher<String>
+    private lateinit var requestGalleryPermission: ActivityResultLauncher<Array<String>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         requestCameraPermission =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
                 if (granted) {
-                    binding?.icSwitchCamera?.setImageResource(R.drawable.ic_switch_on)
+                    binding?.icSwitchGallery?.setImageResource(R.drawable.ic_switch_on)
                     cameraDeniedCount = 0
-                    checkAllPermissions()
                 } else {
-                    binding?.icSwitchCamera?.setImageResource(R.drawable.ic_switch_off)
+                    binding?.icSwitchGallery?.setImageResource(R.drawable.ic_switch_off)
                     cameraDeniedCount++
                     if (cameraDeniedCount >= 2) {
                         showPermissionDialog(context ?: return@registerForActivityResult, this)
                     }
                 }
+                checkAllPermissions()
             }
-
         requestGalleryPermission =
-            registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-                if (granted) {
+            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
+                val allGranted = results.all { it.value }
+                if (allGranted) {
                     binding?.icSwitchGallery?.setImageResource(R.drawable.ic_switch_on)
                     galleryDeniedCount = 0
                 } else {
@@ -66,7 +65,6 @@ class PermissionFragment : Fragment() {
                 }
                 checkAllPermissions()
             }
-
     }
 
     override fun onCreateView(
@@ -79,6 +77,7 @@ class PermissionFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding?.btnDone?.isEnabled = false
         binding?.btnDone?.alpha = 0.5f
 
@@ -87,11 +86,14 @@ class PermissionFragment : Fragment() {
         }
 
         binding?.icSwitchGallery?.setOnClickListener {
+            val permissions = mutableListOf<String>()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                requestGalleryPermission.launch(Manifest.permission.READ_MEDIA_IMAGES)
+                permissions.add(Manifest.permission.READ_MEDIA_IMAGES)
             } else {
-                requestGalleryPermission.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+                permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             }
+            requestGalleryPermission.launch(permissions.toTypedArray())
         }
 
         binding?.btnDone?.setOnClickListener {
@@ -104,22 +106,29 @@ class PermissionFragment : Fragment() {
 
     private fun checkAllPermissions() {
         val cameraGranted =
+            ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) ==
+                    PackageManager.PERMISSION_GRANTED
+
+        val galleryGranted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ContextCompat.checkSelfPermission(
                 requireContext(),
-                Manifest.permission.CAMERA
-            ) == PackageManager.PERMISSION_GRANTED
-        val galleryGranted =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                ContextCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.READ_MEDIA_IMAGES
-                ) == PackageManager.PERMISSION_GRANTED
-            } else {
-                ContextCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                ) == PackageManager.PERMISSION_GRANTED
-            }
+                Manifest.permission.READ_MEDIA_IMAGES
+            ) ==
+                    PackageManager.PERMISSION_GRANTED
+        } else {
+            val read = ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) ==
+                    PackageManager.PERMISSION_GRANTED
+            val write = ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) ==
+                    PackageManager.PERMISSION_GRANTED
+            read && write
+        }
+
         val allGranted = cameraGranted && galleryGranted
         binding?.btnDone?.isEnabled = allGranted
         binding?.btnDone?.alpha = if (allGranted) 1f else 0.5f
@@ -130,4 +139,5 @@ class PermissionFragment : Fragment() {
         _binding = null
     }
 }
+
 
