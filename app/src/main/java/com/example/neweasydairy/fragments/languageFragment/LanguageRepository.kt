@@ -14,21 +14,52 @@ import com.example.neweasydairy.utilis.BooleanObjects.themeScreen
 import com.example.neweasydairy.utilis.BooleanObjects.userName
 import com.example.neweasydairy.utilis.BooleanObjects.welcomeScreen
 import jakarta.inject.Inject
+import androidx.core.content.edit
 
 
-class LanguageRepository @Inject constructor( private val sharedPreferences: SharedPreferences) {
+class LanguageRepository @Inject constructor(private val sharedPreferences: SharedPreferences) {
 
     fun getLanguageList() = listOf(
-        LanguageDataModel(countryFlag = R.drawable.china_flag, languageName ="English (US)", languageCode ="us",  isSelected =false),
-        LanguageDataModel(countryFlag = R.drawable.china_flag, languageName ="English (UK)", languageCode ="us",  isSelected =false),
-        LanguageDataModel(countryFlag = R.drawable.china_flag, languageName ="Turkish", languageCode ="us",  isSelected =false),
-        LanguageDataModel(countryFlag = R.drawable.china_flag, languageName ="Arabic ", languageCode ="us",  isSelected =false),
-        LanguageDataModel(countryFlag = R.drawable.china_flag, languageName ="Portuguese", languageCode ="us",  isSelected =false),
-        LanguageDataModel(countryFlag = R.drawable.china_flag, languageName ="Spanish", languageCode ="us",  isSelected =false),
+        LanguageDataModel(
+            countryFlag = R.drawable.china_flag,
+            languageName = "English (US)",
+            languageCode = "us",
+            isSelected = false
+        ),
+        LanguageDataModel(
+            countryFlag = R.drawable.china_flag,
+            languageName = "English (UK)",
+            languageCode = "us",
+            isSelected = false
+        ),
+        LanguageDataModel(
+            countryFlag = R.drawable.china_flag,
+            languageName = "Turkish",
+            languageCode = "us",
+            isSelected = false
+        ),
+        LanguageDataModel(
+            countryFlag = R.drawable.china_flag,
+            languageName = "Arabic ",
+            languageCode = "us",
+            isSelected = false
+        ),
+        LanguageDataModel(
+            countryFlag = R.drawable.china_flag,
+            languageName = "Portuguese",
+            languageCode = "us",
+            isSelected = false
+        ),
+        LanguageDataModel(
+            countryFlag = R.drawable.china_flag,
+            languageName = "Spanish",
+            languageCode = "us",
+            isSelected = false
+        ),
     )
 
     fun setDoneValue(isDoneClick: Boolean) {
-        sharedPreferences.edit().putBoolean(languageDoneButton, isDoneClick).apply()
+        sharedPreferences.edit { putBoolean(languageDoneButton, isDoneClick) }
     }
 
     fun getDoneValue(): Boolean {
@@ -36,7 +67,7 @@ class LanguageRepository @Inject constructor( private val sharedPreferences: Sha
     }
 
     fun setNextButtonIntroOne(isDoneClick: Boolean) {
-        sharedPreferences.edit().putBoolean(introScreenOne, isDoneClick).apply()
+        sharedPreferences.edit { putBoolean(introScreenOne, isDoneClick) }
     }
 
     fun getNextButtonIntroOne(): Boolean {
@@ -45,7 +76,7 @@ class LanguageRepository @Inject constructor( private val sharedPreferences: Sha
 
 
     fun setNextButtonIntroTwo(isDoneClick: Boolean) {
-        sharedPreferences.edit().putBoolean(introScreenTwo, isDoneClick).apply()
+        sharedPreferences.edit { putBoolean(introScreenTwo, isDoneClick) }
     }
 
     fun getNextButtonIntroTwo(): Boolean {
@@ -53,7 +84,7 @@ class LanguageRepository @Inject constructor( private val sharedPreferences: Sha
     }
 
     fun setNextButtonIntroThree(isDoneClick: Boolean) {
-        sharedPreferences.edit().putBoolean(introScreenThree, isDoneClick).apply()
+        sharedPreferences.edit { putBoolean(introScreenThree, isDoneClick) }
     }
 
     fun getNextButtonIntroThree(): Boolean {
@@ -61,7 +92,7 @@ class LanguageRepository @Inject constructor( private val sharedPreferences: Sha
     }
 
     fun setDoneButtonPermissionScreen(isDoneClick: Boolean) {
-        sharedPreferences.edit().putBoolean(permissionScreen, isDoneClick).apply()
+        sharedPreferences.edit { putBoolean(permissionScreen, isDoneClick) }
     }
 
     fun getDoneButtonPermissionScreen(): Boolean {
@@ -69,7 +100,7 @@ class LanguageRepository @Inject constructor( private val sharedPreferences: Sha
     }
 
     fun setNextButtonNameScreen(isDoneClick: Boolean) {
-        sharedPreferences.edit().putBoolean(nameScreen, isDoneClick).apply()
+        sharedPreferences.edit { putBoolean(nameScreen, isDoneClick) }
     }
 
     fun getNextButtonNameScreen(): Boolean {
@@ -77,7 +108,7 @@ class LanguageRepository @Inject constructor( private val sharedPreferences: Sha
     }
 
     fun setSelectButtonThemeScree(isDoneClick: Boolean) {
-        sharedPreferences.edit().putBoolean(themeScreen, isDoneClick).apply()
+        sharedPreferences.edit { putBoolean(themeScreen, isDoneClick) }
     }
 
     fun getSelectButtonThemeScreen(): Boolean {
@@ -85,7 +116,7 @@ class LanguageRepository @Inject constructor( private val sharedPreferences: Sha
     }
 
     fun setPinButtonPinScreen(isDoneClick: Boolean) {
-        sharedPreferences.edit().putBoolean(pinScreen, isDoneClick).apply()
+        sharedPreferences.edit { putBoolean(pinScreen, isDoneClick) }
     }
 
     fun getPinButtonPinScreen(): Boolean {
@@ -93,7 +124,7 @@ class LanguageRepository @Inject constructor( private val sharedPreferences: Sha
     }
 
     fun setWelcomeButtonWelcomeScree(isDoneClick: Boolean) {
-        sharedPreferences.edit().putBoolean(welcomeScreen, isDoneClick).apply()
+        sharedPreferences.edit { putBoolean(welcomeScreen, isDoneClick) }
     }
 
     fun getWelcomeButtonWelcomeScreen(): Boolean {
@@ -101,7 +132,11 @@ class LanguageRepository @Inject constructor( private val sharedPreferences: Sha
     }
 
     fun setUserName(username: String) {
-        sharedPreferences.edit().putString(userName, username).apply()
+        sharedPreferences.edit { putString(userName, username) }
+    }
+
+    fun setOnBoardingDone() {
+        sharedPreferences.edit { putBoolean(userName, true) }
     }
 
     fun getUserName(): String? {

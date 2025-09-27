@@ -52,6 +52,7 @@ class IntroFragmentTwo : Fragment() {
                 }
             }
             txtSkipTwo.setOnClickListener {
+                languageViewModel.setNextButtonIntroTwo(true)
                 if (findNavController().currentDestination?.id == R.id.introFragmentTwo) {
                     findNavController().navigate(R.id.action_introFragmentTwo_to_permissionFragment)
                 }

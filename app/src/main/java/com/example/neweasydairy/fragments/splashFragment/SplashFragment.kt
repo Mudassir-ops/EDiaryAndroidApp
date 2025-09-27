@@ -1,5 +1,6 @@
 package com.example.neweasydairy.fragments.splashFragment
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,7 +11,9 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.easydiaryandjournalwithlock.R
 import com.example.easydiaryandjournalwithlock.databinding.FragmentSplashBinding
+import com.example.neweasydairy.fragments.languageFragment.LanguageRepository
 import dagger.hilt.android.AndroidEntryPoint
+import jakarta.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -23,6 +26,8 @@ class SplashFragment : Fragment() {
     private val binding get() = _binding
     private val viewModel: SplashViewModel by viewModels()
 
+    @Inject
+    lateinit var languageRepository: LanguageRepository
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -42,23 +47,29 @@ class SplashFragment : Fragment() {
         val currentDestinationId = navController.currentDestination?.id
         if (currentDestinationId != R.id.splashFragment) return
 
-        val destination = when {
-            !viewModel.getNextButtonIntroOne() -> R.id.action_splashFragment_to_introFragment
-            !viewModel.getNextButtonIntroTwo() -> R.id.action_splashFragment_to_introFragmentTwo
-            !viewModel.getNextButtonIntroThree() -> R.id.action_splashFragment_to_introFragmentThree
-            !viewModel.getDoneButtonPermission() -> R.id.action_splashFragment_to_permissionFragment
-            !viewModel.getNextButtonNameScreen() -> R.id.action_splashFragment_to_nameFragment
-            !viewModel.getPinButtonPinScreen() -> R.id.action_splashFragment_to_pinFragment
-            !viewModel.getPinButtonPinScreen() -> R.id.action_splashFragment_to_welcomeFragment
-            else -> R.id.action_splashFragment_to_mainFragment
-        }
+        val isPinPresent = getPinFromSharedPreferences()?.isEmpty() == false
+        val isUserNamePresent = languageRepository.getUserName()?.isEmpty() == false
 
-        Log.e("checkNavigation", "checkNavigation: ")
+        val destination = if (isPinPresent) {
+            if (isUserNamePresent) {
+                R.id.action_splashFragment_to_pinFragment
+            } else {
+                R.id.action_splashFragment_to_introFragment
+            }
+        } else {
+            R.id.action_splashFragment_to_introFragment
+        }
+        Log.d("SattiKsiHo", "checkNavigation: $isPinPresent")
         if (currentDestinationId == R.id.splashFragment) {
             if (view != null && isAdded) {
                 navController.navigate(destination)
             }
         }
+    }
+
+    private fun getPinFromSharedPreferences(): String? {
+        val sharedPreferences = context?.getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences?.getString("UserPin", null)
     }
 
     override fun onDestroyView() {
