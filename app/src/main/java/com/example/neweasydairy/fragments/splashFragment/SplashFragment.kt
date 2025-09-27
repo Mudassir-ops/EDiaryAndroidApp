@@ -52,7 +52,7 @@ class SplashFragment : Fragment() {
 
         val destination = if (isPinPresent) {
             if (isUserNamePresent) {
-                R.id.action_splashFragment_to_pinFragment
+                R.id.action_splashFragment_to_welcomeFragment
             } else {
                 R.id.action_splashFragment_to_introFragment
             }
