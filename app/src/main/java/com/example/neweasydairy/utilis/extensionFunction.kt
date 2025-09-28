@@ -39,6 +39,7 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import com.google.android.flexbox.FlexboxLayout
 import androidx.core.content.edit
+import java.io.OutputStream
 
 val requiredPermissions: List<String>
     get() = buildList {
@@ -208,32 +209,58 @@ fun getAudioDuration(audioPath: String): String {
 }
 
 fun Bitmap.saveToExternalStorage(context: Context, fileName: String): Uri? {
-    val contentValues = ContentValues().apply {
-        put(MediaStore.Images.Media.DISPLAY_NAME, "$fileName.jpg")
-        put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-        put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
-        put(MediaStore.Images.Media.IS_PENDING, 1)
-    }
+    return try {
+        val fos: OutputStream?
+        val uri: Uri?
 
-    val uri: Uri? =
-        context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
-
-    uri?.let {
-        try {
-            context.contentResolver.openOutputStream(it)?.use { outputStream ->
-                this.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            // Android 10 and above
+            val contentValues = ContentValues().apply {
+                put(MediaStore.Images.Media.DISPLAY_NAME, "$fileName.jpg")
+                put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+                put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+                put(MediaStore.Images.Media.IS_PENDING, 1)
             }
+
+            uri = context.contentResolver.insert(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                contentValues
+            )
+
+            fos = uri?.let { context.contentResolver.openOutputStream(it) }
+
+            fos?.use { this.compress(Bitmap.CompressFormat.JPEG, 100, it) }
+
             contentValues.clear()
             contentValues.put(MediaStore.Images.Media.IS_PENDING, 0)
-            context.contentResolver.update(it, contentValues, null, null)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return null
-        }
-    }
+            uri?.let { context.contentResolver.update(it, contentValues, null, null) }
+        } else {
+            // Android 9 and below
+            val imagesDir =
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+                    .toString()
+            val image = File(imagesDir, "$fileName.jpg")
+            fos = FileOutputStream(image)
+            uri = Uri.fromFile(image)
 
-    return uri
+            fos.use { this.compress(Bitmap.CompressFormat.JPEG, 100, it) }
+
+            // Insert into MediaStore so it shows in gallery
+            val values = ContentValues().apply {
+                put(MediaStore.Images.Media.DATA, image.absolutePath)
+                put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+                put(MediaStore.Images.Media.DISPLAY_NAME, "$fileName.jpg")
+            }
+            context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+        }
+
+        uri
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
 }
+
 
 fun String.deleteImageFile(tag: String): Boolean {
     val file = File(this)
